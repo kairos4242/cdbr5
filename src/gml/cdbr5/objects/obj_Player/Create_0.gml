@@ -12,7 +12,7 @@ key_left = ord("A")
 key_right = ord("D")
 
 key_shoot = vk_space
-key_shoot_alt = mb_left
+key_shoot_alt = mb_right
 
 speed_x = 0
 speed_y = 0

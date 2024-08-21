@@ -1,6 +1,7 @@
 /// @description Insert description here
 // You can write your code in this editor
 
-// Inherit the parent event
-event_inherited();
-invulnerable = true
+speed_x = 0
+speed_y = 0
+owner = -1
+damage = 5
