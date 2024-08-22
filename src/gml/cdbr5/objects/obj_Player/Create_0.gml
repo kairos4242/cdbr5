@@ -3,6 +3,13 @@
 
 event_inherited()
 
+enum CONTROL_TYPE {
+	PLAYER,
+	HTTP,
+	GML_AI,
+	UNCONTROLLED
+}
+
 outside_force_x = 0
 outside_force_y = 0
 
@@ -27,3 +34,5 @@ key_right_pressed = false
 key_left_pressed = false
 key_down_pressed = false
 key_up_pressed = false
+
+control_type = CONTROL_TYPE.UNCONTROLLED

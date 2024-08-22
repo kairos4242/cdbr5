@@ -1,5 +1,13 @@
 /// @description Insert description here
 // You can write your code in this editor
+
+if control_type = CONTROL_TYPE.PLAYER {
+	key_right_pressed = keyboard_check(key_right)
+	key_left_pressed = keyboard_check(key_left)
+	key_down_pressed = keyboard_check(key_down)
+	key_up_pressed = keyboard_check(key_up)
+}
+
 // don't allow movement if we're being acted on by an outside force
 if outside_force_x == 0 and outside_force_y == 0 {
 	x_dir = key_right_pressed - key_left_pressed
