@@ -4,6 +4,7 @@
   "eventList":[
     {"$GMEvent":"v1","%Name":"","collisionObjectId":null,"eventNum":0,"eventType":0,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
     {"$GMEvent":"v1","%Name":"","collisionObjectId":null,"eventNum":0,"eventType":3,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
+    {"$GMEvent":"v1","%Name":"","collisionObjectId":null,"eventNum":10,"eventType":7,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
   ],
   "managed":true,
   "name":"obj_Player",
@@ -13,8 +14,8 @@
     "path":"folders/Objects/Game Objects.yy",
   },
   "parentObjectId":{
-    "name":"obj_Solid",
-    "path":"objects/obj_Solid/obj_Solid.yy",
+    "name":"obj_GameObject",
+    "path":"objects/obj_GameObject/obj_GameObject.yy",
   },
   "persistent":false,
   "physicsAngularDamping":0.1,

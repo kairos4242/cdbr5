@@ -6,3 +6,5 @@ collide = true
 
 invulnerable = false
 divine_shield = false
+
+add_to_global_obj_registry(id)

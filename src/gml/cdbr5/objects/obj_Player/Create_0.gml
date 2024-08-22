@@ -14,9 +14,16 @@ key_right = ord("D")
 key_shoot = vk_space
 key_shoot_alt = mb_right
 
+x_dir = 0
+y_dir = 0
 speed_x = 0
 speed_y = 0
 
 
 movespeed = 5
 reload_time = 60
+
+key_right_pressed = false
+key_left_pressed = false
+key_down_pressed = false
+key_up_pressed = false

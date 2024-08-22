@@ -27,7 +27,7 @@ function move_tangible(_xdist, _ydist){
 
 // check for a collision with a solid object with the collide flag enabled
 function place_meeting_solid(_x, _y) {
-	var _collision = instance_place(_x, _y, obj_Solid)
+	var _collision = instance_place(_x, _y, obj_GameObject)
 	if _collision == noone return false
 	else return _collision.collide
 }
