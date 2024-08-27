@@ -1,26 +1,21 @@
-package com.company.project.entity;
+package com.kairos4242.cdbr.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "GREETINGS")
-public class Greeting {
+@Table(name = "player")
+public class Player {
 
     @Id
     private int id;
     private String name;
 
-    public Greeting() {
+    public Player() {
     }
 
-    public Greeting(String name) {
-        this.name = name;
-    }
-
-    public Greeting(int id, String name) {
-        this.id = id;
+    public Player(String name) {
         this.name = name;
     }
 
@@ -45,9 +40,9 @@ public class Greeting {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Greeting greeting = (Greeting) o;
+        Player player = (Player) o;
 
-        return name.equals(greeting.name);
+        return name.equals(player.name);
     }
 
     @Override
