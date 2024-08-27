@@ -12,3 +12,6 @@ if control_type = CONTROL_TYPE.PLAYER {
 
 	array_foreach(global.object_registry, trigger_step);
 }
+else if control_type = CONTROL_TYPE.GML_AI {
+	// AI script goes here
+}

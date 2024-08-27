@@ -1,0 +1,4 @@
+com\company\project\entity\Greeting.class
+com\company\project\repository\GreetingRepository.class
+com\company\project\controllers\HomeController.class
+com\company\project\Application.class

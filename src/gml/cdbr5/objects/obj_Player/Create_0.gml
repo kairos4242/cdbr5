@@ -3,13 +3,6 @@
 
 event_inherited()
 
-enum CONTROL_TYPE {
-	PLAYER,
-	HTTP,
-	GML_AI,
-	UNCONTROLLED
-}
-
 outside_force_x = 0
 outside_force_y = 0
 
