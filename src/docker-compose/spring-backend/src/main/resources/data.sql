@@ -26,3 +26,15 @@ VALUES ('Pretend');
 
 INSERT INTO public.power(name)
 VALUES ('Ossify');
+
+INSERT INTO public.power_weight(player_id, power_id)
+VALUES (1, 1);
+
+INSERT INTO public.power_weight(player_id, power_id)
+VALUES (1, 2);
+
+INSERT INTO public.power_weight(player_id, power_id)
+VALUES (2, 1);
+
+INSERT INTO public.power_weight(player_id, power_id)
+VALUES (2, 2);

@@ -16,11 +16,12 @@ CREATE TABLE IF NOT EXISTS public.power (
     PRIMARY KEY(id)
 );
 
-CREATE TABLE IF NOT EXISTS public.power_ranking (
+CREATE TABLE IF NOT EXISTS public.power_weight (
     player_id INTEGER NOT NULL,
     power_id INTEGER NOT NULL,
-    ranking INTEGER NOT NULL,
+    weight INTEGER DEFAULT 0 NOT NULL,
     power_uses INTEGER DEFAULT 0 NOT NULL,
+    PRIMARY KEY(player_id, power_id),
     CONSTRAINT fk_player
           FOREIGN KEY(player_id)
             REFERENCES public.player(id),
