@@ -28,6 +28,7 @@ replay_pid*
 src/.idea/*
 src/docker-compose/spring-backend/.idea/*
 src/docker-compose/.idea/*
+src/docker-compose/spring-backend/target/*
 
 #env file
 .env

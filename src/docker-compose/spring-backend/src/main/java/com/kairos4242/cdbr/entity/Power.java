@@ -6,16 +6,30 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "player")
-public class Player {
+@Table(name = "power")
+public class Power {
 
     @Id
     private int id;
     private String name;
+    private String description;
+    private String flavourText;
 
-    public Player() {}
+    public Power() {}
 
-    public Player(
+    public Power(
+            @JsonProperty("id") int id,
+            @JsonProperty("name") String name,
+            String description,
+            String flavourText
+    ) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.flavourText = flavourText;
+    }
+
+    public Power(
             @JsonProperty("id") int id,
             @JsonProperty("name") String name
     ) {
@@ -44,7 +58,7 @@ public class Player {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Player player = (Player) o;
+        Power player = (Power) o;
 
         return name.equals(player.name);
     }
@@ -52,5 +66,21 @@ public class Player {
     @Override
     public int hashCode() {
         return name.hashCode();
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getFlavourText() {
+        return flavourText;
+    }
+
+    public void setFlavourText(String flavourText) {
+        this.flavourText = flavourText;
     }
 }
