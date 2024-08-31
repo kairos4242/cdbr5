@@ -13,4 +13,5 @@ public interface PowerWeightRepository extends CrudRepository<PowerWeight, Integ
 
     List<PowerWeight> findByPlayerId(int playerId);
     List<PowerWeight> findByPowerId(int powerId);
+    PowerWeight findByPlayerIdAndPowerId(int playerId, int powerId);
 }
