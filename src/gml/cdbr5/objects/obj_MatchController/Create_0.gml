@@ -27,21 +27,12 @@ enum MATERIAL {
 timescale = TIMESCALE.REAL_TIME
 p1_control_type = CONTROL_TYPE.PLAYER
 p2_control_type = CONTROL_TYPE.GML_AI
-// TODO should go off spawn markers or something instead of being hardcoded
-player1 = instance_create_layer(805, 425, "Instances", obj_Player)
-with player1 {
-	control_type = other.p1_control_type
-	name = "Player 1"
-}
-player2 = instance_create_layer(885, 425, "Instances", obj_Player)
-with player2 {
-	control_type = other.p2_control_type
-	name = "Player 2"
-}
 
-//if control type is http instead set the http requests going
-control_dir = "left"
-if p2_control_type = CONTROL_TYPE.HTTP {
-	//set an alarm for 1 second before requests start to ensure initialization is complete
-alarm[0] = 60
-}
+//HTTP request vars for async_load
+player_action_request = -4
+get_powers_request = http_get("http://localhost:8080/api/v1/power")
+show_debug_message("sending get power request with id " + string(get_powers_request))
+get_player_request = -4
+get_player_count_request = -4
+
+power_list = []

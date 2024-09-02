@@ -1,25 +1,30 @@
 package com.kairos4242.cdbr.entity;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "power")
 public class Power {
 
     @Id
-    private int id;
-    private String name;
+    @JsonProperty(index=1, value="id") private int id;
+    @JsonProperty(index=2, value="name") private String name;
+    @JsonInclude() @Transient
+    private int maxCooldown;
+    private int cooldown;
     private String description;
+    private String onAcquireFunction;
+    private String onUseFunction;
+    private String onRemoveFunction;
     private String flavourText;
 
     public Power() {}
 
     public Power(
-            @JsonProperty("id") int id,
-            @JsonProperty("name") String name,
+            int id,
+            String name,
             String description,
             String flavourText
     ) {
@@ -30,11 +35,37 @@ public class Power {
     }
 
     public Power(
-            @JsonProperty("id") int id,
-            @JsonProperty("name") String name
+            int id,
+            String name
     ) {
         this.id = id;
         this.name = name;
+    }
+
+    public Power(
+            int id,
+            String name,
+            int cooldown,
+            String description,
+            String onAcquireFunction,
+            String onUseFunction,
+            String onRemoveFunction,
+            String flavourText
+    ) {
+        this.id = id;
+        this.name = name;
+        this.cooldown = cooldown;
+        this.maxCooldown = cooldown;
+        this.description = description;
+        this.onAcquireFunction = onAcquireFunction;
+        this.onUseFunction = onUseFunction;
+        this.onRemoveFunction = onRemoveFunction;
+        this.flavourText = flavourText;
+    }
+
+    @PostLoad
+    private void postLoad() {
+        this.maxCooldown = cooldown;
     }
 
     public int getId() {
@@ -82,5 +113,45 @@ public class Power {
 
     public void setFlavourText(String flavourText) {
         this.flavourText = flavourText;
+    }
+
+    public int getCooldown() {
+        return cooldown;
+    }
+
+    public void setCooldown(int cooldown) {
+        this.cooldown = cooldown;
+    }
+
+    public String getOnAcquireFunction() {
+        return onAcquireFunction;
+    }
+
+    public void setOnAcquireFunction(String onAcquireFunction) {
+        this.onAcquireFunction = onAcquireFunction;
+    }
+
+    public String getOnUseFunction() {
+        return onUseFunction;
+    }
+
+    public void setOnUseFunction(String onUseFunction) {
+        this.onUseFunction = onUseFunction;
+    }
+
+    public String getOnRemoveFunction() {
+        return onRemoveFunction;
+    }
+
+    public void setOnRemoveFunction(String onRemoveFunction) {
+        this.onRemoveFunction = onRemoveFunction;
+    }
+
+    public int getMaxCooldown() {
+        return maxCooldown;
+    }
+
+    public void setMaxCooldown(int maxCooldown) {
+        this.maxCooldown = maxCooldown;
     }
 }

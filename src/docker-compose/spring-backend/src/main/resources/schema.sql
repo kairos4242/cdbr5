@@ -11,7 +11,11 @@ CREATE TABLE IF NOT EXISTS public.player (
 CREATE TABLE IF NOT EXISTS public.power (
     id SERIAL NOT NULL,
     name TEXT NOT NULL,
+    cooldown SMALLINT DEFAULT 0 NOT NULL,
     description TEXT,
+    on_acquire_function TEXT,
+    on_use_function TEXT,
+    on_remove_function TEXT,
     flavour_text TEXT,
     PRIMARY KEY(id)
 );

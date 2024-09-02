@@ -2,7 +2,7 @@
 // You can write your code in this editor
 
 //TODO fix this up to be a function
-if timescale = TIMESCALE.REAL_TIME {
+if timescale == TIMESCALE.REAL_TIME {
 	var trigger_step = function(_element, _index)
 	{
 		with _element {

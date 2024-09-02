@@ -2,4 +2,4 @@
 // You can write your code in this editor
 
 show_debug_message("request sent")
-http_get("https://yesno.wtf/api")
+player_action_request = http_get("https://yesno.wtf/api")

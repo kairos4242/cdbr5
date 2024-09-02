@@ -30,3 +30,12 @@ function pwr_cross_cannon_on_use() {
 		}
 	}	
 }
+
+function pwr_basic_gun_on_use() {
+	var projectile = instance_create_depth(x, y, -500, obj_BasicProjectile)
+	with projectile {
+		speed_x = other.x_dir * 10
+		speed_y = other.y_dir * 10
+		owner = other.id
+	}
+}

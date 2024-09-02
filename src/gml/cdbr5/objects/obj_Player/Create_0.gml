@@ -34,4 +34,4 @@ key_shoot_alt_pressed = false
 
 control_type = CONTROL_TYPE.UNCONTROLLED
 
-powers[0] = new Power("Cross Cannon", "", 30, pointer_null, pwr_cross_cannon_on_use, pointer_null)
+powers[0] = new Power("Cross Cannon", "", 30, pointer_null, asset_get_index("pwr_cross_cannon_on_use"), pointer_null)

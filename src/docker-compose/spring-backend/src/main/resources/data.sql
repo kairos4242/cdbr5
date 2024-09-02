@@ -1,8 +1,8 @@
+DELETE FROM public.power_weight;
+
 DELETE FROM public.player;
 
 DELETE FROM public.power;
-
-DELETE FROM public.power_weight;
 
 ALTER SEQUENCE player_id_seq RESTART WITH 1;
 
@@ -23,11 +23,11 @@ VALUES ('Iota');
 INSERT INTO public.player(name)
 VALUES ('Sentient');
 
-INSERT INTO public.power(name)
-VALUES ('Pretend');
+INSERT INTO public.power(name, cooldown, on_use_function)
+VALUES ('Basic Gun', 5, 'pwr_basic_gun_on_use');
 
-INSERT INTO public.power(name)
-VALUES ('Ossify');
+INSERT INTO public.power(name, cooldown, on_use_function)
+VALUES ('Cross Cannon', 30, 'pwr_cross_cannon_on_use');
 
 INSERT INTO public.power_weight(player_id, power_id)
 VALUES (1, 1);

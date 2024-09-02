@@ -4,7 +4,7 @@
 var weapon = powers[0]
 if weapon.cooldown > 0 weapon.cooldown--
 
-if control_type = CONTROL_TYPE.PLAYER {
+if control_type == CONTROL_TYPE.PLAYER {
 	key_right_pressed = keyboard_check(key_right)
 	key_left_pressed = keyboard_check(key_left)
 	key_down_pressed = keyboard_check(key_down)
@@ -26,7 +26,7 @@ else {
 //shooting
 if key_shoot_pressed or key_shoot_alt_pressed {
 	if weapon.cooldown <= 0 {
-		script_execute(powers[0].on_use_function)
+		script_execute(asset_get_index(powers[0].on_use_function))
 		weapon.cooldown = weapon.max_cooldown
 	}
 }
