@@ -26,16 +26,19 @@ function pwr_cross_cannon_on_use() {
 			sprite_index = spr_CrossProjectile
 			speed_x = x_diff / 5
 			speed_y = y_diff / 5
+			if speed_x == 0 and speed_y == 0 speed_x = 10
 			owner = other.id
 		}
 	}	
 }
 
 function pwr_basic_gun_on_use() {
-	var projectile = instance_create_depth(x, y, -500, obj_BasicProjectile)
+	var projectile = instance_create_depth(x, y, -500, obj_Projectile)
 	with projectile {
+		sprite_index = spr_BasicProjectile
 		speed_x = other.x_dir * 10
 		speed_y = other.y_dir * 10
+		if speed_x == 0 and speed_y == 0 speed_x = 10
 		owner = other.id
 	}
 }

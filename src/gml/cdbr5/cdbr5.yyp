@@ -36,7 +36,6 @@
   },
   "name":"cdbr5",
   "resources":[
-    {"id":{"name":"obj_BasicProjectile","path":"objects/obj_BasicProjectile/obj_BasicProjectile.yy",},},
     {"id":{"name":"obj_GameObject","path":"objects/obj_GameObject/obj_GameObject.yy",},},
     {"id":{"name":"obj_MatchController","path":"objects/obj_MatchController/obj_MatchController.yy",},},
     {"id":{"name":"obj_Player","path":"objects/obj_Player/obj_Player.yy",},},
