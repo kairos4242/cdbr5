@@ -2,7 +2,7 @@
 // You can write your code in this editor
 
 //TODO fix this up to be a function
-if control_type = CONTROL_TYPE.PLAYER {
+if timescale = TIMESCALE.REAL_TIME {
 	var trigger_step = function(_element, _index)
 	{
 		with _element {
@@ -11,7 +11,4 @@ if control_type = CONTROL_TYPE.PLAYER {
 	}
 
 	array_foreach(global.object_registry, trigger_step);
-}
-else if control_type = CONTROL_TYPE.GML_AI {
-	// AI script goes here
 }

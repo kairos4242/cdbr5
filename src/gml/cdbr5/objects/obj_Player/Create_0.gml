@@ -3,6 +3,8 @@
 
 event_inherited()
 
+name = "Anonymous"
+
 outside_force_x = 0
 outside_force_y = 0
 
@@ -27,5 +29,9 @@ key_right_pressed = false
 key_left_pressed = false
 key_down_pressed = false
 key_up_pressed = false
+key_shoot_pressed = false
+key_shoot_alt_pressed = false
 
 control_type = CONTROL_TYPE.UNCONTROLLED
+
+powers[0] = new Power("Cross Cannon", "", 30, pointer_null, pwr_cross_cannon_on_use, pointer_null)
