@@ -29,6 +29,9 @@ VALUES ('Basic Gun', 5, 'pwr_basic_gun_on_use');
 INSERT INTO public.power(name, cooldown, on_use_function)
 VALUES ('Cross Cannon', 30, 'pwr_cross_cannon_on_use');
 
+INSERT INTO public.power(name, cooldown, on_use_function)
+VALUES ('Body Slam', 30, 'pwr_body_slam_on_use');
+
 INSERT INTO public.power_weight(player_id, power_id)
 VALUES (1, 1);
 

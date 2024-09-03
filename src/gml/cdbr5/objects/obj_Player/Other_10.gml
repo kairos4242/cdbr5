@@ -49,3 +49,11 @@ if key_shoot_pressed or key_shoot_alt_pressed {
 		weapon.cooldown = weapon.max_cooldown
 	}
 }
+
+//reduce effect duration and remove any that have run out
+for (i = 0; i<array_length(effect_list); i++) {
+	var duration = effect_list[i].duration
+	if duration == 1 array_delete(effect_list, i, 1)
+	else if duration > 1 effect_list[i].duration--
+	
+}

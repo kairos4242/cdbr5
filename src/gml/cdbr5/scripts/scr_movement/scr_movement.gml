@@ -11,8 +11,16 @@ function move_tangible(_xdist, _ydist){
 		while floor(_xdist) != 0 or floor(_ydist) != 0 {
 			
 			if place_meeting_solid(x + sign(_xdist), y) {
+				if has_effect(effect_list, EFFECT_TYPE.KNOCKBACK) {
+					var target = instance_place(x + sign(_xdist), y, obj_GameObject)
+					if speed_x > 1 deal_damage(15, target)//prevents retriggering unless speed boost again
+					with target {
+						speed_x = 10 * sign(_xdist)
+					}
+				}
 				_xdist = 0
 				speed_x = 0
+				
 			}
 			else {
 				x += sign(_xdist)
@@ -20,6 +28,13 @@ function move_tangible(_xdist, _ydist){
 			}
 			
 			if place_meeting_solid(x, y + sign(_ydist)) {
+				if has_effect(effect_list, EFFECT_TYPE.KNOCKBACK) {
+					var target =instance_place(x, y + sign(_ydist), obj_GameObject)
+					if speed_y > 1 deal_damage(15, target)
+					with target {
+						speed_y = 10 * sign(_ydist)
+					}
+				}
 				_ydist = 0
 				speed_y = 0
 			}

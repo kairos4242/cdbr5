@@ -17,6 +17,27 @@ function Power(
 	on_remove_function = _on_remove_function;
 }
 
+enum EFFECT_TYPE {
+	KNOCKBACK
+}
+
+function Effect(
+	_name, 
+	_duration, 
+	_type
+) constructor {
+	name = _name;
+	duration = _duration;
+	type = _type;
+}
+
+function has_effect(_effect_list, _effect_type) {
+	for (i = 0; i < array_length(_effect_list); i++) {
+		if effect_list[i].type == _effect_type return true
+	}
+	return false
+}
+
 function pwr_cross_cannon_on_use() {
 	for (i=0; i<4; i++) {
 		var x_diff = lengthdir_x(50, i * 90)
@@ -41,4 +62,15 @@ function pwr_basic_gun_on_use() {
 		if speed_x == 0 and speed_y == 0 speed_x = 10
 		owner = other.id
 	}
+}
+
+function pwr_body_slam_on_use() {
+	if x_dir != 0 {
+		speed_x *= 2
+	}
+	if y_dir != 0 {
+		speed_y *= 2
+	}
+	
+	array_push(effect_list, new Effect("Body Slam Knockback", 60, EFFECT_TYPE.KNOCKBACK))
 }

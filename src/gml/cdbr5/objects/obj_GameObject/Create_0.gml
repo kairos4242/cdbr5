@@ -12,4 +12,6 @@ divine_shield = false
 hp = 100
 material = MATERIAL.NONE
 
+effect_list = []
+
 add_to_global_obj_registry(id)
