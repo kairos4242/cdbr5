@@ -1,7 +1,6 @@
 /// @description Insert description here
 // You can write your code in this editor
 
-show_debug_message("step!!")
 x += speed_x
 y += speed_y
 var collision = instance_place(x, y, obj_GameObject)

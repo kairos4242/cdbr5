@@ -8,15 +8,21 @@ function move_tangible(_xdist, _ydist){
 		y += _ydist
 	}
 	else {
-		while _xdist != 0 or _ydist != 0 {
+		while floor(_xdist) != 0 or floor(_ydist) != 0 {
 			
-			if place_meeting_solid(x + sign(_xdist), y) _xdist = 0
+			if place_meeting_solid(x + sign(_xdist), y) {
+				_xdist = 0
+				speed_x = 0
+			}
 			else {
 				x += sign(_xdist)
 				_xdist -= sign(_xdist)
 			}
 			
-			if place_meeting_solid(x, y + sign(_ydist)) _ydist = 0
+			if place_meeting_solid(x, y + sign(_ydist)) {
+				_ydist = 0
+				speed_y = 0
+			}
 			else {
 				y += sign(_ydist)
 				_ydist -= sign(_ydist)

@@ -12,7 +12,7 @@ public class Power {
     @JsonProperty(index=1, value="id") private int id;
     @JsonProperty(index=2, value="name") private String name;
     @JsonInclude() @Transient
-    private int maxCooldown;
+    private int maxCooldown;//unnecessary to have db column, we instead manually set this to be the same as cooldown
     private int cooldown;
     private String description;
     private String onAcquireFunction;

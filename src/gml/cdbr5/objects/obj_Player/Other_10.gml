@@ -17,7 +17,24 @@ if control_type == CONTROL_TYPE.PLAYER {
 if outside_force_x == 0 and outside_force_y == 0 {
 	x_dir = key_right_pressed - key_left_pressed
 	y_dir = key_down_pressed - key_up_pressed
-	move_tangible(x_dir * movespeed, y_dir * movespeed)
+	
+	//friction
+	if x_dir == 0 or abs(speed_x) > movespeed {
+		if abs(speed_x) < ground_friction speed_x = 0
+		else speed_x = speed_x - (ground_friction * sign(speed_x))
+	}
+	if y_dir == 0 or abs(speed_y) > movespeed {
+		if abs(speed_y) < ground_friction speed_y = 0
+		else speed_y = speed_y - (ground_friction * sign(speed_y))
+	}
+	if not (sign(x_dir) == sign(speed_x) and abs(speed_x) > movespeed) {
+		speed_x += acceleration * x_dir
+	}
+	if not (sign(y_dir) == sign(speed_y) and abs(speed_y) > movespeed) {
+		speed_y += acceleration * y_dir
+	}
+	
+	move_tangible(speed_x, speed_y)
 }
 else {
 	move_tangible(outside_force_x, outside_force_y)
@@ -26,6 +43,8 @@ else {
 //shooting
 if key_shoot_pressed or key_shoot_alt_pressed {
 	if weapon.cooldown <= 0 {
+		//the GM1041 linter warning here is wrong
+		//the real returned by asset_get_index is a valid script asset
 		script_execute(asset_get_index(powers[0].on_use_function))
 		weapon.cooldown = weapon.max_cooldown
 	}
