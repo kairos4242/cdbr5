@@ -13,7 +13,10 @@ function move_tangible(_xdist, _ydist){
 			if place_meeting_solid(x + sign(_xdist), y) {
 				if has_effect(effect_list, EFFECT_TYPE.KNOCKBACK) {
 					var target = instance_place(x + sign(_xdist), y, obj_GameObject)
-					if speed_x > 1 deal_damage(15, target)//prevents retriggering unless speed boost again
+					if abs(speed_x) > 1 {
+						show_debug_message("bodyslam hit! targeting {0}", object_get_name(target.object_index))
+						deal_damage(30, target)//prevents retriggering unless speed boost again
+					}
 					with target {
 						speed_x = 10 * sign(_xdist)
 					}
@@ -29,8 +32,11 @@ function move_tangible(_xdist, _ydist){
 			
 			if place_meeting_solid(x, y + sign(_ydist)) {
 				if has_effect(effect_list, EFFECT_TYPE.KNOCKBACK) {
-					var target =instance_place(x, y + sign(_ydist), obj_GameObject)
-					if speed_y > 1 deal_damage(15, target)
+					var target = instance_place(x, y + sign(_ydist), obj_GameObject)
+					if abs(speed_y) > 1 {
+						show_debug_message("bodyslam hit! targeting {0} {1}", object_get_name(target.object_index), target)
+						deal_damage(30, target)
+					}
 					with target {
 						speed_y = 10 * sign(_ydist)
 					}
