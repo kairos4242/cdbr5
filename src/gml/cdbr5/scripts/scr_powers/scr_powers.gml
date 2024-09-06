@@ -74,3 +74,10 @@ function pwr_body_slam_on_use() {
 	
 	array_push(effect_list, new Effect("Body Slam Knockback", 60, EFFECT_TYPE.KNOCKBACK))
 }
+
+function pwr_laser_on_use() {
+	var laser = instance_create_depth(x + (10 * sign(x_dir)), y + (10 * sign(y_dir)), -500, obj_Laser)
+	with laser {
+		owner = other.id
+	}
+}
