@@ -3,6 +3,7 @@
 
 var weapon = powers[0]
 if weapon.cooldown > 0 weapon.cooldown--
+show_debug_message_ext("Weapon cooldown: {0}", [weapon.cooldown])
 
 if control_type == CONTROL_TYPE.PLAYER {
 	key_right_pressed = keyboard_check(key_right)

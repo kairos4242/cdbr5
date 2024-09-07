@@ -39,9 +39,11 @@ for (var j3 = 0; j3 < length_laser3; j3++ )  {
 							 
 									 
 */
-draw_line(x,y, xEnd, yEnd);  
-draw_line_color(xEnd, yEnd, xEnd2, yEnd2, c_red, c_red );
-draw_line_color(xEnd2, yEnd2, xEnd3, yEnd3, c_purple, c_purple );
+
+for (var i = 0; i < array_length(segment_list); i++) {
+	var selected_segment = segment_list[i]
+	draw_line_color(selected_segment.start_x, selected_segment.start_y, selected_segment.end_x, selected_segment.end_y, c_red, c_red)
+}
 
 
 

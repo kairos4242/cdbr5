@@ -33,7 +33,7 @@ INSERT INTO public.power(name, cooldown, on_use_function)
 VALUES ('Body Slam', 30, 'pwr_body_slam_on_use');
 
 INSERT INTO public.power(name, cooldown, on_use_function)
-VALUES ('Laser', 60, 'pwr_laser_on_use');
+VALUES ('Laser', 200, 'pwr_laser_on_use');
 
 INSERT INTO public.power_weight(player_id, power_id)
 VALUES (1, 1);

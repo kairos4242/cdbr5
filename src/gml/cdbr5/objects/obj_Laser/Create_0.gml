@@ -1,40 +1,32 @@
 
-xEnd = 0;     // breakpoints
-yEnd = 0;
-length_laser = 0; // total length used to determine and draw laser
-
-#region 2nd laser  -> xEnd to xEnd2
-xEnd2 = 0;     // breakpoints
-yEnd2 = 0;
-length_laser2 = 0; // total length used to determine and draw laser
-direction2 = 0;
-what_Bounce2 = "horizontal";
-#endregion
-
-#region 3nd laser  -> xEnd2 to xEnd3
-xEnd3 = 0;     // breakpoints
-yEnd3 = 0;
-length_laser3 = 0; // total length used to determine and draw laser
-direction3 = 0;
-what_Bounce3 = "horizontal";
-#endregion
-
-buffer = 20;
-// change here to change color and glow type
-color = 1;  //  0 blue, 1 orange, 2 violet, 3 pink, 4 red, 5 green
-whatImage  =  spr_Laser_Hard_glow_20px;  // spr_Laser_Hard_glow_38px   or   spr_Laser_Soft_glow_38px   or   spr_Laser_No_glow_38px
+event_inherited()
 
 
-// change here to ajust to your needs for "refresh" rate of laser collision check
-	// memory space saver, less checks per step
-	refresh_hit = false;
-	refresh_hit_time = 20;  // 3 times per second  
-	refresh_hit_timer = refresh_hit_time;
-	
-	
-// how many time to bounce
-bounce = 3;	
 
-testVar = "";
+function LaserSegment(_start_x, _start_y, _end_x, _end_y, _length, _search_direction, _bounce_type) constructor
+{
+	start_x = _start_x
+	start_y = _start_y
+	end_x = _end_x
+	end_y = _end_y
+	length = _length
+	search_direction = _search_direction
+	bounce_type = _bounce_type //horizontal or vertical, determines what direction the next segment should go
+}
+
+lifetime = 150
+damage = 50
+
+segment_list = []
+hits_struct = {}
+hit_cooldown = 30
+
+enum BOUNCE_TYPE {
+	HORIZONTAL,
+	VERTICAL,
+	NO_BOUNCE
+}
 
 owner = -1
+num_bounces = 3
+collide = false
