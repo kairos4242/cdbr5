@@ -11,7 +11,7 @@ if (request_id == get_powers_request) {
 	power_list = json_parse(string_data)
 	show_debug_message(power_list)
 	//var power_index_chosen = irandom(array_length(power_list))
-	var power_index_chosen = 3
+	var power_index_chosen = 4
 	var power_chosen = power_list[power_index_chosen]
 	show_debug_message(power_chosen)
 	

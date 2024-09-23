@@ -36,6 +36,7 @@
   },
   "name":"cdbr5",
   "resources":[
+    {"id":{"name":"obj_Bomb","path":"objects/obj_Bomb/obj_Bomb.yy",},},
     {"id":{"name":"obj_GameObject","path":"objects/obj_GameObject/obj_GameObject.yy",},},
     {"id":{"name":"obj_Laser","path":"objects/obj_Laser/obj_Laser.yy",},},
     {"id":{"name":"obj_MatchController","path":"objects/obj_MatchController/obj_MatchController.yy",},},
@@ -48,6 +49,7 @@
     {"id":{"name":"scr_movement","path":"scripts/scr_movement/scr_movement.yy",},},
     {"id":{"name":"scr_powers","path":"scripts/scr_powers/scr_powers.yy",},},
     {"id":{"name":"spr_BasicProjectile","path":"sprites/spr_BasicProjectile/spr_BasicProjectile.yy",},},
+    {"id":{"name":"spr_Bomb","path":"sprites/spr_Bomb/spr_Bomb.yy",},},
     {"id":{"name":"spr_CrossProjectile","path":"sprites/spr_CrossProjectile/spr_CrossProjectile.yy",},},
     {"id":{"name":"spr_Laser_Hard_glow_20px","path":"sprites/spr_Laser_Hard_glow_20px/spr_Laser_Hard_glow_20px.yy",},},
     {"id":{"name":"spr_Player","path":"sprites/spr_Player/spr_Player.yy",},},

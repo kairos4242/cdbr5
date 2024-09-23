@@ -82,3 +82,11 @@ function pwr_laser_on_use() {
 		direction = point_direction(0, 0, other.x_dir, other.y_dir)
 	}
 }
+
+function pwr_bomb_on_use() {
+	var bomb = instance_create_depth(x + (10 * sign(x_dir)), y + (10 * sign(y_dir)), -500, obj_Bomb)
+	with bomb {
+		owner = other.id
+		direction = point_direction(0, 0, other.x_dir, other.y_dir)
+	}
+}
