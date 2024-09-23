@@ -25,7 +25,7 @@ for (var i = 0; i < array_length(targets_hit); i++) {
 x = owner.x;
 y = owner.y;
 segment_list = []
-direction = point_direction(owner.x, owner.y, mouse_x, mouse_y ); 
+direction--
 var current_segment = new LaserSegment(x, y, x, y, 0, direction, BOUNCE_TYPE.NO_BOUNCE);
 var max_length = 900;  // change if camera is bigger or smaller then 900
 

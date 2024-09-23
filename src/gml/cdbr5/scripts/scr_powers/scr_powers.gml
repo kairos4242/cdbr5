@@ -79,5 +79,6 @@ function pwr_laser_on_use() {
 	var laser = instance_create_depth(x + (10 * sign(x_dir)), y + (10 * sign(y_dir)), -500, obj_Laser)
 	with laser {
 		owner = other.id
+		direction = point_direction(0, 0, other.x_dir, other.y_dir)
 	}
 }
