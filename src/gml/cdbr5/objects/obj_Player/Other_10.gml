@@ -3,7 +3,7 @@
 
 var weapon = powers[0]
 if weapon.cooldown > 0 weapon.cooldown--
-show_debug_message_ext("Weapon cooldown: {0}", [weapon.cooldown])
+//show_debug_message_ext("Weapon cooldown: {0}", [weapon.cooldown])
 
 if control_type == CONTROL_TYPE.PLAYER {
 	key_right_pressed = keyboard_check(key_right)
@@ -20,20 +20,7 @@ if outside_force_x == 0 and outside_force_y == 0 {
 	y_dir = key_down_pressed - key_up_pressed
 	
 	//friction
-	if x_dir == 0 or abs(speed_x) > movespeed {
-		if abs(speed_x) < ground_friction speed_x = 0
-		else speed_x = speed_x - (ground_friction * sign(speed_x))
-	}
-	if y_dir == 0 or abs(speed_y) > movespeed {
-		if abs(speed_y) < ground_friction speed_y = 0
-		else speed_y = speed_y - (ground_friction * sign(speed_y))
-	}
-	if not (sign(x_dir) == sign(speed_x) and abs(speed_x) > movespeed) {
-		speed_x += acceleration * x_dir
-	}
-	if not (sign(y_dir) == sign(speed_y) and abs(speed_y) > movespeed) {
-		speed_y += acceleration * y_dir
-	}
+	apply_friction()
 	
 	move_tangible(speed_x, speed_y)
 }

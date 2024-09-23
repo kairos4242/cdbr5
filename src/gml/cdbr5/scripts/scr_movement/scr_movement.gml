@@ -3,6 +3,11 @@
 
 // move but dont move into an object
 function move_tangible(_xdist, _ydist){
+	if not collide {
+		x += _xdist
+		y += _ydist
+		return
+	}
 	if not place_meeting_solid(x + _xdist, y + _ydist) {
 		x += _xdist
 		y += _ydist
@@ -57,4 +62,21 @@ function place_meeting_solid(_x, _y) {
 	var _collision = instance_place(_x, _y, obj_GameObject)
 	if _collision == noone return false
 	else return _collision.collide
+}
+
+function apply_friction() {
+	if x_dir == 0 or abs(speed_x) > movespeed {
+		if abs(speed_x) < ground_friction speed_x = 0
+		else speed_x = speed_x - (ground_friction * sign(speed_x))
+	}
+	if y_dir == 0 or abs(speed_y) > movespeed {
+		if abs(speed_y) < ground_friction speed_y = 0
+		else speed_y = speed_y - (ground_friction * sign(speed_y))
+	}
+	if not (sign(x_dir) == sign(speed_x) and abs(speed_x) > movespeed) {
+		speed_x += acceleration * x_dir
+	}
+	if not (sign(y_dir) == sign(speed_y) and abs(speed_y) > movespeed) {
+		speed_y += acceleration * y_dir
+	}
 }

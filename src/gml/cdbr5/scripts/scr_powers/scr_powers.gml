@@ -88,5 +88,7 @@ function pwr_bomb_on_use() {
 	with bomb {
 		owner = other.id
 		direction = point_direction(0, 0, other.x_dir, other.y_dir)
+		speed_x = lengthdir_x(5, direction)
+		speed_y = lengthdir_y(5, direction)
 	}
 }
