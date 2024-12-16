@@ -2,7 +2,7 @@ from game_objects.GameObject import GameObject
 import pygame
 from Colours import Colours
 from ControlType import ControlType
-from powers.Powers import CrossCannon, Sprint
+from powers import Powers
 
 
 class Player(GameObject):
@@ -11,7 +11,7 @@ class Player(GameObject):
         super().__init__(x, y)
         self.solid = True
         self.object_registry.add_to_global_solid_registry(self)
-        self.powers = [Sprint(self)]
+        self.powers = [Powers.Blink(self)]
         self.control_type = control_type
 
     def draw(self, surface):
@@ -36,11 +36,13 @@ class Player(GameObject):
             keys = pygame.key.get_pressed()
             key_left = keys[pygame.K_a]
             key_right = keys[pygame.K_d]
-            move_x = (-key_left + key_right) * movespeed
+            self.move_xdir = (-key_left + key_right) 
+            move_x = self.move_xdir * movespeed
 
             key_up = keys[pygame.K_w]
             key_down = keys[pygame.K_s]
-            move_y = (-key_up + key_down) * movespeed
+            self.move_ydir = (-key_up + key_down)
+            move_y = self.move_ydir * movespeed
             
             self.move_tangible(move_x, move_y)
 

@@ -20,6 +20,8 @@ class GameObject():
         self.movespeed = 10
         self.rect = self.create_rect(x, y, 64, 64)
         self.effects = [] #type: list[Effect]
+        self.move_xdir = 0
+        self.move_ydir = 0
 
     def create_rect(self, x: int, y: int, width: int, height: int):
         return pygame.Rect((x - width // 2, y - height // 2, width, height))

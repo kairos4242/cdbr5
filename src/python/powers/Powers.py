@@ -52,3 +52,16 @@ class Sprint(Power):
         #get a movespeed aura for 1 second
         speed_aura = Effect("Sprint", 60, self.owner, Property.MOVESPEED, ModificationType.PERCENT, 50)
         self.owner.effects.append(speed_aura)
+
+class Blink(Power):
+
+    def __init__(self, owner: GameObject):
+        super().__init__()
+        self.max_cooldown = 60
+        self.cooldown = 0
+        self.owner = owner
+
+    def on_use(self):
+        # teleport
+        teleport_dist = 64
+        self.owner.move_tangible(teleport_dist * self.owner.move_xdir, teleport_dist * self.owner.move_ydir)
