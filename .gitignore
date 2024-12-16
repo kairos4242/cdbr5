@@ -32,4 +32,6 @@ src/docker-compose/spring-backend/target/*
 
 #env file
 .env
+
 /src/python/__pycache__
+*.pyc

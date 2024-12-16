@@ -1,7 +1,6 @@
 from typing import TYPE_CHECKING
-from pygame import Rect
 if TYPE_CHECKING:
-    from GameObject import GameObject
+    from game_objects.GameObject import GameObject
 
 class ObjectRegistry(object):
     # singleton code from https://www.geeksforgeeks.org/singleton-pattern-in-python-a-complete-guide/
@@ -24,4 +23,7 @@ class ObjectRegistry(object):
         self.solid_objects.append(obj)
 
     def remove_from_global_solid_registry(self, obj: "GameObject"):
-        self.solid_objects.remove(obj)
+        if obj in self.solid_objects:
+            self.solid_objects.remove(obj)
+        else:
+            print("object to remove not in solid list! skipping")
