@@ -22,6 +22,9 @@ class Map():
         self.player1 = Player(200, 300, ControlType.HUMAN)
         self.player2 = Player(700, 300, ControlType.AI)
 
+        self.player1.opponent = self.player2
+        self.player2.opponent = self.player1
+
         # do we need references to all the walls? maybe not?
 
         for i in range(100, 700, 64):

@@ -78,9 +78,6 @@ class GameObject():
             self.move_tangible(dir_x * dist, dir_y * dist)
         else:
             self.move(dir_x * dist, dir_y * dist)
-            
-
-
 
     def move_tangible(self, move_x: int, move_y: int):
         if self.solid == False:
@@ -96,7 +93,7 @@ class GameObject():
                 self.rect.x += move_x
                 self.rect.y += move_y
             else:
-                while floor(move_x) != 0 or floor(move_y) != 0:
+                while floor(abs(move_x)) != 0 or floor(abs(move_y)) != 0:
                     if move_x != 0:
                         test_rect.x = self.rect.x + sign_move_x
                         test_rect.y = self.rect.y
@@ -105,6 +102,10 @@ class GameObject():
                         else:
                             self.rect.x += sign_move_x
                             move_x -= sign_move_x
+                            # is this a bandaid? is there a better way to do this? 
+                            # implemented because of movement freezing on fractional movement, going past 0 and going infinite in the other direction
+                            if move_x < 1 and move_x > -1: 
+                                move_x = 0
 
                     if move_y != 0:
                         test_rect.x = self.rect.x
@@ -114,3 +115,5 @@ class GameObject():
                         else:
                             self.rect.y += sign_move_y
                             move_y -= sign_move_y
+                            if move_y < 1 and move_y > -1:
+                                move_y = 0

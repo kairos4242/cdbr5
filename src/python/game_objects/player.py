@@ -11,8 +11,9 @@ class Player(GameObject):
         super().__init__(x, y)
         self.solid = True
         self.object_registry.add_to_global_solid_registry(self)
-        self.powers = [Powers.Dash(self)]
+        self.powers = [Powers.DefensiveDash(self)]
         self.control_type = control_type
+        self.opponent = None
 
     def draw(self, surface):
         pygame.draw.rect(surface, Colours.Red.value, self.rect)
@@ -56,3 +57,15 @@ class Player(GameObject):
         if power_to_use.cooldown == 0:
             power_to_use.cooldown = power_to_use.max_cooldown
             power_to_use.on_use()
+
+    def get_direction_to_opponent(self):
+        x = self.rect.centerx - self.opponent.rect.centerx
+        y = self.rect.centery - self.opponent.rect.centery
+        print(x, y)
+
+        total = abs(x) + abs(y)
+        x /= total
+        y /= total
+        print(x, y)
+
+        return [x, y]

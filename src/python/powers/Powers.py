@@ -3,6 +3,9 @@ from game_objects.GameObject import GameObject
 from powers.Animations import DashAnimation
 from powers.Effects import Effect
 from Attribute import ModificationType, Property
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from game_objects.player import Player
 
 
 class Power():
@@ -13,7 +16,7 @@ class Power():
         self.owner = None
         self.uses = None # intended here to mean infinite uses, not sure if this is the best way to do it
 
-    def __init__(self, cooldown, max_cooldown, owner, uses):
+    def __init__(self, cooldown: int, max_cooldown: int, owner: "Player", uses: int | None):
         self.cooldown = cooldown
         self.max_cooldown = max_cooldown
         self.owner = owner
@@ -34,7 +37,7 @@ class Power():
 
 class CrossCannon(Power):
 
-    def __init__(self, owner: GameObject):
+    def __init__(self, owner: "Player"):
         super().__init__(30, 30, owner, None)
 
     def on_use(self):
@@ -46,7 +49,7 @@ class CrossCannon(Power):
 
 class Sprint(Power):
 
-    def __init__(self, owner: GameObject):
+    def __init__(self, owner: "Player"):
         super().__init__(30, 30, owner, None)
 
     def on_use(self):
@@ -56,7 +59,7 @@ class Sprint(Power):
 
 class Blink(Power):
 
-    def __init__(self, owner: GameObject):
+    def __init__(self, owner: "Player"):
         super().__init__(30, 30, owner, None)
 
     def on_use(self):
@@ -65,8 +68,25 @@ class Blink(Power):
         self.owner.move_tangible(teleport_dist * self.owner.move_xdir, teleport_dist * self.owner.move_ydir)
 
 class Dash(Power):
-    def __init__(self, owner: GameObject):
+    def __init__(self, owner: "Player"):
         super().__init__(30, 30, owner, None)
 
     def on_use(self):
         self.owner.animation = DashAnimation(10, self.owner.move_xdir, self.owner.move_ydir, self.owner, 20)
+
+class AggressiveDash(Power):
+    def __init__(self, owner: "Player"):
+        super().__init__(30, 30, owner, None)
+
+    def on_use(self):
+        x, y = self.owner.get_direction_to_opponent()
+        self.owner.animation = DashAnimation(10, -x, -y, self.owner, 20)
+
+
+class DefensiveDash(Power):
+    def __init__(self, owner: "Player"):
+        super().__init__(30, 30, owner, None)
+
+    def on_use(self):
+        x, y = self.owner.get_direction_to_opponent()
+        self.owner.animation = DashAnimation(10, x, y, self.owner, 20)
