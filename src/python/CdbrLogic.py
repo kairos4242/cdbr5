@@ -32,7 +32,7 @@ class Map():
         # create game window
         
 
-        self.screen = pygame.display.set_mode(Config.SCREEN_SIZE)
+        self.screen = pygame.display.set_mode(Config.SCREEN_SIZE, flags=pygame.SCALED | pygame.FULLSCREEN, vsync=1)
         pygame.display.set_caption("CDBR5")
 
         # set frame rate
