@@ -1,5 +1,6 @@
 from abc import abstractmethod
 from math import floor, copysign
+import math
 from Material import Material
 from ObjectRegistry import ObjectRegistry
 from Attribute import Attribute, ModificationType, Property
@@ -17,9 +18,10 @@ class GameObject():
         self.divine_shield = False
         self.solid = False
         self.material = Material.NONE
-        self.movespeed = 10
+        self.movespeed = 7
         self.rect = self.create_rect(x, y, 64, 64)
         self.effects = [] #type: list[Effect]
+        self.animation = None
         self.move_xdir = 0
         self.move_ydir = 0
 
@@ -67,6 +69,18 @@ class GameObject():
         # might seem odd to have a function for this but I suspect it will come in handy later when we need to modify how everything moves
         self.rect.x += move_x
         self.rect.y += move_y
+
+    def move_direction(self, dir_x: int, dir_y: int, distance: int, tangible: bool):
+        dist = distance
+        if dir_x == 0 or dir_y == 0:
+            dist = math.sqrt((distance ** 2) * 2)
+        if tangible:
+            self.move_tangible(dir_x * dist, dir_y * dist)
+        else:
+            self.move(dir_x * dist, dir_y * dist)
+            
+
+
 
     def move_tangible(self, move_x: int, move_y: int):
         if self.solid == False:

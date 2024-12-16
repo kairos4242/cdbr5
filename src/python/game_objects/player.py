@@ -11,7 +11,7 @@ class Player(GameObject):
         super().__init__(x, y)
         self.solid = True
         self.object_registry.add_to_global_solid_registry(self)
-        self.powers = [Powers.Blink(self)]
+        self.powers = [Powers.Dash(self)]
         self.control_type = control_type
 
     def draw(self, surface):
@@ -37,18 +37,19 @@ class Player(GameObject):
             key_left = keys[pygame.K_a]
             key_right = keys[pygame.K_d]
             self.move_xdir = (-key_left + key_right) 
-            move_x = self.move_xdir * movespeed
 
             key_up = keys[pygame.K_w]
             key_down = keys[pygame.K_s]
             self.move_ydir = (-key_up + key_down)
-            move_y = self.move_ydir * movespeed
-            
-            self.move_tangible(move_x, move_y)
 
-            key_shoot = keys[pygame.K_SPACE]
-            if key_shoot:
-                self.use_power(0)
+            if self.animation != None:
+                self.animation.step()
+
+            else:
+                self.move_direction(self.move_xdir, self.move_ydir, movespeed, True)
+                key_shoot = keys[pygame.K_SPACE]
+                if key_shoot:
+                    self.use_power(0)
 
     def use_power(self, power_num: int):
         power_to_use = self.powers[power_num]

@@ -7,3 +7,6 @@ class Effect():
         self.property = property
         self.modification_type = modification_type
         self.modification_amount = modification_amount
+
+    def on_remove(self):
+        pass
