@@ -1,6 +1,6 @@
 from game_objects.Bullet import Bullet
 from game_objects.GameObject import GameObject
-from powers.Animations import DashAnimation
+from powers.Animations import DashAnimation, FalconPunchAnimation, PlayfulAnimation
 from powers.Effects import Effect
 from Attribute import ModificationType, Property
 from typing import TYPE_CHECKING
@@ -35,18 +35,6 @@ class Power():
     def on_remove(self):
         pass
 
-class CrossCannon(Power):
-
-    def __init__(self, owner: "Player"):
-        super().__init__(30, 30, owner, None)
-
-    def on_use(self):
-        #create four projectiles around owner, one going in each cardinal direction
-        Bullet(self.owner.rect.centerx, self.owner.rect.centery - 50, 0, -8, self.owner)
-        Bullet(self.owner.rect.centerx, self.owner.rect.centery + 50, 0, 8, self.owner)
-        Bullet(self.owner.rect.centerx - 50, self.owner.rect.centery, -8, 0, self.owner)
-        Bullet(self.owner.rect.centerx + 50, self.owner.rect.centery, 8, 0, self.owner)
-
 class Sprint(Power):
 
     def __init__(self, owner: "Player"):
@@ -72,7 +60,7 @@ class Dash(Power):
         super().__init__(30, 30, owner, None)
 
     def on_use(self):
-        self.owner.animation = DashAnimation(10, self.owner.move_xdir, self.owner.move_ydir, self.owner, 20)
+        self.owner.animation = DashAnimation(10, self.owner.move_xdir, self.owner.move_ydir, self.owner, 25)
 
 class AggressiveDash(Power):
     def __init__(self, owner: "Player"):
@@ -80,7 +68,7 @@ class AggressiveDash(Power):
 
     def on_use(self):
         x, y = self.owner.get_direction_to_opponent()
-        self.owner.animation = DashAnimation(10, -x, -y, self.owner, 20)
+        self.owner.animation = DashAnimation(10, -x, -y, self.owner, 25)
 
 
 class DefensiveDash(Power):
@@ -89,4 +77,32 @@ class DefensiveDash(Power):
 
     def on_use(self):
         x, y = self.owner.get_direction_to_opponent()
-        self.owner.animation = DashAnimation(10, x, y, self.owner, 20)
+        self.owner.animation = DashAnimation(10, x, y, self.owner, 25)
+
+class PlayfulTrickster(Power):
+    def __init__(self, owner: "Player"):
+        super().__init__(30, 30, owner, None)
+
+    def on_use(self):
+        if isinstance(self.owner.animation, PlayfulAnimation):
+            self.owner.animation = DashAnimation(10, self.owner.move_xdir, self.owner.move_ydir, self.owner, 25)
+        else:
+            self.owner.animation = PlayfulAnimation(self.owner)
+
+class CrossCannon(Power):
+    def __init__(self, owner: "Player"):
+        super().__init__(30, 30, owner, None)
+
+    def on_use(self):
+        #create four projectiles around owner, one going in each cardinal direction
+        Bullet(self.owner.rect.centerx, self.owner.rect.centery - 50, 0, -8, self.owner)
+        Bullet(self.owner.rect.centerx, self.owner.rect.centery + 50, 0, 8, self.owner)
+        Bullet(self.owner.rect.centerx - 50, self.owner.rect.centery, -8, 0, self.owner)
+        Bullet(self.owner.rect.centerx + 50, self.owner.rect.centery, 8, 0, self.owner)
+
+class FalconPunch(Power):
+    def __init__(self, owner: "Player"):
+        super().__init__(30, 30, owner, None)
+
+    def on_use(self):
+        self.owner.animation = FalconPunchAnimation(self.owner)

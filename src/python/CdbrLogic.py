@@ -72,6 +72,9 @@ class Map():
     def draw_game_objects(self):
         self.screen.fill(Colours.Black.value)
         self.TUROK_30PT.render_to(self.screen, (0, 0), str(self.clock.get_fps()), Colours.Red.value)
+        p1_animation = self.player1.animation
+        if p1_animation != None:
+            self.TUROK_30PT.render_to(self.screen, (400, 0), str(p1_animation.__class__.__name__), Colours.Red.value)
         for object in self.object_registry.objects:
             object.draw(self.screen)
 

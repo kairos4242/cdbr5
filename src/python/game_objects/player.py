@@ -11,7 +11,7 @@ class Player(GameObject):
         super().__init__(x, y)
         self.solid = True
         self.object_registry.add_to_global_solid_registry(self)
-        self.powers = [Powers.DefensiveDash(self)]
+        self.powers = [Powers.FalconPunch(self)]
         self.control_type = control_type
         self.opponent = None
 
@@ -43,14 +43,17 @@ class Player(GameObject):
             key_down = keys[pygame.K_s]
             self.move_ydir = (-key_up + key_down)
 
-            if self.animation != None:
-                self.animation.step()
+            key_shoot = keys[pygame.K_SPACE]
 
+            if self.animation != None:
+                if self.animation.recast == True:
+                    if key_shoot:
+                        self.use_power(0)
+                self.animation.step()
             else:
                 self.move_direction(self.move_xdir, self.move_ydir, movespeed, True)
-                key_shoot = keys[pygame.K_SPACE]
                 if key_shoot:
-                    self.use_power(0)
+                    self.use_power(0) #this is bad practice, better way to do this without repeating?
 
     def use_power(self, power_num: int):
         power_to_use = self.powers[power_num]
