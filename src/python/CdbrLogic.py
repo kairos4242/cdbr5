@@ -18,7 +18,7 @@ class Map():
         pygame.init()
 
         self.TUROK_30PT = pygame.freetype.Font("pygame_tutorial/assets/fonts/turok.ttf", 30)
-        self.game_objects = []
+
         self.player1 = Player(200, 300, ControlType.HUMAN)
         self.player2 = Player(700, 300, ControlType.AI)
 

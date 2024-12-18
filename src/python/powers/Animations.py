@@ -1,8 +1,12 @@
 from abc import abstractmethod
+import math
+import random
 
 import pygame
 
+from Colours import Colours
 from game_objects.GameObject import GameObject
+from powers.Particles import GrowingSpark, Spark
 
 
 class Animation():
@@ -50,15 +54,70 @@ class FalconPunchAnimation(Animation):
         super().__init__(90, owner.move_xdir, owner.move_ydir, False, owner)
         self.recast = True
         self.punch_frame = 75
+        self.particles = []
+
+        self.dist = 128
+        """for angle in range(0, 360, 30):
+            angle_radians = math.radians(angle)
+            #angle_radians = angle
+            self.particles.append(
+                Spark(
+                    math.cos(angle_radians) * dist + self.owner.rect.centerx, 
+                    math.sin(angle_radians) * dist + self.owner.rect.centery, 
+                    angle_radians + math.pi, #add pi to flip 180 degress so moving towards player
+                    5, 
+                    Colours.White
+                )
+            )"""
 
     def step(self):
+        
+        for particle in self.particles:
+            particle.step()
+        self.particles = [particle for particle in self.particles if particle.alive == True]
+
+        if self.curr_step <= self.punch_frame - 45:
+            step_angle = random.randint(1, 360)
+            angle_radians = math.radians(step_angle)
+            self.particles.append(
+                GrowingSpark(
+                    math.cos(angle_radians) * self.dist + self.owner.rect.centerx, 
+                    math.sin(angle_radians) * self.dist + self.owner.rect.centery, 
+                    angle_radians + math.pi, #add pi to flip 180 degrees so moving towards player
+                    1,
+                    5,
+                    0.1,
+                    Colours.White
+                )
+            )
+
+            step_angle = random.randint(1, 360)
+            angle_radians = math.radians(step_angle)
+            self.particles.append(
+                Spark(
+                    math.cos(angle_radians) * self.dist + self.owner.rect.centerx, 
+                    math.sin(angle_radians) * self.dist + self.owner.rect.centery, 
+                    angle_radians + math.pi, #add pi to flip 180 degrees so moving towards player
+                    5,
+                    0.1,
+                    Colours.White
+                )
+            )
+
+
         self.curr_step += 1
         if self.curr_step == self.duration:
             self.owner.animation = None
         if self.curr_step == self.punch_frame:
-            hitbox = self.owner.create_rect(self.owner.rect.x + (self.dir_x * 64), self.owner.rect.y + (self.dir_y * 64), 64, 64)
+            hitbox = self.owner.create_rect(self.owner.rect.centerx + (self.dir_x * 64), self.owner.rect.centery + (self.dir_y * 64), 64, 64)
             solids_not_me = self.owner.solids_not_me()
             collide = hitbox.collideobjectsall(solids_not_me, key=lambda o: o.rect)
             if collide != []:
                 for collision in collide:
-                    self.owner.deal_damage(collision, 100, [])
+                    self.owner.deal_damage(collision, 25, [])
+                    collision.outside_force_x = self.dir_x * 35
+                    collision.outside_force_y = self.dir_y * 35
+
+    def draw(self, surface):
+        for particle in self.particles:
+            particle.draw(surface)

@@ -24,6 +24,8 @@ class GameObject():
         self.animation = None
         self.move_xdir = 0
         self.move_ydir = 0
+        self.outside_force_x = 0
+        self.outside_force_y = 0
 
     def create_rect(self, x: int, y: int, width: int, height: int):
         return pygame.Rect((x - width // 2, y - height // 2, width, height))
@@ -42,6 +44,12 @@ class GameObject():
 
     def solids_not_me(self):
         return list(filter(lambda obj: id(obj) != id(self), self.object_registry.solid_objects))
+    
+    def floor_int_bidirectional(self, value: float):
+        # makes sure floats that tend towards zero don't overshoot zero and start going in the other direction
+        if value < 1 and value > -1:
+            return 0
+        return value
 
     def deal_damage(self, target, damage, attributes: list[Attribute]):
         target.hp -= damage
@@ -63,6 +71,17 @@ class GameObject():
                     modifier += effect.modification_amount / 100
         return base_movespeed * modifier
         
+    def apply_friction(self):
+        sign_force_x = 0
+        sign_force_y = 0
+        if self.outside_force_x != 0:
+            sign_force_x = int(copysign(1, self.outside_force_x))
+        if self.outside_force_y != 0:
+            sign_force_y = int(copysign(1, self.outside_force_y))
+        self.outside_force_x -= sign_force_x * 0.75
+        self.outside_force_y -= sign_force_y * 0.75
+        self.outside_force_x = self.floor_int_bidirectional(self.outside_force_x)
+        self.outside_force_y = self.floor_int_bidirectional(self.outside_force_y)
 
 
     def move(self, move_x, move_y):
@@ -70,14 +89,17 @@ class GameObject():
         self.rect.x += move_x
         self.rect.y += move_y
 
-    def move_direction(self, dir_x: int, dir_y: int, distance: int, tangible: bool):
+    def move_direction(self, dir_x: int, dir_y: int, distance: int, outside_force_x: float, outside_force_y: float, tangible: bool):
         dist = distance
         if dir_x == 0 or dir_y == 0:
             dist = math.sqrt((distance ** 2) * 2)
+
+        x_dist = dist * dir_x + outside_force_x
+        y_dist = dist * dir_y + outside_force_y
         if tangible:
-            self.move_tangible(dir_x * dist, dir_y * dist)
+            self.move_tangible(x_dist, y_dist)
         else:
-            self.move(dir_x * dist, dir_y * dist)
+            self.move(x_dist, y_dist)
 
     def move_tangible(self, move_x: int, move_y: int):
         if self.solid == False:

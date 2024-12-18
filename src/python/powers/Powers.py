@@ -89,6 +89,15 @@ class PlayfulTrickster(Power):
         else:
             self.owner.animation = PlayfulAnimation(self.owner)
 
+class ConveyorBelt(Power):
+    def __init__(self, owner: "Player"):
+        super().__init__(30, 30, owner, None)
+
+    def on_use(self):
+        #create a conveyor belt in the direction of movement
+        #namespace pollution issue here with conveyor belt power and conveyor belt object
+        pass
+
 class CrossCannon(Power):
     def __init__(self, owner: "Player"):
         super().__init__(30, 30, owner, None)

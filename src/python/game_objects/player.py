@@ -18,6 +18,9 @@ class Player(GameObject):
     def draw(self, surface):
         pygame.draw.rect(surface, Colours.Red.value, self.rect)
 
+        if self.animation != None:
+            self.animation.draw(surface)
+
     def step(self):
 
         for power in self.powers:
@@ -51,9 +54,13 @@ class Player(GameObject):
                         self.use_power(0)
                 self.animation.step()
             else:
-                self.move_direction(self.move_xdir, self.move_ydir, movespeed, True)
+                self.move_direction(self.move_xdir, self.move_ydir, movespeed, self.outside_force_x, self.outside_force_y, True)
                 if key_shoot:
                     self.use_power(0) #this is bad practice, better way to do this without repeating?
+        else:
+            self.move_direction(0, 0, self.movespeed, self.outside_force_x, self.outside_force_y, True)
+
+        self.apply_friction()
 
     def use_power(self, power_num: int):
         power_to_use = self.powers[power_num]
