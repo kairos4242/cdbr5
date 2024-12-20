@@ -24,7 +24,7 @@ class Bullet(GameObject):
         pygame.draw.rect(surface, self.colour, self.rect)
 
     def step(self):
-        self.move(self.x_speed, self.y_speed)
+        self.move(self.x_speed, self.y_speed, 0, 0)
         if self.rect.centerx < -16 or self.rect.centerx > Config.SCREEN_WIDTH or self.rect.centery < -16 or self.rect.centery > Config.SCREEN_HEIGHT:
             self.destroy(self)
         collide = self.rect.collideobjects(self.solids_not_me(), key=lambda o: o.rect)
@@ -49,7 +49,7 @@ class Bomb(GameObject):
         pygame.draw.rect(surface, Colours.AshGrey.value, self.rect)
 
     def step(self):
-        self.move(self.x_speed, self.y_speed)
+        self.move(self.x_speed, self.y_speed, self.outside_force_x, self.outside_force_y)
         self.fuse -= 1
         if self.fuse <= 0:
             collision_circle = pygame.geometry.Circle(self.rect.centerx, self.rect.centery, self.explosion_radius)

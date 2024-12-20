@@ -1,5 +1,5 @@
 from Colours import Colours
-from game_objects import Projectiles
+from game_objects import Objects, Projectiles
 from game_objects.Projectiles import Bullet
 from game_objects.GameObject import GameObject
 from powers.Animations import BodySlamAnimation, DashAnimation, FalconPunchAnimation, PlayfulAnimation
@@ -98,7 +98,25 @@ class ConveyorBelt(Power):
     def on_use(self):
         #create a conveyor belt in the direction of movement
         #namespace pollution issue here with conveyor belt power and conveyor belt object
-        pass
+        original_x = self.owner.rect.centerx + (64 * self.owner.move_xdir)
+        snapped_x = self.owner.snap_to_grid(original_x)
+        original_y = self.owner.rect.centery + (64 * self.owner.move_ydir)
+        snapped_y = self.owner.snap_to_grid(original_y)
+        Objects.ConveyorBelt(
+            snapped_x,
+            snapped_y,
+            self.owner,
+            self.owner.move_xdir,
+            self.owner.move_ydir
+        )
+
+class Swap(Power):
+    def __init__(self, owner: "Player"):
+        super().__init__(30, 30, owner, None)
+
+    def on_use(self):
+        # python syntax for swap in place
+        self.owner.rect.x, self.owner.rect.y, self.owner.opponent.rect.x, self.owner.opponent.rect.y = self.owner.opponent.rect.x, self.owner.opponent.rect.y, self.owner.rect.x, self.owner.rect.y
 
 class CrossCannon(Power):
     def __init__(self, owner: "Player"):

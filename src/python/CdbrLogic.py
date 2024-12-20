@@ -1,4 +1,4 @@
-from game_objects.Wall import Wall
+from game_objects.Objects import Wall
 from game_objects.player import Player
 import pygame
 import pygame.freetype
@@ -23,7 +23,7 @@ class Map():
         self.ARIAL_16PT = pygame.freetype.SysFont("Arial", 16)
 
         self.player1 = Player(200, 300, ControlType.HUMAN,[], Colours.BlushPink.value, self)
-        self.player1.powers = [Powers.CrossCannon(self.player1), Powers.Sprint(self.player1)]
+        self.player1.powers = [Powers.ConveyorBelt(self.player1), Powers.Bomb(self.player1)]
         self.player2 = Player(700, 300, ControlType.HUMAN_PLAYER2, [], Colours.Red.value, self)
         self.player2.powers = [Powers.CrossCannon(self.player2), Powers.BodySlam(self.player2)]
 
@@ -43,8 +43,6 @@ class Map():
         self.object_registry = ObjectRegistry()
 
         # create game window
-        
-
         self.game_screen = pygame.display.set_mode(Config.SCREEN_SIZE, flags=pygame.SCALED | pygame.FULLSCREEN, vsync=1)
         self.screen = pygame.surface.Surface((1920, 1080)) #screen to draw everything to before game screen for fullscreen effects like screen shake
 

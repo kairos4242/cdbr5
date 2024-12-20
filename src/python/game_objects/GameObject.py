@@ -29,6 +29,9 @@ class GameObject():
 
     def create_rect(self, x: int, y: int, width: int, height: int):
         return pygame.Rect((x - width // 2, y - height // 2, width, height))
+    
+    def snap_to_grid(self, value):
+        return 64 * round(value/64)
 
     @abstractmethod
     def step(self):
@@ -44,6 +47,12 @@ class GameObject():
 
     def solids_not_me(self):
         return list(filter(lambda obj: id(obj) != id(self), self.object_registry.solid_objects))
+    
+    def objects_not_me(self):
+        return list(filter(lambda obj: id(obj) != id(self), self.object_registry.objects))
+    
+    def objects_my_type_not_me(self):
+        return list(filter(lambda obj: id(obj) != id(self), self.object_registry.objects_by_type[str(type(self))]))
     
     def floor_int_bidirectional(self, value: float):
         # makes sure floats that tend towards zero don't overshoot zero and start going in the other direction
@@ -84,10 +93,12 @@ class GameObject():
         self.outside_force_y = self.floor_int_bidirectional(self.outside_force_y)
 
 
-    def move(self, move_x, move_y):
+    def move(self, move_x, move_y, outside_force_x, outside_force_y):
         # might seem odd to have a function for this but I suspect it will come in handy later when we need to modify how everything moves
         self.rect.x += move_x
+        self.rect.x += outside_force_x
         self.rect.y += move_y
+        self.rect.y += outside_force_y
 
     def move_direction(self, dir_x: int, dir_y: int, distance: int, outside_force_x: float, outside_force_y: float, tangible: bool):
         dist = distance
