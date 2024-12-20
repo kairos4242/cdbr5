@@ -10,16 +10,17 @@ from powers.Effects import Effect
 
 class GameObject():
     
-    def __init__(self, x, y):
+    def __init__(self, x, y, height=64, width=64, depth=0):
         self.object_registry = ObjectRegistry()
-        self.object_registry.add_to_global_object_registry(self)
+        self.object_registry.add_to_global_object_registry(self, depth)
+        self.depth = depth #should be no need to modify this after creation? if there is then might need to move object in the registry
         self.hp = 100
         self.invulnerable = False
         self.divine_shield = False
         self.solid = False
         self.material = Material.NONE
         self.movespeed = 7
-        self.rect = self.create_rect(x, y, 64, 64)
+        self.rect = self.create_rect(x, y, width, height)
         self.effects = [] #type: list[Effect]
         self.animation = None
         self.move_xdir = 0

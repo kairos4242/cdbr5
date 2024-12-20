@@ -16,7 +16,7 @@ class Wall(GameObject):
 class ConveyorBelt(GameObject):
 
     def __init__(self, x, y, owner, x_dir, y_dir):
-        super().__init__(x, y)
+        super().__init__(x, y, depth = 100)
         self.owner = owner
         self.x_dir = x_dir
         self.y_dir = y_dir

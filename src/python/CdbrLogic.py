@@ -90,7 +90,8 @@ class Map():
         p1_animation = self.player1.animation
         if p1_animation != None:
             self.TUROK_30PT.render_to(self.screen, (400, 0), str(p1_animation.__class__.__name__), Colours.Red.value)
-        for object in self.object_registry.objects:
+        render_list = self.object_registry.get_objects()
+        for object in render_list:
             object.draw(self.screen)
         if self.screen_shake > 0:
             self.screen_shake -= 1
