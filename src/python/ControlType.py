@@ -2,4 +2,5 @@ from enum import Enum
 
 class ControlType(Enum):
     HUMAN = 0
-    AI = 1
+    HUMAN_PLAYER2 = 1
+    AI = 2

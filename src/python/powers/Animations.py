@@ -24,6 +24,10 @@ class Animation():
     def step(self):
         pass
 
+    @abstractmethod
+    def draw(self, surface):
+        pass
+
 class DashAnimation(Animation):
 
     def __init__(self, duration, dir_x, dir_y, owner, dash_speed):
@@ -35,7 +39,7 @@ class DashAnimation(Animation):
         if self.curr_step == self.duration:
             self.owner.animation = None
         else:
-            self.owner.move_direction(self.dir_x, self.dir_y, self.dash_speed, True)
+            self.owner.move_direction(self.dir_x, self.dir_y, self.dash_speed, 0, 0, True)
 
 class PlayfulAnimation(Animation):
 
@@ -52,7 +56,7 @@ class FalconPunchAnimation(Animation):
 
     def __init__(self, owner):
         super().__init__(90, owner.move_xdir, owner.move_ydir, False, owner)
-        self.recast = True
+        self.recast = False
         self.punch_frame = 75
         self.particles = []
 
@@ -117,7 +121,32 @@ class FalconPunchAnimation(Animation):
                     self.owner.deal_damage(collision, 25, [])
                     collision.outside_force_x = self.dir_x * 35
                     collision.outside_force_y = self.dir_y * 35
+                    self.owner.map.screen_shake += 30
 
     def draw(self, surface):
         for particle in self.particles:
             particle.draw(surface)
+
+
+class BodySlamAnimation(Animation):
+
+    def __init__(self, owner):
+        super().__init__(25, owner.move_xdir, owner.move_ydir, False, owner)
+        self.dash_speed = self.owner.calculate_movespeed() * 2
+
+    def step(self):
+
+        self.curr_step += 1
+        if self.curr_step == self.duration:
+            self.owner.animation = None
+        self.owner.move_direction(self.dir_x, self.dir_y, self.dash_speed, 0, 0, True)
+        hitbox = self.owner.create_rect(self.owner.rect.centerx + (self.dir_x * 8), self.owner.rect.centery + (self.dir_y * 8), 64, 64)
+        solids_not_me = self.owner.solids_not_me()
+        collide = hitbox.collideobjectsall(solids_not_me, key=lambda o: o.rect)
+        if collide != []:
+            for collision in collide:
+                self.owner.deal_damage(collision, 40, [])
+                collision.outside_force_x = self.dir_x * 25
+                collision.outside_force_y = self.dir_y * 25
+                self.owner.map.screen_shake += 30
+            self.owner.animation = None

@@ -2,21 +2,22 @@ from game_objects.GameObject import GameObject
 import pygame
 from Colours import Colours
 from ControlType import ControlType
-from powers import Powers
 
 
 class Player(GameObject):
 
-    def __init__(self, x, y, control_type: ControlType):
+    def __init__(self, x, y, control_type: ControlType, powers, colour, map):
         super().__init__(x, y)
         self.solid = True
         self.object_registry.add_to_global_solid_registry(self)
-        self.powers = [Powers.FalconPunch(self)]
+        self.powers = powers
         self.control_type = control_type
         self.opponent = None
+        self.colour = colour
+        self.map = map
 
     def draw(self, surface):
-        pygame.draw.rect(surface, Colours.Red.value, self.rect)
+        pygame.draw.rect(surface, self.colour, self.rect)
 
         if self.animation != None:
             self.animation.draw(surface)
@@ -32,33 +33,49 @@ class Player(GameObject):
             else:
                 effect.duration -= 1
 
+        keys = pygame.key.get_pressed()
+        movespeed = int(self.calculate_movespeed())
+
         if self.control_type == ControlType.HUMAN:
             # get keys
             # hotkey system here in future?
-
-            movespeed = int(self.calculate_movespeed())
-            keys = pygame.key.get_pressed()
             key_left = keys[pygame.K_a]
             key_right = keys[pygame.K_d]
-            self.move_xdir = (-key_left + key_right) 
-
             key_up = keys[pygame.K_w]
             key_down = keys[pygame.K_s]
-            self.move_ydir = (-key_up + key_down)
-
             key_shoot = keys[pygame.K_SPACE]
+            key_power2 = keys[pygame.K_LSHIFT]
 
-            if self.animation != None:
-                if self.animation.recast == True:
-                    if key_shoot:
-                        self.use_power(0)
-                self.animation.step()
-            else:
-                self.move_direction(self.move_xdir, self.move_ydir, movespeed, self.outside_force_x, self.outside_force_y, True)
+        elif self.control_type == ControlType.HUMAN_PLAYER2:
+            key_left = keys[pygame.K_LEFT]
+            key_right = keys[pygame.K_RIGHT]
+            key_up = keys[pygame.K_UP]
+            key_down = keys[pygame.K_DOWN]
+            key_shoot = False
+            key_power2 = False
+            events = self.map.events
+            for event in events:
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if event.button == 1:
+                        key_shoot = True
+                    elif event.button == 3:
+                        key_power2 = True
+
+        self.move_xdir = (-key_left + key_right)
+        self.move_ydir = (-key_up + key_down)
+
+        if self.animation != None:
+            if self.animation.recast == True:
                 if key_shoot:
-                    self.use_power(0) #this is bad practice, better way to do this without repeating?
+                    self.use_power(0)
+            self.animation.step()
         else:
-            self.move_direction(0, 0, self.movespeed, self.outside_force_x, self.outside_force_y, True)
+            if key_shoot:
+                self.use_power(0) #this is bad practice, better way to do this without repeating?
+            elif key_power2:
+                self.use_power(1)
+            self.move_direction(self.move_xdir, self.move_ydir, movespeed, self.outside_force_x, self.outside_force_y, True)
+        
 
         self.apply_friction()
 

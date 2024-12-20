@@ -1,6 +1,8 @@
-from game_objects.Bullet import Bullet
+from Colours import Colours
+from game_objects import Projectiles
+from game_objects.Projectiles import Bullet
 from game_objects.GameObject import GameObject
-from powers.Animations import DashAnimation, FalconPunchAnimation, PlayfulAnimation
+from powers.Animations import BodySlamAnimation, DashAnimation, FalconPunchAnimation, PlayfulAnimation
 from powers.Effects import Effect
 from Attribute import ModificationType, Property
 from typing import TYPE_CHECKING
@@ -104,10 +106,10 @@ class CrossCannon(Power):
 
     def on_use(self):
         #create four projectiles around owner, one going in each cardinal direction
-        Bullet(self.owner.rect.centerx, self.owner.rect.centery - 50, 0, -8, self.owner)
-        Bullet(self.owner.rect.centerx, self.owner.rect.centery + 50, 0, 8, self.owner)
-        Bullet(self.owner.rect.centerx - 50, self.owner.rect.centery, -8, 0, self.owner)
-        Bullet(self.owner.rect.centerx + 50, self.owner.rect.centery, 8, 0, self.owner)
+        Bullet(self.owner.rect.centerx, self.owner.rect.centery - 50, 0, -8, self.owner, self.owner.colour)
+        Bullet(self.owner.rect.centerx, self.owner.rect.centery + 50, 0, 8, self.owner, self.owner.colour)
+        Bullet(self.owner.rect.centerx - 50, self.owner.rect.centery, -8, 0, self.owner, self.owner.colour)
+        Bullet(self.owner.rect.centerx + 50, self.owner.rect.centery, 8, 0, self.owner, self.owner.colour)
 
 class FalconPunch(Power):
     def __init__(self, owner: "Player"):
@@ -115,3 +117,17 @@ class FalconPunch(Power):
 
     def on_use(self):
         self.owner.animation = FalconPunchAnimation(self.owner)
+
+class BodySlam(Power):
+    def __init__(self, owner: "Player"):
+        super().__init__(30, 30, owner, None)
+
+    def on_use(self):
+        self.owner.animation = BodySlamAnimation(self.owner)
+
+class Bomb(Power):
+    def __init__(self, owner: "Player"):
+        super().__init__(30, 30, owner, None)
+
+    def on_use(self):
+        Projectiles.Bomb(self.owner.rect.centerx, self.owner.rect.centery, self.owner, 60, 128)
