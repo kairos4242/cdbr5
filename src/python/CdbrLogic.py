@@ -25,7 +25,7 @@ class Map():
         self.player1 = Player(200, 300, ControlType.HUMAN,[], Colours.BlushPink.value, self)
         self.player1.powers = [Powers.ConveyorBelt(self.player1), Powers.Bomb(self.player1)]
         self.player2 = Player(700, 300, ControlType.HUMAN_PLAYER2, [], Colours.Red.value, self)
-        self.player2.powers = [Powers.CrossCannon(self.player2), Powers.BodySlam(self.player2)]
+        self.player2.powers = [Powers.FalconPunch(self.player2), Powers.BodySlam(self.player2)]
 
         self.player1.opponent = self.player2
         self.player2.opponent = self.player1
@@ -73,7 +73,7 @@ class Map():
                 run_game = False
 
             #run steps
-            for object in self.object_registry.objects:
+            for object in self.object_registry.objects_group.sprites():
                 object.step()
 
             #update display
@@ -90,8 +90,9 @@ class Map():
         p1_animation = self.player1.animation
         if p1_animation != None:
             self.TUROK_30PT.render_to(self.screen, (400, 0), str(p1_animation.__class__.__name__), Colours.Red.value)
-        for object in self.object_registry.objects:
-            object.draw(self.screen)
+        """for object in self.object_registry.objects:
+            object.draw(self.screen)"""
+        self.object_registry.objects_group.draw(self.screen)
         if self.screen_shake > 0:
             self.screen_shake -= 1
             self.render_offset[0] = random.randint(0, 8) - 4

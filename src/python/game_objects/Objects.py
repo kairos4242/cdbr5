@@ -8,6 +8,7 @@ class Wall(GameObject):
 
     def __init__(self, x, y):
         super().__init__(x, y)
+        self.image.fill(Colours.AshGrey.value)
         self.make_solid()
 
     def draw(self, surface):
@@ -21,6 +22,10 @@ class ConveyorBelt(GameObject):
         self.x_dir = x_dir
         self.y_dir = y_dir
         self.speed = 10
+        
+        self.image.fill(Colours.AshGrey.value)
+        pygame.draw.rect(self.image, Colours.Red.value, pygame.Rect(0, 0, 64, 64), 5)
+        pygame.draw.rect(self.image, Colours.White.value, self.create_rect(32 + (self.x_dir * 16), 32 + (self.y_dir * 16), 16, 16))
 
         other_belts = self.objects_my_type_not_me()
         visited_belts = [] # to prevent infinite loops

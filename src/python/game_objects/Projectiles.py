@@ -14,6 +14,8 @@ class Bullet(GameObject):
     def __init__(self, x, y, x_speed, y_speed, owner: "GameObject", colour, attributes = list()):
         super().__init__(x, y)
         self.rect = self.create_rect(x, y, 24, 24)
+        self.image = pygame.Surface((24, 24))
+        self.image.fill(colour)
         self.x_speed = x_speed
         self.y_speed = y_speed
         self.owner = owner

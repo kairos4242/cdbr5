@@ -1,6 +1,7 @@
 from abc import abstractmethod
 from math import floor, copysign
 import math
+from Colours import Colours
 from Material import Material
 from ObjectRegistry import ObjectRegistry
 from Attribute import Attribute, ModificationType, Property
@@ -8,9 +9,10 @@ import pygame
 
 from powers.Effects import Effect
 
-class GameObject():
+class GameObject(pygame.sprite.Sprite):
     
-    def __init__(self, x, y):
+    def __init__(self, x, y, width=64, height=64):
+        pygame.sprite.Sprite.__init__(self)
         self.object_registry = ObjectRegistry()
         self.object_registry.add_to_global_object_registry(self)
         self.hp = 100
@@ -19,7 +21,9 @@ class GameObject():
         self.solid = False
         self.material = Material.NONE
         self.movespeed = 7
-        self.rect = self.create_rect(x, y, 64, 64)
+        self.rect = self.create_rect(x, y, width, height)
+        self.image = pygame.Surface((width, height))
+        self.image.fill(Colours.White.value)
         self.effects = [] #type: list[Effect]
         self.animation = None
         self.move_xdir = 0
@@ -46,13 +50,16 @@ class GameObject():
         self.object_registry.add_to_global_solid_registry(self)
 
     def solids_not_me(self):
-        return list(filter(lambda obj: id(obj) != id(self), self.object_registry.solid_objects))
+        return list(filter(lambda obj: id(obj) != id(self), self.object_registry.solid_objects_group.sprites()))
     
     def objects_not_me(self):
-        return list(filter(lambda obj: id(obj) != id(self), self.object_registry.objects))
+        return list(filter(lambda obj: id(obj) != id(self), self.object_registry.objects_group.sprites()))
     
     def objects_my_type_not_me(self):
-        return list(filter(lambda obj: id(obj) != id(self), self.object_registry.objects_by_type[str(type(self))]))
+        my_type = str(type(self))
+        #no need for null safety since there must always be at least one instance (the caller)
+        objects_my_type = self.object_registry.objects_by_type_group.get(my_type).sprites() 
+        return list(filter(lambda obj: id(obj) != id(self), objects_my_type))
     
     def floor_int_bidirectional(self, value: float):
         # makes sure floats that tend towards zero don't overshoot zero and start going in the other direction
@@ -65,9 +72,10 @@ class GameObject():
         if target.hp <= 0:
             self.destroy(target)
 
-    def destroy(self, target):
+    def destroy(self, target: "GameObject"):
         self.object_registry.remove_from_global_object_registry(target)
         self.object_registry.remove_from_global_solid_registry(target)
+        target.kill()
 
     def calculate_movespeed(self) -> float:
         base_movespeed = self.movespeed

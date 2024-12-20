@@ -14,6 +14,7 @@ class Player(GameObject):
         self.control_type = control_type
         self.opponent = None
         self.colour = colour
+        self.image.fill(colour)
         self.map = map
 
     def draw(self, surface):

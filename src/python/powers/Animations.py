@@ -5,6 +5,7 @@ import random
 import pygame
 
 from Colours import Colours
+from ObjectRegistry import ObjectRegistry
 from game_objects.GameObject import GameObject
 from powers.Particles import GrowingSpark, Spark
 
@@ -58,7 +59,7 @@ class FalconPunchAnimation(Animation):
         super().__init__(90, owner.move_xdir, owner.move_ydir, False, owner)
         self.recast = False
         self.punch_frame = 75
-        self.particles = []
+        self.object_registry = ObjectRegistry()
 
         self.dist = 128
         """for angle in range(0, 360, 30):
