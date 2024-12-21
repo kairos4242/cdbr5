@@ -2,6 +2,7 @@ from game_objects.GameObject import GameObject
 import pygame
 from Colours import Colours
 from ControlType import ControlType
+import os
 
 
 class Player(GameObject):
@@ -14,10 +15,12 @@ class Player(GameObject):
         self.control_type = control_type
         self.opponent = None
         self.colour = colour
+        self.image = pygame.image.load(os.path.join('assets', 'testing', 'player-1-01.png'))
         self.map = map
 
     def draw(self, surface):
-        pygame.draw.rect(surface, self.colour, self.rect)
+        #pygame.draw.rect(surface, self.colour, self.rect)
+        surface.blit(self.image, (self.rect.x, self.rect.y))
 
         if self.animation != None:
             self.animation.draw(surface)

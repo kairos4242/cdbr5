@@ -149,3 +149,10 @@ class Bomb(Power):
 
     def on_use(self):
         Projectiles.Bomb(self.owner.rect.centerx, self.owner.rect.centery, self.owner, 60, 128)
+
+class Sword(Power):
+    def __init__(self, owner: "Player"):
+        super().__init__(30, 30, owner, None)
+
+    def on_use(self):
+        Projectiles.Sword(self.owner.rect.centerx, self.owner.rect.centery, self.owner)

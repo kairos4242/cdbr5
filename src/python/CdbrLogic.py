@@ -81,7 +81,7 @@ class Map():
             pygame.display.update()
         
     def draw_game_objects(self):
-        self.screen.fill(Colours.Black.value)
+        self.screen.fill(Colours.NavyFromPixelAndBracket.value)
         self.TUROK_30PT.render_to(self.screen, (0, 0), str(self.clock.get_fps()), Colours.Red.value)
         p1_hp = self.player1.hp
         p2_hp = self.player2.hp
