@@ -71,6 +71,8 @@ class Player(GameObject):
             if self.animation.recast == True:
                 if key_shoot:
                     self.use_power(0)
+            if self.animation.move_allowed:
+                self.move_direction(self.move_xdir, self.move_ydir, movespeed, self.outside_force_x, self.outside_force_y, True)
             self.animation.step()
         else:
             if key_shoot:

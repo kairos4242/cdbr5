@@ -155,4 +155,4 @@ class Sword(Power):
         super().__init__(30, 30, owner, None)
 
     def on_use(self):
-        Projectiles.Sword(self.owner.rect.centerx, self.owner.rect.centery, self.owner)
+        Projectiles.Sword(self.owner.rect.centerx, self.owner.rect.centery, self.owner, 25, self.owner.move_xdir, self.owner.move_ydir)

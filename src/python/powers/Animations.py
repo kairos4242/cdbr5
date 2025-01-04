@@ -5,18 +5,20 @@ import random
 import pygame
 
 from Colours import Colours
+from game_objects import Projectiles
 from game_objects.GameObject import GameObject
 from powers.Particles import GrowingSpark, Spark
 
 
 class Animation():
 
-    def __init__(self, duration: int, dir_x: int, dir_y: int, interruptible: bool, owner: GameObject):
+    def __init__(self, duration: int, dir_x: int, dir_y: int, interruptible: bool, move_allowed: bool, owner: GameObject):
         self.curr_step = 0
         self.duration = duration
         self.dir_x = dir_x
         self.dir_y = dir_y
         self.interruptible = interruptible
+        self.move_allowed = move_allowed
         self.owner = owner
         self.recast = False #allow the player to trigger the power a second time while the animation is still occurring e.g. playful/trickster
 
@@ -31,7 +33,7 @@ class Animation():
 class DashAnimation(Animation):
 
     def __init__(self, duration, dir_x, dir_y, owner, dash_speed):
-        super().__init__(duration, dir_x, dir_y, False, owner)
+        super().__init__(duration, dir_x, dir_y, False, False, owner)
         self.dash_speed = dash_speed
 
     def step(self):
@@ -44,7 +46,7 @@ class DashAnimation(Animation):
 class PlayfulAnimation(Animation):
 
     def __init__(self, owner):
-        super().__init__(15, owner.move_xdir, owner.move_ydir, False, owner)
+        super().__init__(15, owner.move_xdir, owner.move_ydir, False, False, owner)
         self.recast = True
 
     def step(self):
@@ -55,7 +57,7 @@ class PlayfulAnimation(Animation):
 class FalconPunchAnimation(Animation):
 
     def __init__(self, owner):
-        super().__init__(90, owner.move_xdir, owner.move_ydir, False, owner)
+        super().__init__(90, owner.move_xdir, owner.move_ydir, False, False, owner)
         self.recast = False
         self.punch_frame = 75
         self.particles = []
@@ -131,7 +133,7 @@ class FalconPunchAnimation(Animation):
 class BodySlamAnimation(Animation):
 
     def __init__(self, owner):
-        super().__init__(25, owner.move_xdir, owner.move_ydir, False, owner)
+        super().__init__(25, owner.move_xdir, owner.move_ydir, False, False, owner)
         self.dash_speed = self.owner.calculate_movespeed() * 2
 
     def step(self):
@@ -150,3 +152,26 @@ class BodySlamAnimation(Animation):
                 collision.outside_force_y = self.dir_y * 25
                 self.owner.map.screen_shake += 30
             self.owner.animation = None
+
+class SwordAnimation(Animation):
+
+    def __init__(self, owner):
+        super().__init__(25, owner.move_xdir, owner.move_ydir, False, True, owner)
+        self.sword = Projectiles.Sword(owner.x, owner.y, owner)
+
+    def step(self):
+
+        """self.curr_step += 1
+        if self.curr_step == self.duration:
+            self.owner.animation = None
+        self.owner.move_direction(self.dir_x, self.dir_y, self.dash_speed, 0, 0, True)
+        hitbox = self.owner.create_rect(self.owner.rect.centerx + (self.dir_x * 8), self.owner.rect.centery + (self.dir_y * 8), 64, 64)
+        solids_not_me = self.owner.solids_not_me()
+        collide = hitbox.collideobjectsall(solids_not_me, key=lambda o: o.rect)
+        if collide != []:
+            for collision in collide:
+                self.owner.deal_damage(collision, 40, [])
+                collision.outside_force_x = self.dir_x * 25
+                collision.outside_force_y = self.dir_y * 25
+                self.owner.map.screen_shake += 30
+            self.owner.animation = None"""
