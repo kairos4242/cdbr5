@@ -28,7 +28,7 @@ class Map():
         self.ARIAL_16PT = pygame.freetype.SysFont("Arial", 16)
 
         self.player1 = Player(200, 400, ControlType.HUMAN,[], Colours.BlushPink.value, self, image = 'Player 1.png')
-        self.player1.powers = [Powers.ConveyorBelt(self.player1), Powers.Sword(self.player1)]
+        self.player1.powers = [Powers.Sword(self.player1), Powers.ConveyorBelt(self.player1)]
         self.player2 = Player(700, 400, ControlType.HUMAN_PLAYER2, [], Colours.Red.value, self, image = 'Player 2.png')
         self.player2.powers = [Powers.Sword(self.player2), Powers.Swap(self.player2)]
 

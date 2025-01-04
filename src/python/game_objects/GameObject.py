@@ -31,6 +31,11 @@ class GameObject():
     def create_rect(self, x: int, y: int, width: int, height: int):
         return pygame.Rect((x - width // 2, y - height // 2, width, height))
     
+    def rot_center(self, image, rect, angle):
+        rot_image = pygame.transform.rotate(image, angle)
+        rot_rect = rot_image.get_rect(center=rect.center)
+        return rot_image,rot_rect
+    
     def snap_to_grid(self, value):
         return 64 * round(value/64)
 

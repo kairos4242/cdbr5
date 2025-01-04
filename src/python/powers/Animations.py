@@ -152,26 +152,3 @@ class BodySlamAnimation(Animation):
                 collision.outside_force_y = self.dir_y * 25
                 self.owner.map.screen_shake += 30
             self.owner.animation = None
-
-class SwordAnimation(Animation):
-
-    def __init__(self, owner):
-        super().__init__(25, owner.move_xdir, owner.move_ydir, False, True, owner)
-        self.sword = Projectiles.Sword(owner.x, owner.y, owner)
-
-    def step(self):
-
-        """self.curr_step += 1
-        if self.curr_step == self.duration:
-            self.owner.animation = None
-        self.owner.move_direction(self.dir_x, self.dir_y, self.dash_speed, 0, 0, True)
-        hitbox = self.owner.create_rect(self.owner.rect.centerx + (self.dir_x * 8), self.owner.rect.centery + (self.dir_y * 8), 64, 64)
-        solids_not_me = self.owner.solids_not_me()
-        collide = hitbox.collideobjectsall(solids_not_me, key=lambda o: o.rect)
-        if collide != []:
-            for collision in collide:
-                self.owner.deal_damage(collision, 40, [])
-                collision.outside_force_x = self.dir_x * 25
-                collision.outside_force_y = self.dir_y * 25
-                self.owner.map.screen_shake += 30
-            self.owner.animation = None"""

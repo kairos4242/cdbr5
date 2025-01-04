@@ -64,32 +64,48 @@ class Sword(GameObject):
 
     def __init__(self, x, y, owner, damage, x_dir, y_dir, attributes = list()):
         super().__init__(x, y)
-        self.rect = self.create_rect(x, y, 24, 24)
+        self.rect = self.create_rect(x, y, 256, 256)
         self.x_dir = x_dir
         self.y_dir = y_dir
         self.damage = damage
         self.owner = owner
         self.attributes = attributes
         image_angle = math.degrees(math.atan2(-self.y_dir, self.x_dir))#y is negative because arctan assumes y increasing upward but y increases downward in pygame
-        NUM_FRAMES = 8
+        NUM_FRAMES = 20
         self.images = []
         for i in range(NUM_FRAMES - 1):
-            image = pygame.image.load(os.path.join('assets', 'testing', 'Sword', f'Sword-0{i + 1}.png'))
-            image_rot = pygame.transform.rotate(image, image_angle)
+            number = f"{i:05d}" #leading zeros
+            image = pygame.image.load(os.path.join('assets', 'testing', 'Sword', f'Sword Slash_{number}.png'))
+            image_rot, self.rect = self.rot_center(image, self.rect, image_angle)
             self.images.append(image_rot)
         self.image_index = 0
+        self.curr_step = 0
         self.images_len = len(self.images)
-        self.lifespan = self.images_len + 1
+        self.max_step = self.images_len + 1
+        self.active_frame_start = 7
+        self.active_frame_end = 11
+        self.already_hit = []
 
     def draw(self, surface):
         surface.blit(self.images[self.image_index], (self.rect.x, self.rect.y))
+        #pygame.draw.rect(surface, Colours.Black.value, self.rect)
         self.image_index += 1
         if self.image_index >= self.images_len - 1:
             self.image_index = 0
 
     def step(self):
-        self.rect.x = self.owner.rect.x + (self.x_dir * 64)
-        self.rect.y = self.owner.rect.y + (self.y_dir * 64)
-        self.lifespan -= 1
-        if self.lifespan <= 0:
+        self.rect.centerx = self.owner.rect.centerx
+        self.rect.centery = self.owner.rect.centery
+        self.curr_step += 1
+        if self.curr_step >= self.max_step:
             self.destroy(self)
+        if self.curr_step >= self.active_frame_start and self.curr_step <= self.active_frame_end:
+            hitbox = self.owner.create_rect(self.owner.rect.centerx + (self.x_dir * 64), self.owner.rect.centery + (self.y_dir * 64), 64, 64)
+            solids_not_me = self.owner.solids_not_me()
+            collide = hitbox.collideobjectsall(solids_not_me, key=lambda o: o.rect)
+            if collide != []:
+                for collision in collide:
+                    if collision not in self.already_hit:
+                        self.owner.deal_damage(collision, self.damage, [])
+                        self.already_hit.append(collision)
+                        self.owner.map.screen_shake = max(self.owner.map.screen_shake, 30)
