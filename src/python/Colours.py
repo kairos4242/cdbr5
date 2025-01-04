@@ -8,4 +8,5 @@ class Colours(Enum):
     CadetGrey = (156, 175, 183)
     BlushPink = (254, 197, 229)
     Red = (255, 0, 0)
+    Blue = (0, 0, 255)
     White = (255, 255, 255)

@@ -38,6 +38,9 @@ class GameObject():
     
     def snap_to_grid(self, value):
         return 64 * round(value/64)
+    
+    def get_colour_name(self, colour):
+        return str(colour).lstrip("Colours.")
 
     @abstractmethod
     def step(self):

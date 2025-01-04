@@ -22,7 +22,7 @@ class Bullet(GameObject):
         self.colour = colour
 
     def draw(self, surface):
-        pygame.draw.rect(surface, self.colour, self.rect)
+        pygame.draw.rect(surface, self.colour.value, self.rect)
 
     def step(self):
         self.move(self.x_speed, self.y_speed, 0, 0)

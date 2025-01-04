@@ -155,4 +155,15 @@ class Sword(Power):
         super().__init__(30, 30, owner, None)
 
     def on_use(self):
-        Projectiles.Sword(self.owner.rect.centerx, self.owner.rect.centery, self.owner, 25, self.owner.move_xdir, self.owner.move_ydir)
+        Projectiles.Sword(self.owner.rect.centerx, self.owner.rect.centery, self.owner, 15, self.owner.move_xdir, self.owner.move_ydir)
+
+class Turret(Power):
+    def __init__(self, owner: "Player"):
+        super().__init__(30, 30, owner, None)
+
+    def on_use(self):
+        original_x = self.owner.rect.centerx + (64 * self.owner.move_xdir)
+        snapped_x = self.owner.snap_to_grid(original_x)
+        original_y = self.owner.rect.centery + (64 * self.owner.move_ydir)
+        snapped_y = self.owner.snap_to_grid(original_y)
+        Objects.Turret(snapped_x, snapped_y, self.owner, self.owner.move_xdir, self.owner.move_ydir)

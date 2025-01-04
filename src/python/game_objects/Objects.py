@@ -1,6 +1,7 @@
 from math import copysign
 import pygame
 from Colours import Colours
+from game_objects import Projectiles
 from game_objects.GameObject import GameObject
 import os
 import math
@@ -91,3 +92,42 @@ class ConveyorBelt(GameObject):
         self.image_index += 1
         if self.image_index >= self.images_len - 1:
             self.image_index = 0
+
+
+class Turret(GameObject):
+
+    def __init__(self, x, y, owner, x_dir, y_dir):
+        super().__init__(x, y, depth = 100)
+        self.owner = owner
+        self.x_dir = x_dir
+        self.y_dir = y_dir
+        if self.x_dir == 0 and self.y_dir == 0:
+            self.x_dir = 1
+        self.spawn_cooldown = 60
+        self.max_spawn_cooldown = 60
+        self.lifespan = 1200
+        self.colour = self.owner.colour
+
+        image_angle = math.degrees(math.atan2(-self.y_dir, self.x_dir))#y is negative because arctan assumes y increasing upward but y increases downward in pygame
+        image = pygame.image.load(os.path.join('assets', 'testing', 'Turret', f'Turret - {self.get_colour_name(self.colour)} 1.png'))
+        self.image, self.rect = self.rot_center(image, self.rect, image_angle)
+
+        other_turrets = self.objects_my_type_not_me()
+        if len(other_turrets) > 0:
+                for other_turret in other_turrets:
+                    if other_turret.rect.x == self.rect.x and other_turret.rect.y == self.rect.y:
+                        print("on top of another turret! not placing")
+                        self.destroy(self)
+                        #TODO dialogue box here or some feedback for user?
+
+    def step(self):
+        self.spawn_cooldown -= 1
+        if self.spawn_cooldown <= 0:
+            Projectiles.Bullet(self.rect.centerx, self.rect.centery, self.x_dir * 8, self.y_dir * 8, self.owner, self.colour)
+            self.spawn_cooldown = self.max_spawn_cooldown
+        self.lifespan -= 1
+        if self.lifespan <= 0:
+            self.destroy(self)
+
+    def draw(self, surface):
+        surface.blit(self.image, (self.rect.x, self.rect.y))
