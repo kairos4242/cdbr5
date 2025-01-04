@@ -50,7 +50,7 @@ class PlayfulAnimation(Animation):
     def step(self):
         self.curr_step += 1
         if self.curr_step <= self.duration:
-            self.owner.move_direction(self.dir_x, self.dir_y, 15, True)
+            self.owner.move_direction(self.dir_x, self.dir_y, 15, 0, 0, True)
 
 class FalconPunchAnimation(Animation):
 

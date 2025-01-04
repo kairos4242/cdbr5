@@ -2,6 +2,8 @@ from math import copysign
 import pygame
 from Colours import Colours
 from game_objects.GameObject import GameObject
+import os
+import math
 
 
 class Wall(GameObject):
@@ -9,9 +11,11 @@ class Wall(GameObject):
     def __init__(self, x, y):
         super().__init__(x, y)
         self.make_solid()
+        self.image = pygame.image.load(os.path.join('assets', 'testing', 'Wall.png')).convert_alpha()
 
     def draw(self, surface):
-        pygame.draw.rect(surface, Colours.AshGrey.value, self.rect)
+        # pygame.draw.rect(surface, Colours.AshGrey.value, self.rect)
+        surface.blit(self.image, (self.rect.x, self.rect.y))
 
 class ConveyorBelt(GameObject):
 
@@ -21,6 +25,8 @@ class ConveyorBelt(GameObject):
         self.x_dir = x_dir
         self.y_dir = y_dir
         self.speed = 10
+
+        self.colour = self.owner.colour
 
         other_belts = self.objects_my_type_not_me()
         visited_belts = [] # to prevent infinite loops
@@ -55,6 +61,19 @@ class ConveyorBelt(GameObject):
                     loop = False
         print("final", self.rect.centerx, self.rect.centery)
 
+        ANIMATION_LENGTH = 6
+
+        self.images = []
+        image_angle = math.degrees(math.atan2(-self.y_dir, self.x_dir))#y is negative because arctan assumes y increasing upward but y increases downward in pygame
+        for i in range(ANIMATION_LENGTH):
+            # TODO colours
+            #TODO diagonals
+            image = pygame.image.load(os.path.join('assets', 'testing', 'Conveyor Belt', f'Conveyor Belt - {"Red"} {i + 1}.png'))
+            image_rot = pygame.transform.rotate(image, image_angle)
+            self.images.append(image_rot.convert_alpha())
+        self.images_len = len(self.images) #is this necessary? is it actually saving any compute time?
+        self.image_index = 0
+
     def step(self):
         solids_not_me = self.solids_not_me()
         collide = self.rect.collideobjectsall(solids_not_me, key=lambda o: o.rect)
@@ -65,6 +84,10 @@ class ConveyorBelt(GameObject):
                 collision.outside_force_y = self.speed * self.y_dir
 
     def draw(self, surface):
-        pygame.draw.rect(surface, Colours.AshGrey.value, self.rect)
-        pygame.draw.rect(surface, Colours.Red.value, self.rect, 5)
-        pygame.draw.rect(surface, Colours.White.value, self.create_rect(self.rect.centerx + (16 * self.x_dir), self.rect.centery + (16 * self.y_dir), 16, 16))
+        #pygame.draw.rect(surface, Colours.AshGrey.value, self.rect)
+        #pygame.draw.rect(surface, Colours.Red.value, self.rect, 5)
+        #pygame.draw.rect(surface, Colours.White.value, self.create_rect(self.rect.centerx + (16 * self.x_dir), self.rect.centery + (16 * self.y_dir), 16, 16))
+        surface.blit(self.images[self.image_index], (self.rect.x, self.rect.y))
+        self.image_index += 1
+        if self.image_index >= self.images_len - 1:
+            self.image_index = 0

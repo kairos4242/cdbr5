@@ -8,6 +8,7 @@ from ControlType import ControlType
 from Colours import Colours
 import Config
 from powers import Powers
+import os
 
 class Map():
 
@@ -19,16 +20,23 @@ class Map():
 
         pygame.init()
 
+        # create game window
+        self.game_screen = pygame.display.set_mode(Config.SCREEN_SIZE, flags=pygame.SCALED | pygame.FULLSCREEN, vsync=1)
+        self.screen = pygame.surface.Surface((1920, 1080)) #screen to draw everything to before game screen for fullscreen effects like screen shake
+
         self.TUROK_30PT = pygame.freetype.Font("pygame_tutorial/assets/fonts/turok.ttf", 30)
         self.ARIAL_16PT = pygame.freetype.SysFont("Arial", 16)
 
-        self.player1 = Player(200, 300, ControlType.HUMAN,[], Colours.BlushPink.value, self)
-        self.player1.powers = [Powers.ConveyorBelt(self.player1), Powers.Bomb(self.player1)]
-        self.player2 = Player(700, 300, ControlType.HUMAN_PLAYER2, [], Colours.Red.value, self)
-        self.player2.powers = [Powers.CrossCannon(self.player2), Powers.BodySlam(self.player2)]
+        self.player1 = Player(200, 400, ControlType.HUMAN,[], Colours.BlushPink.value, self, image = 'Player 1.png')
+        self.player1.powers = [Powers.ConveyorBelt(self.player1), Powers.BodySlam(self.player1)]
+        self.player2 = Player(700, 400, ControlType.HUMAN_PLAYER2, [], Colours.Red.value, self, image = 'Player 2.png')
+        self.player2.powers = [Powers.Bomb(self.player2), Powers.Swap(self.player2)]
+
 
         self.player1.opponent = self.player2
         self.player2.opponent = self.player1
+
+        self.background = pygame.image.load(os.path.join('assets', 'testing', 'Cream Black Background.png')).convert()
 
         self.screen_shake = 0
         self.render_offset = [0, 0]
@@ -37,14 +45,10 @@ class Map():
 
         # do we need references to all the walls? maybe not?
 
-        for i in range(100, 700, 64):
-            Wall(i, 100)
+        for i in range(150, 700, 64):
+            Wall(i, 200)
 
         self.object_registry = ObjectRegistry()
-
-        # create game window
-        self.game_screen = pygame.display.set_mode(Config.SCREEN_SIZE, flags=pygame.SCALED | pygame.FULLSCREEN, vsync=1)
-        self.screen = pygame.surface.Surface((1920, 1080)) #screen to draw everything to before game screen for fullscreen effects like screen shake
 
         pygame.display.set_caption("CDBR5")
 
@@ -81,15 +85,16 @@ class Map():
             pygame.display.update()
         
     def draw_game_objects(self):
-        self.screen.fill(Colours.NavyFromPixelAndBracket.value)
-        self.TUROK_30PT.render_to(self.screen, (0, 0), str(self.clock.get_fps()), Colours.Red.value)
+        #self.screen.fill(Colours.PapayaWhip.value)
+        self.screen.blit(self.background)
+        self.ARIAL_16PT.render_to(self.screen, (0, 0), str(self.clock.get_fps()), Colours.Black.value)
         p1_hp = self.player1.hp
         p2_hp = self.player2.hp
-        self.ARIAL_16PT.render_to(self.screen, (self.player1.rect.x, self.player1.rect.y - 32), str(p1_hp) + "/100", self.player1.colour)
-        self.ARIAL_16PT.render_to(self.screen, (self.player2.rect.x, self.player2.rect.y - 32), str(p2_hp) + "/100", self.player2.colour)
+        self.ARIAL_16PT.render_to(self.screen, (860, 30), str(p1_hp) + "/100", Colours.Black.value)
+        self.ARIAL_16PT.render_to(self.screen, (1060, 30), str(p2_hp) + "/100", Colours.Black.value)
         p1_animation = self.player1.animation
         if p1_animation != None:
-            self.TUROK_30PT.render_to(self.screen, (400, 0), str(p1_animation.__class__.__name__), Colours.Red.value)
+            self.ARIAL_16PT.render_to(self.screen, (400, 0), str(p1_animation.__class__.__name__), Colours.Black.value)
         render_list = self.object_registry.get_objects()
         for object in render_list:
             object.draw(self.screen)

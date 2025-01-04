@@ -7,7 +7,7 @@ import os
 
 class Player(GameObject):
 
-    def __init__(self, x, y, control_type: ControlType, powers, colour, map):
+    def __init__(self, x, y, control_type: ControlType, powers, colour, map, image='Player 1.png'):
         super().__init__(x, y)
         self.solid = True
         self.object_registry.add_to_global_solid_registry(self)
@@ -15,7 +15,7 @@ class Player(GameObject):
         self.control_type = control_type
         self.opponent = None
         self.colour = colour
-        self.image = pygame.image.load(os.path.join('assets', 'testing', 'player-1-01.png'))
+        self.image = pygame.image.load(os.path.join('assets', 'testing', image)).convert_alpha()
         self.map = map
 
     def draw(self, surface):
