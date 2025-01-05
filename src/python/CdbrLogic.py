@@ -28,9 +28,9 @@ class Map():
         self.ARIAL_16PT = pygame.freetype.SysFont("Arial", 16)
 
         self.player1 = Player(200, 400, ControlType.HUMAN,[], Colours.Red, self, image = 'Player 1.png')
-        self.player1.powers = [Powers.Shotgun(self.player1), Powers.Turret(self.player1)]
+        self.player1.powers = [Powers.Shotgun(self.player1), Powers.SniperRifle(self.player1)]
         self.player2 = Player(700, 400, ControlType.HUMAN_PLAYER2, [], Colours.Blue, self, image = 'Player 2.png')
-        self.player2.powers = [Powers.Sword(self.player2), Powers.Turret(self.player2)]
+        self.player2.powers = [Powers.ChipDamage(self.player2), Powers.ChipDamage(self.player2)]
 
 
         self.player1.opponent = self.player2

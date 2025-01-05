@@ -109,3 +109,32 @@ class Sword(GameObject):
                         self.owner.deal_damage(collision, self.damage, [])
                         self.already_hit.append(collision)
                         self.owner.map.screen_shake = max(self.owner.map.screen_shake, 30)
+
+class SniperBullet(GameObject):
+
+    def __init__(self, x, y, target: "GameObject", owner: "GameObject", colour, attributes = list()):
+        super().__init__(x, y)
+        self.rect = self.create_rect(x, y, 24, 24)
+        target_xdist = target.rect.centerx - self.rect.centerx
+        target_ydist = target.rect.centery - self.rect.centery
+        target_angle = math.atan2(-target_ydist, target_xdist)
+        speed = 48
+        self.x_speed = speed * math.cos(target_angle)
+        self.y_speed = speed * -math.sin(target_angle)
+        self.damage = 30
+        self.owner = owner
+        self.attributes = attributes
+        self.colour = colour
+
+    def draw(self, surface):
+        pygame.draw.rect(surface, self.colour.value, self.rect)
+
+    def step(self):
+        self.move(self.x_speed, self.y_speed, 0, 0)
+        if self.rect.centerx < -16 or self.rect.centerx > Config.SCREEN_WIDTH or self.rect.centery < -16 or self.rect.centery > Config.SCREEN_HEIGHT:
+            self.destroy(self)
+        collide = self.rect.collideobjects(self.solids_not_me(), key=lambda o: o.rect)
+        if collide != None:
+            if collide != self.owner:
+                self.deal_damage(collide, self.damage, self.attributes)
+                self.destroy(self)

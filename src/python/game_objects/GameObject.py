@@ -5,7 +5,9 @@ from Material import Material
 from ObjectRegistry import ObjectRegistry
 from Attribute import Attribute, ModificationType, Property
 import pygame
-
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from powers.Animations import Animation
 from powers.Effects import Effect
 
 class GameObject():
@@ -22,7 +24,7 @@ class GameObject():
         self.movespeed = 7
         self.rect = self.create_rect(x, y, width, height)
         self.effects = [] #type: list[Effect]
-        self.animation = None
+        self.animation = None #type: Animation
         self.move_xdir = 0
         self.move_ydir = 0
         self.outside_force_x = 0
@@ -75,8 +77,11 @@ class GameObject():
         abs_floor = floor(abs_val)
         return math.copysign(abs_floor, value)
 
-    def deal_damage(self, target, damage, attributes: list[Attribute]):
+    def deal_damage(self, target: "GameObject", damage, attributes: list[Attribute] = list()):
         target.hp -= damage
+        if target.animation != None:
+            if target.animation.interrupted_by_damage == True:
+                target.animation = None
         if target.hp <= 0:
             self.destroy(target)
 

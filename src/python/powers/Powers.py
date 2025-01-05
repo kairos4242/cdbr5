@@ -2,7 +2,7 @@ from Colours import Colours
 from game_objects import Objects, Projectiles
 from game_objects.Projectiles import Bullet
 from game_objects.GameObject import GameObject
-from powers.Animations import BodySlamAnimation, DashAnimation, FalconPunchAnimation, PlayfulAnimation
+from powers.Animations import BodySlamAnimation, DashAnimation, FalconPunchAnimation, PlayfulAnimation, SniperRifleAnimation
 from powers.Effects import Effect
 from Attribute import ModificationType, Property
 import math
@@ -183,3 +183,17 @@ class Shotgun(Power):
             angle_xspeed = self.owner.round_float_down_bidirectional(math.cos(angle) * movespeed)
             angle_yspeed = self.owner.round_float_down_bidirectional(-math.sin(angle) * movespeed)
             Bullet(bullet_point[0], bullet_point[1], angle_xspeed, angle_yspeed, self.owner, self.owner.colour)
+
+class SniperRifle(Power):
+    def __init__(self, owner: "Player"):
+        super().__init__(30, 30, owner, None)
+
+    def on_use(self):
+        self.owner.animation = SniperRifleAnimation(self.owner)
+
+class ChipDamage(Power):
+    def __init__(self, owner: "Player"):
+        super().__init__(30, 30, owner, None)
+
+    def on_use(self):
+        self.owner.deal_damage(self.owner.opponent, 1)
