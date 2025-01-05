@@ -68,6 +68,12 @@ class GameObject():
         if value < 1 and value > -1:
             return 0
         return value
+    
+    def round_float_down_bidirectional(self, value: float):
+        # like floor int bidirectional but doesn't only apply to values within the (-1, 1) range
+        abs_val = abs(value)
+        abs_floor = floor(abs_val)
+        return math.copysign(abs_floor, value)
 
     def deal_damage(self, target, damage, attributes: list[Attribute]):
         target.hp -= damage

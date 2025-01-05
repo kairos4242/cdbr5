@@ -47,7 +47,7 @@ class Player(GameObject):
             key_up = keys[pygame.K_w]
             key_down = keys[pygame.K_s]
             key_shoot = keys[pygame.K_SPACE]
-            key_power2 = keys[pygame.K_LSHIFT]
+            key_power2 = keys[pygame.K_j]
 
         elif self.control_type == ControlType.HUMAN_PLAYER2:
             key_left = keys[pygame.K_LEFT]

@@ -5,6 +5,7 @@ from game_objects.GameObject import GameObject
 from powers.Animations import BodySlamAnimation, DashAnimation, FalconPunchAnimation, PlayfulAnimation
 from powers.Effects import Effect
 from Attribute import ModificationType, Property
+import math
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from game_objects.player import Player
@@ -159,7 +160,7 @@ class Sword(Power):
 
 class Turret(Power):
     def __init__(self, owner: "Player"):
-        super().__init__(30, 30, owner, None)
+        super().__init__(150, 150, owner, None)
 
     def on_use(self):
         original_x = self.owner.rect.centerx + (64 * self.owner.move_xdir)
@@ -167,3 +168,18 @@ class Turret(Power):
         original_y = self.owner.rect.centery + (64 * self.owner.move_ydir)
         snapped_y = self.owner.snap_to_grid(original_y)
         Objects.Turret(snapped_x, snapped_y, self.owner, self.owner.move_xdir, self.owner.move_ydir)
+
+class Shotgun(Power):
+    def __init__(self, owner: "Player"):
+        super().__init__(30, 30, owner, None)
+
+    def on_use(self):
+        move_angle = math.degrees(math.atan2(-self.owner.move_ydir, self.owner.move_xdir))
+        bullet_point = (self.owner.rect.centerx + self.owner.move_xdir * 50, self.owner.rect.centery + self.owner.move_ydir * 50)
+        spread = 10
+        movespeed = 8
+        for angle_degrees in [move_angle - spread, move_angle, move_angle + spread]:
+            angle = math.radians(angle_degrees)
+            angle_xspeed = self.owner.round_float_down_bidirectional(math.cos(angle) * movespeed)
+            angle_yspeed = self.owner.round_float_down_bidirectional(-math.sin(angle) * movespeed)
+            Bullet(bullet_point[0], bullet_point[1], angle_xspeed, angle_yspeed, self.owner, self.owner.colour)
