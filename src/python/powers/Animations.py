@@ -8,6 +8,7 @@ from Colours import Colours
 from game_objects import Projectiles
 from game_objects.GameObject import GameObject
 from powers.Particles import GrowingSpark, Spark
+import utils
 
 
 class Animation():
@@ -116,7 +117,7 @@ class FalconPunchAnimation(Animation):
         if self.curr_step == self.duration:
             self.owner.animation = None
         if self.curr_step == self.punch_frame:
-            hitbox = self.owner.create_rect(self.owner.rect.centerx + (self.dir_x * 64), self.owner.rect.centery + (self.dir_y * 64), 64, 64)
+            hitbox = utils.create_rect(self.owner.rect.centerx + (self.dir_x * 64), self.owner.rect.centery + (self.dir_y * 64), 64, 64)
             solids_not_me = self.owner.solids_not_me()
             collide = hitbox.collideobjectsall(solids_not_me, key=lambda o: o.rect)
             if collide != []:
@@ -143,7 +144,7 @@ class BodySlamAnimation(Animation):
         if self.curr_step == self.duration:
             self.owner.animation = None
         self.owner.move_direction(self.dir_x, self.dir_y, self.dash_speed, 0, 0, True)
-        hitbox = self.owner.create_rect(self.owner.rect.centerx + (self.dir_x * 8), self.owner.rect.centery + (self.dir_y * 8), 64, 64)
+        hitbox = utils.create_rect(self.owner.rect.centerx + (self.dir_x * 8), self.owner.rect.centery + (self.dir_y * 8), 64, 64)
         solids_not_me = self.owner.solids_not_me()
         collide = hitbox.collideobjectsall(solids_not_me, key=lambda o: o.rect)
         if collide != []:

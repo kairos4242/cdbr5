@@ -9,6 +9,7 @@ import math
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from game_objects.player import Player
+import utils
 
 
 class Power():
@@ -100,9 +101,9 @@ class ConveyorBelt(Power):
         #create a conveyor belt in the direction of movement
         #namespace pollution issue here with conveyor belt power and conveyor belt object
         original_x = self.owner.rect.centerx + (64 * self.owner.move_xdir)
-        snapped_x = self.owner.snap_to_grid(original_x)
-        original_y = self.owner.rect.centery + (64 * self.owner.move_ydir)
-        snapped_y = self.owner.snap_to_grid(original_y)
+        snapped_x = utils.snap_to_grid(original_x)
+        original_y = utils.rect.centery + (64 * self.owner.move_ydir)
+        snapped_y = utils.snap_to_grid(original_y)
         Objects.ConveyorBelt(
             snapped_x,
             snapped_y,
@@ -164,9 +165,9 @@ class Turret(Power):
 
     def on_use(self):
         original_x = self.owner.rect.centerx + (64 * self.owner.move_xdir)
-        snapped_x = self.owner.snap_to_grid(original_x)
+        snapped_x = utils.snap_to_grid(original_x)
         original_y = self.owner.rect.centery + (64 * self.owner.move_ydir)
-        snapped_y = self.owner.snap_to_grid(original_y)
+        snapped_y = utils.snap_to_grid(original_y)
         Objects.Turret(snapped_x, snapped_y, self.owner, self.owner.move_xdir, self.owner.move_ydir)
 
 class Shotgun(Power):
@@ -180,8 +181,8 @@ class Shotgun(Power):
         movespeed = 8
         for angle_degrees in [move_angle - spread, move_angle, move_angle + spread]:
             angle = math.radians(angle_degrees)
-            angle_xspeed = self.owner.round_float_down_bidirectional(math.cos(angle) * movespeed)
-            angle_yspeed = self.owner.round_float_down_bidirectional(-math.sin(angle) * movespeed)
+            angle_xspeed = utils.round_float_down_bidirectional(math.cos(angle) * movespeed)
+            angle_yspeed = utils.round_float_down_bidirectional(-math.sin(angle) * movespeed)
             Bullet(bullet_point[0], bullet_point[1], angle_xspeed, angle_yspeed, self.owner, self.owner.colour)
 
 class SniperRifle(Power):

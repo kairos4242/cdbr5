@@ -5,6 +5,7 @@ from game_objects import Projectiles
 from game_objects.GameObject import GameObject
 import os
 import math
+import utils
 
 
 class Wall(GameObject):
@@ -87,7 +88,7 @@ class ConveyorBelt(GameObject):
     def draw(self, surface):
         #pygame.draw.rect(surface, Colours.AshGrey.value, self.rect)
         #pygame.draw.rect(surface, Colours.Red.value, self.rect, 5)
-        #pygame.draw.rect(surface, Colours.White.value, self.create_rect(self.rect.centerx + (16 * self.x_dir), self.rect.centery + (16 * self.y_dir), 16, 16))
+        #pygame.draw.rect(surface, Colours.White.value, utils.create_rect(self.rect.centerx + (16 * self.x_dir), self.rect.centery + (16 * self.y_dir), 16, 16))
         surface.blit(self.images[self.image_index], (self.rect.x, self.rect.y))
         self.image_index += 1
         if self.image_index >= self.images_len - 1:
@@ -109,8 +110,8 @@ class Turret(GameObject):
         self.colour = self.owner.colour
 
         image_angle = math.degrees(math.atan2(-self.y_dir, self.x_dir))#y is negative because arctan assumes y increasing upward but y increases downward in pygame
-        image = pygame.image.load(os.path.join('assets', 'testing', 'Turret', f'Turret - {self.get_colour_name(self.colour)} 1.png'))
-        self.image, self.rect = self.rot_center(image, self.rect, image_angle)
+        image = pygame.image.load(os.path.join('assets', 'testing', 'Turret', f'Turret - {utils.get_colour_name(self.colour)} 1.png'))
+        self.image, self.rect = utils.rot_center(image, self.rect, image_angle)
 
         other_turrets = self.objects_my_type_not_me()
         if len(other_turrets) > 0:

@@ -9,8 +9,7 @@ class Player(GameObject):
 
     def __init__(self, x, y, control_type: ControlType, powers, colour, map, image='Player 1.png'):
         super().__init__(x, y)
-        self.solid = True
-        self.object_registry.add_to_global_solid_registry(self)
+        self.make_solid()
         self.powers = powers
         self.control_type = control_type
         self.opponent = None

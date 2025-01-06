@@ -8,13 +8,14 @@ import os
 sys.path.append(os.path.abspath('../'))
 import Config
 import math
+import utils
 
 
 class Bullet(GameObject):
 
     def __init__(self, x, y, x_speed, y_speed, owner: "GameObject", colour, attributes = list()):
         super().__init__(x, y)
-        self.rect = self.create_rect(x, y, 24, 24)
+        self.rect = utils.create_rect(x, y, 24, 24)
         self.x_speed = x_speed
         self.y_speed = y_speed
         self.owner = owner
@@ -38,7 +39,7 @@ class Bomb(GameObject):
 
     def __init__(self, x, y, owner, fuse, explosion_radius, attributes = list()):
         super().__init__(x, y)
-        self.rect = self.create_rect(x, y, 24, 24)
+        self.rect = utils.create_rect(x, y, 24, 24)
         self.x_speed = 0
         self.y_speed = 0
         self.owner = owner
@@ -64,7 +65,7 @@ class Sword(GameObject):
 
     def __init__(self, x, y, owner, damage, x_dir, y_dir, attributes = list()):
         super().__init__(x, y)
-        self.rect = self.create_rect(x, y, 256, 256)
+        self.rect = utils.create_rect(x, y, 256, 256)
         self.x_dir = x_dir
         self.y_dir = y_dir
         self.damage = damage
@@ -76,7 +77,7 @@ class Sword(GameObject):
         for i in range(NUM_FRAMES - 1):
             number = f"{i:05d}" #leading zeros
             image = pygame.image.load(os.path.join('assets', 'testing', 'Sword', f'Sword Slash_{number}.png'))
-            image_rot, self.rect = self.rot_center(image, self.rect, image_angle)
+            image_rot, self.rect = utils.rot_center(image, self.rect, image_angle)
             self.images.append(image_rot)
         self.image_index = 0
         self.curr_step = 0
@@ -100,7 +101,7 @@ class Sword(GameObject):
         if self.curr_step >= self.max_step:
             self.destroy(self)
         if self.curr_step >= self.active_frame_start and self.curr_step <= self.active_frame_end:
-            hitbox = self.owner.create_rect(self.owner.rect.centerx + (self.x_dir * 64), self.owner.rect.centery + (self.y_dir * 64), 64, 64)
+            hitbox = utils.create_rect(self.owner.rect.centerx + (self.x_dir * 64), self.owner.rect.centery + (self.y_dir * 64), 64, 64)
             solids_not_me = self.owner.solids_not_me()
             collide = hitbox.collideobjectsall(solids_not_me, key=lambda o: o.rect)
             if collide != []:
@@ -114,7 +115,7 @@ class SniperBullet(GameObject):
 
     def __init__(self, x, y, target: "GameObject", owner: "GameObject", colour, attributes = list()):
         super().__init__(x, y)
-        self.rect = self.create_rect(x, y, 24, 24)
+        self.rect = utils.create_rect(x, y, 24, 24)
         target_xdist = target.rect.centerx - self.rect.centerx
         target_ydist = target.rect.centery - self.rect.centery
         target_angle = math.atan2(-target_ydist, target_xdist)

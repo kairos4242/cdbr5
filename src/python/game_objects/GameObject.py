@@ -9,6 +9,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from powers.Animations import Animation
 from powers.Effects import Effect
+import utils
 
 class GameObject():
     
@@ -22,27 +23,13 @@ class GameObject():
         self.solid = False
         self.material = Material.NONE
         self.movespeed = 7
-        self.rect = self.create_rect(x, y, width, height)
+        self.rect = utils.create_rect(x, y, width, height)
         self.effects = [] #type: list[Effect]
         self.animation = None #type: Animation
         self.move_xdir = 0
         self.move_ydir = 0
         self.outside_force_x = 0
         self.outside_force_y = 0
-
-    def create_rect(self, x: int, y: int, width: int, height: int):
-        return pygame.Rect((x - width // 2, y - height // 2, width, height))
-    
-    def rot_center(self, image, rect, angle):
-        rot_image = pygame.transform.rotate(image, angle)
-        rot_rect = rot_image.get_rect(center=rect.center)
-        return rot_image,rot_rect
-    
-    def snap_to_grid(self, value):
-        return 64 * round(value/64)
-    
-    def get_colour_name(self, colour):
-        return str(colour).lstrip("Colours.")
 
     @abstractmethod
     def step(self):
@@ -64,18 +51,6 @@ class GameObject():
     
     def objects_my_type_not_me(self):
         return list(filter(lambda obj: id(obj) != id(self), self.object_registry.objects_by_type[str(type(self))]))
-    
-    def floor_int_bidirectional(self, value: float):
-        # makes sure floats that tend towards zero don't overshoot zero and start going in the other direction
-        if value < 1 and value > -1:
-            return 0
-        return value
-    
-    def round_float_down_bidirectional(self, value: float):
-        # like floor int bidirectional but doesn't only apply to values within the (-1, 1) range
-        abs_val = abs(value)
-        abs_floor = floor(abs_val)
-        return math.copysign(abs_floor, value)
 
     def deal_damage(self, target: "GameObject", damage, attributes: list[Attribute] = list()):
         target.hp -= damage
@@ -109,8 +84,8 @@ class GameObject():
             sign_force_y = int(copysign(1, self.outside_force_y))
         self.outside_force_x -= sign_force_x * 0.75
         self.outside_force_y -= sign_force_y * 0.75
-        self.outside_force_x = self.floor_int_bidirectional(self.outside_force_x)
-        self.outside_force_y = self.floor_int_bidirectional(self.outside_force_y)
+        self.outside_force_x = utils.floor_int_bidirectional(self.outside_force_x)
+        self.outside_force_y = utils.floor_int_bidirectional(self.outside_force_y)
 
 
     def move(self, move_x, move_y, outside_force_x, outside_force_y):
