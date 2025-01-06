@@ -19,7 +19,6 @@ class ObjectRegistry(object):
         self.objects_by_type[str(type(obj))].append(obj)
         self.objects_by_depth[depth].append(obj)
 
-
     def remove_from_global_object_registry(self, obj: "GameObject"):
         depth = obj.depth
         self.objects.remove(obj)
@@ -27,14 +26,15 @@ class ObjectRegistry(object):
         self.objects_by_depth[depth].remove(obj)
 
     def add_to_global_solid_registry(self, obj: "GameObject"):
-        print('added ' + str(id(obj)) + ' to solids')
+        #print('added ' + str(id(obj)) + ' to solids')
         self.solid_objects.append(obj)
 
     def remove_from_global_solid_registry(self, obj: "GameObject"):
         if obj in self.solid_objects:
             self.solid_objects.remove(obj)
         else:
-            print("object to remove not in solid list! skipping")
+            #print("object to remove not in solid list! skipping")
+            pass
 
     def get_objects(self):
         #returns objects sorted by depth in decreasing order, to ensure correct draw order

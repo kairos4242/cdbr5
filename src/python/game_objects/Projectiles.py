@@ -14,7 +14,7 @@ import utils
 class Bullet(GameObject):
 
     def __init__(self, x, y, x_speed, y_speed, owner: "GameObject", colour, attributes = list()):
-        super().__init__(x, y)
+        super().__init__(x, y, owner.command_registry)
         self.rect = utils.create_rect(x, y, 24, 24)
         self.x_speed = x_speed
         self.y_speed = y_speed
@@ -37,8 +37,8 @@ class Bullet(GameObject):
 
 class Bomb(GameObject):
 
-    def __init__(self, x, y, owner, fuse, explosion_radius, attributes = list()):
-        super().__init__(x, y)
+    def __init__(self, x, y, owner: "GameObject", fuse, explosion_radius, attributes = list()):
+        super().__init__(x, y, owner.command_registry)
         self.rect = utils.create_rect(x, y, 24, 24)
         self.x_speed = 0
         self.y_speed = 0
@@ -63,8 +63,8 @@ class Bomb(GameObject):
 
 class Sword(GameObject):
 
-    def __init__(self, x, y, owner, damage, x_dir, y_dir, attributes = list()):
-        super().__init__(x, y)
+    def __init__(self, x, y, owner: "GameObject", damage, x_dir, y_dir, attributes = list()):
+        super().__init__(x, y, owner.command_registry)
         self.rect = utils.create_rect(x, y, 256, 256)
         self.x_dir = x_dir
         self.y_dir = y_dir
@@ -114,7 +114,7 @@ class Sword(GameObject):
 class SniperBullet(GameObject):
 
     def __init__(self, x, y, target: "GameObject", owner: "GameObject", colour, attributes = list()):
-        super().__init__(x, y)
+        super().__init__(x, y, owner.command_registry)
         self.rect = utils.create_rect(x, y, 24, 24)
         target_xdist = target.rect.centerx - self.rect.centerx
         target_ydist = target.rect.centery - self.rect.centery

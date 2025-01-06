@@ -1,6 +1,7 @@
 from abc import abstractmethod
 from math import floor, copysign
 import math
+from CommandRegistry import CommandRegistry
 from Material import Material
 from ObjectRegistry import ObjectRegistry
 from Attribute import Attribute, ModificationType, Property
@@ -13,23 +14,119 @@ import utils
 
 class GameObject():
     
-    def __init__(self, x, y, height=64, width=64, depth=0):
+    def __init__(self, x, y, command_registry: "CommandRegistry", height=64, width=64, depth=0):
         self.object_registry = ObjectRegistry()
         self.object_registry.add_to_global_object_registry(self, depth)
         self.depth = depth #should be no need to modify this after creation? if there is then might need to move object in the registry
-        self.hp = 100
-        self.invulnerable = False
-        self.divine_shield = False
-        self.solid = False
-        self.material = Material.NONE
-        self.movespeed = 7
+        self._hp = 100
+        self._invulnerable = False
+        self._divine_shield = False
+        self._solid = False
+        self._material = Material.NONE
+        self._movespeed = 7
         self.rect = utils.create_rect(x, y, width, height)
         self.effects = [] #type: list[Effect]
-        self.animation = None #type: Animation
-        self.move_xdir = 0
-        self.move_ydir = 0
-        self.outside_force_x = 0
-        self.outside_force_y = 0
+        self._animation = None #type: Animation
+        self._move_xdir = 0
+        self._move_ydir = 0
+        self._outside_force_x = 0
+        self._outside_force_y = 0
+        self.command_registry = command_registry
+
+    def modify_property(self, property_name: str, value):
+        #property_name should be the name with the underscore, the internal var
+        curr_val = getattr(self, property_name)
+        if curr_val != value:
+            self.command_registry.add_modification(self, property_name.lstrip("_"), curr_val, value)
+            setattr(self, property_name, value)
+
+    @property
+    def hp(self):
+        return self._hp
+
+    @hp.setter
+    def hp(self, value):
+        self.modify_property("_hp", value)
+
+    @property
+    def invulnerable(self):
+        return self._invulnerable
+
+    @invulnerable.setter
+    def invulnerable(self, value):
+        self.modify_property("_invulnerable", value)
+
+    @property
+    def divine_shield(self):
+        return self._divine_shield
+
+    @divine_shield.setter
+    def divine_shield(self, value):
+        self.modify_property("_divine_shield", value)
+
+    @property
+    def solid(self):
+        return self._solid
+
+    @solid.setter
+    def solid(self, value):
+        self.modify_property("_solid", value)
+
+    @property
+    def material(self):
+        return self._material
+
+    @material.setter
+    def material(self, value):
+        self.modify_property("_material", value)
+
+    @property
+    def movespeed(self):
+        return self._movespeed
+
+    @movespeed.setter
+    def movespeed(self, value):
+        self.modify_property("_movespeed", value)
+
+    @property
+    def animation(self):
+        return self._animation
+
+    @animation.setter
+    def animation(self, value):
+        self.modify_property("_animation", value)
+
+    @property
+    def move_xdir(self):
+        return self._move_xdir
+
+    @move_xdir.setter
+    def move_xdir(self, value):
+        self.modify_property("_move_xdir", value)
+
+    @property
+    def move_ydir(self):
+        return self._move_ydir
+
+    @move_ydir.setter
+    def move_ydir(self, value):
+        self.modify_property("_move_ydir", value)
+
+    @property
+    def outside_force_x(self):
+        return self._outside_force_x
+
+    @outside_force_x.setter
+    def outside_force_x(self, value):
+        self.modify_property("_outside_force_x", value)
+
+    @property
+    def outside_force_y(self):
+        return self._outside_force_y
+
+    @outside_force_y.setter
+    def outside_force_y(self, value):
+        self.modify_property("_outside_force_y", value)
 
     @abstractmethod
     def step(self):
@@ -82,10 +179,16 @@ class GameObject():
             sign_force_x = int(copysign(1, self.outside_force_x))
         if self.outside_force_y != 0:
             sign_force_y = int(copysign(1, self.outside_force_y))
-        self.outside_force_x -= sign_force_x * 0.75
-        self.outside_force_y -= sign_force_y * 0.75
-        self.outside_force_x = utils.floor_int_bidirectional(self.outside_force_x)
-        self.outside_force_y = utils.floor_int_bidirectional(self.outside_force_y)
+        if self.outside_force_x != 0:
+            temp_force = self.outside_force_x #copying it to minimize modifications for property modification recording
+            temp_force -= sign_force_x * 0.75
+            temp_force = utils.floor_int_bidirectional(self.outside_force_x)
+            self.outside_force_x = temp_force
+        if self.outside_force_y != 0:
+            temp_force = self.outside_force_y
+            temp_force -= sign_force_y * 0.75
+            temp_force = utils.floor_int_bidirectional(self.outside_force_y)
+            self.outside_force_y = temp_force
 
 
     def move(self, move_x, move_y, outside_force_x, outside_force_y):

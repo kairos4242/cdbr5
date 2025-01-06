@@ -1,3 +1,5 @@
+from Clock import Clock
+from CommandRegistry import CommandRegistry
 from game_objects.Objects import Wall
 from game_objects.player import Player
 import pygame
@@ -12,9 +14,6 @@ import os
 
 class Map():
 
-    # list of all 8 directions on the board, as (x,y) offsets
-    __directions = [(1,1),(1,0),(1,-1),(0,-1),(-1,-1),(-1,0),(-1,1),(0,1)]
-
     def __init__(self):
         "Set up initial map configuration."
 
@@ -27,15 +26,6 @@ class Map():
         self.TUROK_30PT = pygame.freetype.Font("pygame_tutorial/assets/fonts/turok.ttf", 30)
         self.ARIAL_16PT = pygame.freetype.SysFont("Arial", 16)
 
-        self.player1 = Player(200, 400, ControlType.HUMAN,[], Colours.Red, self, image = 'Player 1.png')
-        self.player1.powers = [Powers.Shotgun(self.player1), Powers.SniperRifle(self.player1)]
-        self.player2 = Player(700, 400, ControlType.HUMAN_PLAYER2, [], Colours.Blue, self, image = 'Player 2.png')
-        self.player2.powers = [Powers.ChipDamage(self.player2), Powers.ChipDamage(self.player2)]
-
-
-        self.player1.opponent = self.player2
-        self.player2.opponent = self.player1
-
         self.background = pygame.image.load(os.path.join('assets', 'testing', 'Cream Black Background.png')).convert()
 
         self.screen_shake = 0
@@ -43,17 +33,29 @@ class Map():
 
         self.events = []
 
+        self.clock = Clock()
+        self.command_registry = CommandRegistry(self.clock)
+
+        self.player1 = Player(200, 400, ControlType.HUMAN,[], Colours.Red, self, self.command_registry, image = 'Player 1.png')
+        self.player1.powers = [Powers.Shotgun(self.player1), Powers.SniperRifle(self.player1)]
+        self.player2 = Player(700, 400, ControlType.HUMAN_PLAYER2, [], Colours.Blue, self, self.command_registry, image = 'Player 2.png')
+        self.player2.powers = [Powers.Sword(self.player2), Powers.ChipDamage(self.player2)]
+
+
+        self.player1.opponent = self.player2
+        self.player2.opponent = self.player1
+
         # do we need references to all the walls? maybe not?
 
         for i in range(150, 700, 64):
-            Wall(i, 200)
+            Wall(i, 200, self.command_registry)
 
         self.object_registry = ObjectRegistry()
 
         pygame.display.set_caption("CDBR5")
 
         # set frame rate
-        self.clock = pygame.time.Clock()
+        self.pygame_clock = pygame.time.Clock()
         self.FPS = 60
 
         self.game_loop()
@@ -63,7 +65,8 @@ class Map():
         run_game = True
         while run_game:
 
-            self.clock.tick(self.FPS)
+            self.pygame_clock.tick(self.FPS)
+            self.clock.tick()
 
             # event handler
             self.events = pygame.event.get()
@@ -87,7 +90,7 @@ class Map():
     def draw_game_objects(self):
         #self.screen.fill(Colours.PapayaWhip.value)
         self.screen.blit(self.background)
-        self.ARIAL_16PT.render_to(self.screen, (0, 0), str(self.clock.get_fps()), Colours.Black.value)
+        self.ARIAL_16PT.render_to(self.screen, (0, 0), str(self.pygame_clock.get_fps()), Colours.Black.value)
         p1_hp = self.player1.hp
         p2_hp = self.player2.hp
         self.ARIAL_16PT.render_to(self.screen, (860, 30), str(p1_hp) + "/100", Colours.Black.value)

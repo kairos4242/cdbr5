@@ -1,3 +1,4 @@
+from CommandRegistry import CommandRegistry
 from game_objects.GameObject import GameObject
 import pygame
 from Colours import Colours
@@ -7,8 +8,8 @@ import os
 
 class Player(GameObject):
 
-    def __init__(self, x, y, control_type: ControlType, powers, colour, map, image='Player 1.png'):
-        super().__init__(x, y)
+    def __init__(self, x, y, control_type: ControlType, powers, colour, map, command_registry: "CommandRegistry", image='Player 1.png'):
+        super().__init__(x, y, command_registry)
         self.make_solid()
         self.powers = powers
         self.control_type = control_type

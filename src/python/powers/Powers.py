@@ -24,6 +24,7 @@ class Power():
         self.cooldown = cooldown
         self.max_cooldown = max_cooldown
         self.owner = owner
+        self.command_registry = self.owner.command_registry
         self.uses = uses
 
     def step(self):

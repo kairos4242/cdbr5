@@ -1,6 +1,5 @@
 from math import copysign
 import pygame
-from Colours import Colours
 from game_objects import Projectiles
 from game_objects.GameObject import GameObject
 import os
@@ -10,8 +9,8 @@ import utils
 
 class Wall(GameObject):
 
-    def __init__(self, x, y):
-        super().__init__(x, y)
+    def __init__(self, x, y, command_registry):
+        super().__init__(x, y, command_registry)
         self.make_solid()
         self.image = pygame.image.load(os.path.join('assets', 'testing', 'Wall.png')).convert_alpha()
 
@@ -22,7 +21,7 @@ class Wall(GameObject):
 class ConveyorBelt(GameObject):
 
     def __init__(self, x, y, owner, x_dir, y_dir):
-        super().__init__(x, y, depth = 100)
+        super().__init__(x, y, owner.command_registry, depth = 100)
         self.owner = owner
         self.x_dir = x_dir
         self.y_dir = y_dir
@@ -98,7 +97,7 @@ class ConveyorBelt(GameObject):
 class Turret(GameObject):
 
     def __init__(self, x, y, owner, x_dir, y_dir):
-        super().__init__(x, y, depth = 100)
+        super().__init__(x, y, owner.command_registry, depth = 100)
         self.owner = owner
         self.x_dir = x_dir
         self.y_dir = y_dir
