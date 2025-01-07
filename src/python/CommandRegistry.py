@@ -8,6 +8,8 @@ if TYPE_CHECKING:
     from commands.Command import Command
 from commands.PropertyModification import PropertyModification
 
+import pickle
+
 class CommandRegistry:
     
     def __init__(self, clock: Clock):
@@ -44,3 +46,6 @@ class CommandRegistry:
             self.active_command.objects_destroyed.append(destruction)
         else:
             self.other_destructions.append(destruction)
+
+    def save_replay(self, filename: str):
+        output = pickle.dumps(self)
