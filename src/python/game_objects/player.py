@@ -32,6 +32,9 @@ class Player(GameObject):
         for power in self.powers:
             power.step()
 
+        if self.animation != None:
+            self.animation.step()
+
         for effect in self.effects:
             if effect.duration == 0:
                 self.effects.remove(effect)
