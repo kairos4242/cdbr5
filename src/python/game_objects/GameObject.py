@@ -1,7 +1,7 @@
 from abc import abstractmethod
 from math import floor, copysign
 import math
-from CommandRegistry import CommandRegistry
+
 from Material import Material
 from ObjectRegistry import ObjectRegistry
 from Attribute import Attribute, ModificationType, Property
@@ -9,6 +9,7 @@ import pygame
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from powers.Animations import Animation
+    from CommandRegistry import CommandRegistry
 from powers.Effects import Effect
 import utils
 
@@ -32,6 +33,7 @@ class GameObject():
         self._outside_force_x = 0
         self._outside_force_y = 0
         self.command_registry = command_registry
+        self.command_registry.add_creation(self)
 
     def modify_property(self, property_name: str, value):
         #property_name should be the name with the underscore, the internal var
@@ -160,6 +162,7 @@ class GameObject():
     def destroy(self, target):
         self.object_registry.remove_from_global_object_registry(target)
         self.object_registry.remove_from_global_solid_registry(target)
+        self.command_registry.add_destruction(target)
 
     def calculate_movespeed(self) -> float:
         base_movespeed = self.movespeed

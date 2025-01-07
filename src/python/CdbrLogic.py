@@ -35,6 +35,7 @@ class Map():
 
         self.clock = Clock()
         self.command_registry = CommandRegistry(self.clock)
+        self.object_registry = ObjectRegistry()
 
         self.player1 = Player(200, 400, ControlType.HUMAN,[], Colours.Red, self, self.command_registry, image = 'Player 1.png')
         self.player1.powers = [Powers.Shotgun(self.player1), Powers.SniperRifle(self.player1)]
@@ -49,8 +50,6 @@ class Map():
 
         for i in range(150, 700, 64):
             Wall(i, 200, self.command_registry)
-
-        self.object_registry = ObjectRegistry()
 
         pygame.display.set_caption("CDBR5")
 

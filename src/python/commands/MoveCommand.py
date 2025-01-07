@@ -1,13 +1,17 @@
 from abc import abstractmethod
 
+
 from commands.Command import Command
-from game_objects.player import Player
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from game_objects.player import Player
+    from CommandRegistry import CommandRegistry
 
 
 class MoveCommand(Command):
 
-    def __init__(self, target: "Player"):
-        super().__init__(target)
+    def __init__(self, target: "Player", command_registry: "CommandRegistry"):
+        super().__init__(target, command_registry)
         self.pre_x = None
         self.pre_y = None
 

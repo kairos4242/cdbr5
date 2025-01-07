@@ -1,4 +1,6 @@
 from CommandRegistry import CommandRegistry
+from commands.MoveCommand import MoveCommand
+from commands.UsePowerCommand import UsePowerCommand
 from game_objects.GameObject import GameObject
 import pygame
 from Colours import Colours
@@ -67,28 +69,28 @@ class Player(GameObject):
         self.move_xdir = (-key_left + key_right)
         self.move_ydir = (-key_up + key_down)
 
-        if self.animation != None:
-            if self.animation.recast == True:
-                if key_shoot:
-                    self.use_power(0)
-            if self.animation.move_allowed:
-                self.move_direction(self.move_xdir, self.move_ydir, movespeed, self.outside_force_x, self.outside_force_y, True)
-            self.animation.step()
-        else:
-            if key_shoot:
-                self.use_power(0) #this is bad practice, better way to do this without repeating?
-            elif key_power2:
-                self.use_power(1)
-            self.move_direction(self.move_xdir, self.move_ydir, movespeed, self.outside_force_x, self.outside_force_y, True)
-        
+        self.move()
+
+        if key_shoot:
+            self.use_power(0)
+        if key_power2:
+            self.use_power(1)
 
         self.apply_friction()
 
+    def move(self):
+        if self.animation != None:
+            if not self.animation.move_allowed:
+                return
+        MoveCommand(self, self.command_registry).execute()
+
     def use_power(self, power_num: int):
+        if self.animation != None:
+            if self.animation.recast != True:
+                return
         power_to_use = self.powers[power_num]
         if power_to_use.cooldown == 0:
-            power_to_use.cooldown = power_to_use.max_cooldown
-            power_to_use.on_use()
+            UsePowerCommand(power_to_use, self, self.command_registry).execute()
 
     def get_direction_to_opponent(self):
         x = self.rect.centerx - self.opponent.rect.centerx
