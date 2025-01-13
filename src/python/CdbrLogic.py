@@ -11,6 +11,8 @@ from Colours import Colours
 import Config
 from powers import Powers
 import os
+import ctypes
+ctypes.windll.user32.SetProcessDPIAware()
 
 class Map():
 
