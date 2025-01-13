@@ -1,6 +1,6 @@
 from Colours import Colours
 from game_objects import Objects, Projectiles
-from game_objects.Projectiles import Bullet
+from game_objects.Projectiles import AtlasBullet, Bullet
 from game_objects.GameObject import GameObject
 from powers.Animations import BodySlamAnimation, DashAnimation, FalconPunchAnimation, PlayfulAnimation, SniperRifleAnimation
 from powers.Effects import Effect
@@ -199,3 +199,13 @@ class ChipDamage(Power):
 
     def on_use(self):
         self.owner.deal_damage(self.owner.opponent, 1)
+
+class AtlasStone(Power):
+    def __init__(self, owner: "Player"):
+        super().__init__(30, 30, owner, None)
+        self.damage = 1
+
+    def on_use(self):
+        movespeed = 7
+        bullet_point = (self.owner.rect.centerx + self.owner.move_xdir * 96, self.owner.rect.centery + self.owner.move_ydir * 96)
+        AtlasBullet(bullet_point[0], bullet_point[1], self.owner.move_xdir * movespeed, self.owner.move_ydir * movespeed, self.owner, self.owner.colour, self)

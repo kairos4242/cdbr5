@@ -5,6 +5,9 @@ from Colours import Colours
 from game_objects.GameObject import GameObject
 import sys
 import os
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from powers.Powers import AtlasStone
 sys.path.append(os.path.abspath('../'))
 import Config
 import math
@@ -72,12 +75,11 @@ class Sword(GameObject):
         self.owner = owner
         self.attributes = attributes
         image_angle = math.degrees(math.atan2(-self.y_dir, self.x_dir))#y is negative because arctan assumes y increasing upward but y increases downward in pygame
-        NUM_FRAMES = 20
+        pre_images = [image for image in SWORD_IMAGES]
         self.images = []
+        NUM_FRAMES = 20
         for i in range(NUM_FRAMES - 1):
-            number = f"{i:05d}" #leading zeros
-            image = pygame.image.load(os.path.join('assets', 'testing', 'Sword', f'Sword Slash_{number}.png'))
-            image_rot, self.rect = utils.rot_center(image, self.rect, image_angle)
+            image_rot, self.rect = utils.rot_center(pre_images[i], self.rect, image_angle)
             self.images.append(image_rot)
         self.image_index = 0
         self.curr_step = 0
@@ -139,3 +141,38 @@ class SniperBullet(GameObject):
             if collide != self.owner:
                 self.deal_damage(collide, self.damage, self.attributes)
                 self.destroy(self)
+
+class AtlasBullet(GameObject):
+
+    def __init__(self, x, y, x_speed, y_speed, owner: "GameObject", colour, power: "AtlasStone", attributes = list()):
+        super().__init__(x, y, owner.command_registry)
+        self.rect = utils.create_rect(x, y, 128, 128)
+        self.x_speed = x_speed
+        self.y_speed = y_speed
+        self.owner = owner
+        self.attributes = attributes
+        self.colour = colour
+        self.power = power
+        self.damage = power.damage
+
+    def draw(self, surface):
+        pygame.draw.rect(surface, self.colour.value, self.rect)
+
+    def step(self):
+        self.move(self.x_speed, self.y_speed, 0, 0)
+        if self.rect.centerx < -16 or self.rect.centerx > Config.SCREEN_WIDTH or self.rect.centery < -16 or self.rect.centery > Config.SCREEN_HEIGHT:
+            self.destroy(self)
+        collide = self.rect.collideobjects(self.solids_not_me(), key=lambda o: o.rect)
+        if collide != None:
+            if collide != self.owner:
+                if collide == self.owner.opponent:
+                    self.power.damage *= 2 #should this factor in stuff like strength? what's an elegant way to do that?
+                self.deal_damage(collide, self.damage, self.attributes)
+                self.destroy(self)
+
+SWORD_IMAGES = []
+NUM_FRAMES = 20
+for i in range(NUM_FRAMES - 1):
+    number = f"{i:05d}" #leading zeros
+    image = pygame.image.load(os.path.join('assets', 'testing', 'Sword', f'Sword Slash_{number}.png'))
+    SWORD_IMAGES.append(image)
