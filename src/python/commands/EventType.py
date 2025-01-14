@@ -1,0 +1,6 @@
+from enum import Enum
+
+class EventType(Enum):
+    OBJECT_CREATE = "OBJECT_CREATE"
+    OBJECT_DESTROY = "OBJECT_DESTROY"
+    PROPERTY_CHANGE = "PROPERTY_CHANGE"

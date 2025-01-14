@@ -1,5 +1,6 @@
 from Clock import Clock
 from CommandRegistry import CommandRegistry
+from commands.EventManager import EventManager
 from game_objects.Objects import Wall
 from game_objects.player import Player
 import pygame
@@ -36,11 +37,12 @@ class Map():
         self.events = []
 
         self.clock = Clock()
-        self.command_registry = CommandRegistry(self.clock)
+        self.event_manager = EventManager()
+        self.command_registry = CommandRegistry(self.clock, self.event_manager)
         self.object_registry = ObjectRegistry()
 
         self.player1 = Player(200, 400, ControlType.HUMAN,[], Colours.Red, self, self.command_registry, image = 'Player 1.png')
-        self.player1.powers = [Powers.HealthInvestment(self.player1), Powers.FastLife(self.player1)]
+        self.player1.powers = [Powers.HealthInvestment(self.player1), Powers.FastLife(self.player1), Powers.BloodKnight(self.player1)]
         self.player2 = Player(700, 400, ControlType.HUMAN_PLAYER2, [], Colours.Blue, self, self.command_registry, image = 'Player 2.png')
         self.player2.powers = [Powers.Sword(self.player2), Powers.ChipDamage(self.player2)]
 

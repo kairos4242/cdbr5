@@ -1,4 +1,8 @@
+import random
 from Colours import Colours
+from commands.Event import Event
+from commands.EventListener import EventListener
+from commands.EventType import EventType
 from game_objects import Objects, Projectiles
 from game_objects.Projectiles import AtlasBullet, Bullet
 from game_objects.GameObject import GameObject
@@ -12,7 +16,7 @@ if TYPE_CHECKING:
 import utils
 
 
-class Power():
+class Power(EventListener):
 
     def __init__(self):
         self.max_cooldown = 100
@@ -250,3 +254,16 @@ class FastLife(Power):
         damage_amount = math.floor(self.owner.hp - 1)
         self.owner.max_hp = self.owner.max_hp * 2
         self.owner.deal_damage(self.owner, damage_amount)
+
+class BloodKnight(Power):
+
+    def __init__(self, owner: "Player"):
+        super().__init__(30, 30, owner, None)
+        self.command_registry.event_manager.subscribe(EventType.PROPERTY_CHANGE, "hp", self)
+
+    def notify(self, event: Event):
+        if event.target == self.owner:
+            x_offset = random.randint(-256, 256)
+            y_offset = random.randint(-256, 256)
+            storm_point = (self.owner.rect.centerx + x_offset, self.owner.rect.centery + y_offset)
+            Objects.Storm(storm_point[0], storm_point[1], 1200, self.owner, self.owner.colour)
