@@ -3,6 +3,7 @@ from Colours import Colours
 from commands.Event import Event
 from commands.EventListener import EventListener
 from commands.EventType import EventType
+from commands.PowerUsageEvent import PowerUsageEvent
 from game_objects import Objects, Projectiles
 from game_objects.Projectiles import AtlasBullet, Bullet
 from game_objects.GameObject import GameObject
@@ -39,7 +40,7 @@ class Power(EventListener):
         pass
 
     def on_use(self):
-        pass
+        self.command_registry.add_power_used(self)
 
     def on_remove(self):
         pass
@@ -50,6 +51,7 @@ class Sprint(Power):
         super().__init__(30, 30, owner, None)
 
     def on_use(self):
+        super().on_use()
         #get a movespeed aura for 1 second
         speed_aura = Effect("Sprint", 60, self.owner, Property.MOVESPEED, ModificationType.PERCENT, 50)
         self.owner.effects.append(speed_aura)
@@ -60,6 +62,7 @@ class Blink(Power):
         super().__init__(30, 30, owner, None)
 
     def on_use(self):
+        super().on_use()
         # teleport
         teleport_dist = 256
         self.owner.move_tangible(teleport_dist * self.owner.move_xdir, teleport_dist * self.owner.move_ydir)
@@ -69,6 +72,7 @@ class Dash(Power):
         super().__init__(30, 30, owner, None)
 
     def on_use(self):
+        super().on_use()
         self.owner.animation = DashAnimation(10, self.owner.move_xdir, self.owner.move_ydir, self.owner, 25)
 
 class AggressiveDash(Power):
@@ -76,6 +80,7 @@ class AggressiveDash(Power):
         super().__init__(30, 30, owner, None)
 
     def on_use(self):
+        super().on_use()
         x, y = self.owner.get_direction_to_opponent()
         self.owner.animation = DashAnimation(10, -x, -y, self.owner, 25)
 
@@ -85,6 +90,7 @@ class DefensiveDash(Power):
         super().__init__(30, 30, owner, None)
 
     def on_use(self):
+        super().on_use()
         x, y = self.owner.get_direction_to_opponent()
         self.owner.animation = DashAnimation(10, x, y, self.owner, 25)
 
@@ -93,6 +99,7 @@ class PlayfulTrickster(Power):
         super().__init__(30, 30, owner, None)
 
     def on_use(self):
+        super().on_use()
         if isinstance(self.owner.animation, PlayfulAnimation):
             self.owner.animation = DashAnimation(10, self.owner.move_xdir, self.owner.move_ydir, self.owner, 25)
         else:
@@ -103,6 +110,7 @@ class ConveyorBelt(Power):
         super().__init__(30, 30, owner, None)
 
     def on_use(self):
+        super().on_use()
         #create a conveyor belt in the direction of movement
         #namespace pollution issue here with conveyor belt power and conveyor belt object
         original_x = self.owner.rect.centerx + (64 * self.owner.move_xdir)
@@ -122,6 +130,7 @@ class Swap(Power):
         super().__init__(30, 30, owner, None)
 
     def on_use(self):
+        super().on_use()
         # python syntax for swap in place
         self.owner.rect.x, self.owner.rect.y, self.owner.opponent.rect.x, self.owner.opponent.rect.y = self.owner.opponent.rect.x, self.owner.opponent.rect.y, self.owner.rect.x, self.owner.rect.y
 
@@ -130,6 +139,7 @@ class CrossCannon(Power):
         super().__init__(30, 30, owner, None)
 
     def on_use(self):
+        super().on_use()
         #create four projectiles around owner, one going in each cardinal direction
         Bullet(self.owner.rect.centerx, self.owner.rect.centery - 50, 0, -8, self.owner, self.owner.colour)
         Bullet(self.owner.rect.centerx, self.owner.rect.centery + 50, 0, 8, self.owner, self.owner.colour)
@@ -141,6 +151,7 @@ class FalconPunch(Power):
         super().__init__(30, 30, owner, None)
 
     def on_use(self):
+        super().on_use()
         self.owner.animation = FalconPunchAnimation(self.owner)
 
 class BodySlam(Power):
@@ -148,6 +159,7 @@ class BodySlam(Power):
         super().__init__(30, 30, owner, None)
 
     def on_use(self):
+        super().on_use()
         self.owner.animation = BodySlamAnimation(self.owner)
 
 class Bomb(Power):
@@ -155,6 +167,7 @@ class Bomb(Power):
         super().__init__(30, 30, owner, None)
 
     def on_use(self):
+        super().on_use()
         Projectiles.Bomb(self.owner.rect.centerx, self.owner.rect.centery, self.owner, 60, 128)
 
 class Sword(Power):
@@ -162,6 +175,7 @@ class Sword(Power):
         super().__init__(30, 30, owner, None)
 
     def on_use(self):
+        super().on_use()
         Projectiles.Sword(self.owner.rect.centerx, self.owner.rect.centery, self.owner, 15, self.owner.move_xdir, self.owner.move_ydir)
 
 class Turret(Power):
@@ -169,6 +183,7 @@ class Turret(Power):
         super().__init__(150, 150, owner, None)
 
     def on_use(self):
+        super().on_use()
         original_x = self.owner.rect.centerx + (64 * self.owner.move_xdir)
         snapped_x = utils.snap_to_grid(original_x)
         original_y = self.owner.rect.centery + (64 * self.owner.move_ydir)
@@ -180,6 +195,7 @@ class Shotgun(Power):
         super().__init__(30, 30, owner, None)
 
     def on_use(self):
+        super().on_use()
         move_angle = math.degrees(math.atan2(-self.owner.move_ydir, self.owner.move_xdir))
         bullet_point = (self.owner.rect.centerx + self.owner.move_xdir * 50, self.owner.rect.centery + self.owner.move_ydir * 50)
         spread = 10
@@ -195,6 +211,7 @@ class SniperRifle(Power):
         super().__init__(30, 30, owner, None)
 
     def on_use(self):
+        super().on_use()
         self.owner.animation = SniperRifleAnimation(self.owner)
 
 class ChipDamage(Power):
@@ -202,6 +219,7 @@ class ChipDamage(Power):
         super().__init__(30, 30, owner, None)
 
     def on_use(self):
+        super().on_use()
         self.owner.deal_damage(self.owner.opponent, 1)
 
 class AtlasStone(Power):
@@ -210,6 +228,7 @@ class AtlasStone(Power):
         self.damage = 1
 
     def on_use(self):
+        super().on_use()
         movespeed = 7
         bullet_point = (self.owner.rect.centerx + self.owner.move_xdir * 96, self.owner.rect.centery + self.owner.move_ydir * 96)
         AtlasBullet(bullet_point[0], bullet_point[1], self.owner.move_xdir * movespeed, self.owner.move_ydir * movespeed, self.owner, self.owner.colour, self)
@@ -219,6 +238,7 @@ class Storm(Power):
         super().__init__(30, 30, owner, None)
 
     def on_use(self):
+        super().on_use()
         storm_point = (self.owner.rect.centerx + self.owner.move_xdir * 96, self.owner.rect.centery + self.owner.move_ydir * 96)
         Objects.Storm(storm_point[0], storm_point[1], 1200, self.owner, self.owner.colour)
 
@@ -231,6 +251,7 @@ class HealthInvestment(Power):
         self.active = False
 
     def on_use(self):
+        super().on_use()
         self.active = True
         self.heal_cooldown = self.max_heal_cooldown
         damage_amount = math.floor(self.owner.hp / 2)
@@ -251,6 +272,7 @@ class FastLife(Power):
         super().__init__(30, 30, owner, None)
 
     def on_use(self):
+        super().on_use()
         damage_amount = math.floor(self.owner.hp - 1)
         self.owner.max_hp = self.owner.max_hp * 2
         self.owner.deal_damage(self.owner, damage_amount)
@@ -259,7 +281,7 @@ class BloodKnight(Power):
 
     def __init__(self, owner: "Player"):
         super().__init__(30, 30, owner, None)
-        self.command_registry.event_manager.subscribe(EventType.PROPERTY_CHANGE, "hp", self)
+        self.command_registry.event_manager.subscribe(EventType.PROPERTY_MODIFICATION, "hp", self)
 
     def notify(self, event: Event):
         if event.target == self.owner:
@@ -267,3 +289,22 @@ class BloodKnight(Power):
             y_offset = random.randint(-256, 256)
             storm_point = (self.owner.rect.centerx + x_offset, self.owner.rect.centery + y_offset)
             Objects.Storm(storm_point[0], storm_point[1], 1200, self.owner, self.owner.colour)
+
+class Normality(Power):
+
+    def __init__(self, owner: "Player"):
+        super().__init__(30, 30, owner, None)
+        self.command_registry.event_manager.subscribe(EventType.POWER_USAGE, None, self)
+
+    def notify(self, event: Event):
+        if event.target == self.owner.opponent:
+            self.owner.deal_damage(self.owner.opponent, 1)
+
+class Commonality(Power):
+
+    def __init__(self, owner: "Player"):
+        super().__init__(30, 30, owner, None)
+        self.command_registry.event_manager.subscribe(EventType.POWER_USAGE, None, self)
+
+    def notify(self, event: Event):
+        self.owner.deal_damage(event.target, 1)

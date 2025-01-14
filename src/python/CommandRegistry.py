@@ -1,11 +1,15 @@
 from typing import TYPE_CHECKING
 
 from Clock import Clock
+from commands.CreationEvent import CreationEvent
+from commands.DestructionEvent import DestructionEvent
 from commands.Event import Event
 from commands.EventManager import EventManager
 from commands.EventType import EventType
 from commands.ObjectCreation import ObjectCreation
 from commands.ObjectDestruction import ObjectDestruction
+from commands.PowerUsageEvent import PowerUsageEvent
+from commands.PropertyModificationEvent import PropertyModificationEvent
 from game_objects.GameObject import GameObject
 if TYPE_CHECKING:
     from commands.Command import Command
@@ -33,9 +37,9 @@ class CommandRegistry:
         #having both of these should be temporary, modification should be phased out in favour of more generic event
         modification = PropertyModification(target, property_name, property_old_value, property_new_value, self.clock.get_ticks())
 
-        event = Event(EventType.PROPERTY_CHANGE, target, property_old_value, property_new_value, self.clock.get_ticks(), property_name)
+        event = PropertyModificationEvent(None, target, self.clock.get_ticks(), property_name, property_old_value, property_new_value)
         self.event_manager.notify(event)
-        
+
         if self.active_command != None:
             self.active_command.property_modifications.append(modification)
         else:
@@ -44,7 +48,7 @@ class CommandRegistry:
     def add_creation(self, object: "GameObject"):
         # should this allow optionally passing in a timestamp?
         creation = ObjectCreation(object, self.clock.get_ticks())
-        event = Event(EventType.OBJECT_CREATE, object, False, True, self.clock.get_ticks())
+        event = CreationEvent(None, object, self.clock.get_ticks())
         self.event_manager.notify(event)
 
         if self.active_command != None:
@@ -54,13 +58,18 @@ class CommandRegistry:
 
     def add_destruction(self, object: "GameObject"):
         destruction = ObjectDestruction(object, self.clock.get_ticks())
-        event = Event(EventType.OBJECT_DESTROY, object, True, False, self.clock.get_ticks())
+        event = DestructionEvent(None, object, self.clock.get_ticks())
         self.event_manager.notify(event)
 
         if self.active_command != None:
             self.active_command.objects_destroyed.append(destruction)
         else:
             self.other_destructions.append(destruction)
+
+    def add_power_used(self, power):
+        event = PowerUsageEvent(power.owner, power.owner, self.clock.get_ticks(), power)
+        # maybe need to ponder a bit more here about what precisely source and target means in this context?
+        self.event_manager.notify(event)
 
     def save_replay(self, filename: str):
         output = pickle.dumps(self)
