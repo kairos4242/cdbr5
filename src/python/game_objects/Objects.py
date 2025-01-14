@@ -131,3 +131,34 @@ class Turret(GameObject):
 
     def draw(self, surface):
         surface.blit(self.image, (self.rect.x, self.rect.y))
+
+class Storm(GameObject):
+
+    def __init__(self, x, y, duration, owner: "GameObject", colour, attributes = list()):
+        super().__init__(x, y, owner.command_registry)
+        self.rect = utils.create_rect(x, y, 256, 256)
+        self.duration = duration
+        self.owner = owner
+        self.attributes = attributes
+        self.colour = colour
+        self.image = pygame.Surface((self.rect.width, self.rect.height))
+        self.image.set_alpha(128)
+        self.image.fill(self.colour.value)
+        self.cooldown = 60 #should storms deal damage on cooldown? should it be on entry? should it just be a shorter cooldown?
+        self.max_cooldown = 60
+        
+
+    def draw(self, surface):
+        surface.blit(self.image, (self.rect.x, self.rect.y))
+
+    def step(self):
+        self.duration -= 1
+        self.cooldown -= 1
+        if self.cooldown == 0:
+            self.cooldown = self.max_cooldown
+            collide = self.rect.collideobjects(self.solids_not_me(), key=lambda o: o.rect)
+            if collide != None:
+                if collide != self.owner:
+                    self.deal_damage(collide, 5, self.attributes)
+        if self.duration <= 0:
+            self.destroy(self)

@@ -20,6 +20,7 @@ class GameObject():
         self.object_registry.add_to_global_object_registry(self, depth)
         self.depth = depth #should be no need to modify this after creation? if there is then might need to move object in the registry
         self._hp = 100
+        self._max_hp = 100
         self._invulnerable = False
         self._divine_shield = False
         self._solid = False
@@ -49,6 +50,14 @@ class GameObject():
     @hp.setter
     def hp(self, value):
         self.modify_property("_hp", value)
+
+    @property
+    def max_hp(self):
+        return self._max_hp
+
+    @max_hp.setter
+    def max_hp(self, value):
+        self.modify_property("_max_hp", value)
 
     @property
     def invulnerable(self):
@@ -158,6 +167,10 @@ class GameObject():
                 target.animation = None
         if target.hp <= 0:
             self.destroy(target)
+
+    def heal(self, target: "GameObject", hp, attributes: list[Attribute] = list()):
+        print("health options", target.hp + hp, target.max_hp)
+        target.hp = min(target.hp + hp, target.max_hp)
 
     def destroy(self, target):
         self.object_registry.remove_from_global_object_registry(target)

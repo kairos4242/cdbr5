@@ -209,3 +209,44 @@ class AtlasStone(Power):
         movespeed = 7
         bullet_point = (self.owner.rect.centerx + self.owner.move_xdir * 96, self.owner.rect.centery + self.owner.move_ydir * 96)
         AtlasBullet(bullet_point[0], bullet_point[1], self.owner.move_xdir * movespeed, self.owner.move_ydir * movespeed, self.owner, self.owner.colour, self)
+
+class Storm(Power):
+    def __init__(self, owner: "Player"):
+        super().__init__(30, 30, owner, None)
+
+    def on_use(self):
+        storm_point = (self.owner.rect.centerx + self.owner.move_xdir * 96, self.owner.rect.centery + self.owner.move_ydir * 96)
+        Objects.Storm(storm_point[0], storm_point[1], 1200, self.owner, self.owner.colour)
+
+class HealthInvestment(Power):
+    def __init__(self, owner: "Player"):
+        super().__init__(30, 30, owner, None)
+        self.heal_cooldown = 0
+        self.max_heal_cooldown = 120
+        self.heal_amount = 0
+        self.active = False
+
+    def on_use(self):
+        self.active = True
+        self.heal_cooldown = self.max_heal_cooldown
+        damage_amount = math.floor(self.owner.hp / 2)
+        self.heal_amount = damage_amount * 2
+        self.owner.deal_damage(self.owner, damage_amount)
+
+    def step(self):
+        super().step()
+        if self.heal_cooldown == 0 and self.active == True:
+            self.active = False
+            print("healing for", self.heal_amount)
+            self.owner.heal(self.owner, self.heal_amount)
+        if self.heal_cooldown > 0:
+            self.heal_cooldown -= 1
+        
+class FastLife(Power):
+    def __init__(self, owner: "Player"):
+        super().__init__(30, 30, owner, None)
+
+    def on_use(self):
+        damage_amount = math.floor(self.owner.hp - 1)
+        self.owner.max_hp = self.owner.max_hp * 2
+        self.owner.deal_damage(self.owner, damage_amount)

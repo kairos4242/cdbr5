@@ -40,7 +40,7 @@ class Map():
         self.object_registry = ObjectRegistry()
 
         self.player1 = Player(200, 400, ControlType.HUMAN,[], Colours.Red, self, self.command_registry, image = 'Player 1.png')
-        self.player1.powers = [Powers.AtlasStone(self.player1), Powers.SniperRifle(self.player1)]
+        self.player1.powers = [Powers.HealthInvestment(self.player1), Powers.FastLife(self.player1)]
         self.player2 = Player(700, 400, ControlType.HUMAN_PLAYER2, [], Colours.Blue, self, self.command_registry, image = 'Player 2.png')
         self.player2.powers = [Powers.Sword(self.player2), Powers.ChipDamage(self.player2)]
 
@@ -93,9 +93,11 @@ class Map():
         self.screen.blit(self.background)
         self.ARIAL_16PT.render_to(self.screen, (0, 0), str(self.pygame_clock.get_fps()), Colours.Black.value)
         p1_hp = self.player1.hp
+        p1_max_hp = self.player1.max_hp
         p2_hp = self.player2.hp
-        self.ARIAL_16PT.render_to(self.screen, (860, 30), str(p1_hp) + "/100", Colours.Black.value)
-        self.ARIAL_16PT.render_to(self.screen, (1060, 30), str(p2_hp) + "/100", Colours.Black.value)
+        p2_max_hp = self.player2.max_hp
+        self.ARIAL_16PT.render_to(self.screen, (860, 30), str(p1_hp) + "/" + str(p1_max_hp), Colours.Black.value)
+        self.ARIAL_16PT.render_to(self.screen, (1060, 30), str(p2_hp) + "/" + str(p2_max_hp), Colours.Black.value)
         p1_animation = self.player1.animation
         if p1_animation != None:
             self.ARIAL_16PT.render_to(self.screen, (400, 0), str(p1_animation.__class__.__name__), Colours.Black.value)
