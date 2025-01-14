@@ -1,9 +1,6 @@
 from abc import abstractmethod
 import math
 import random
-
-import pygame
-
 from Colours import Colours
 from game_objects import Projectiles
 from game_objects.GameObject import GameObject

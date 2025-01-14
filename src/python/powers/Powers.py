@@ -11,6 +11,7 @@ from powers.Animations import BodySlamAnimation, DashAnimation, FalconPunchAnima
 from powers.Effects import Effect
 from Attribute import ModificationType, Property
 import math
+import Constants
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from game_objects.player import Player
@@ -230,7 +231,7 @@ class AtlasStone(Power):
     def on_use(self):
         super().on_use()
         movespeed = 7
-        bullet_point = (self.owner.rect.centerx + self.owner.move_xdir * 96, self.owner.rect.centery + self.owner.move_ydir * 96)
+        bullet_point = (self.owner.rect.centerx + self.owner.move_xdir * Constants.PLAYER_SIZE_WITH_MARGIN, self.owner.rect.centery + self.owner.move_ydir * Constants.PLAYER_SIZE_WITH_MARGIN)
         AtlasBullet(bullet_point[0], bullet_point[1], self.owner.move_xdir * movespeed, self.owner.move_ydir * movespeed, self.owner, self.owner.colour, self)
 
 class Storm(Power):
@@ -239,7 +240,7 @@ class Storm(Power):
 
     def on_use(self):
         super().on_use()
-        storm_point = (self.owner.rect.centerx + self.owner.move_xdir * 96, self.owner.rect.centery + self.owner.move_ydir * 96)
+        storm_point = (self.owner.rect.centerx + self.owner.move_xdir * Constants.PLAYER_SIZE_WITH_MARGIN, self.owner.rect.centery + self.owner.move_ydir * Constants.PLAYER_SIZE_WITH_MARGIN)
         Objects.Storm(storm_point[0], storm_point[1], 1200, self.owner, self.owner.colour)
 
 class HealthInvestment(Power):
@@ -308,3 +309,36 @@ class Commonality(Power):
 
     def notify(self, event: Event):
         self.owner.deal_damage(event.target, 1)
+
+class Deference(Power):
+    def __init__(self, owner: "Player"):
+        super().__init__(30, 30, owner, None)
+
+    def on_use(self):
+        # this should probably be an animation in the same vein as the other teleports
+        # so actual teleport doesn't happen the same frame you request it, way too snappy
+        super().on_use()
+        x_pos = self.owner.opponent.rect.centerx
+        y_pos = self.owner.opponent.rect.centery + Constants.PLAYER_SIZE_WITH_MARGIN
+        #check no collisions and if so move below
+        hitbox = utils.create_rect(x_pos, y_pos, 64, 64)
+        solids_not_me = self.owner.solids_not_me()
+        collide = hitbox.collideobjectsall(solids_not_me, key=lambda o: o.rect)
+        if collide == []:
+            self.owner.rect.centerx = x_pos
+            self.owner.rect.centery = y_pos
+        else:
+            print("collision, no move")
+
+        #heal
+        self.owner.heal(self.owner, 10)
+
+class TeleportGun(Power):
+    def __init__(self, owner: "Player"):
+        super().__init__(30, 30, owner, None)
+
+    def on_use(self):
+        super().on_use()
+        movespeed = 7
+        bullet_point = (self.owner.rect.centerx + self.owner.move_xdir * Constants.PLAYER_SIZE, self.owner.rect.centery + self.owner.move_ydir * Constants.PLAYER_SIZE)
+        Projectiles.TeleportBullet(bullet_point[0], bullet_point[1], self.owner.move_xdir * movespeed, self.owner.move_ydir * movespeed, self.owner, self.owner.colour, self)
