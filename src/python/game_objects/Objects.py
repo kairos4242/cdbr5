@@ -156,9 +156,10 @@ class Storm(GameObject):
         self.cooldown -= 1
         if self.cooldown == 0:
             self.cooldown = self.max_cooldown
-            collide = self.rect.collideobjects(self.solids_not_me(), key=lambda o: o.rect)
-            if collide != None:
-                if collide != self.owner:
-                    self.deal_damage(collide, 5, self.attributes)
+            collide = self.rect.collideobjectsall(self.solids_not_me(), key=lambda o: o.rect)
+            if collide != []:
+                for collision in collide:
+                    if collision != self.owner:
+                        self.owner.deal_damage(collision, 5)
         if self.duration <= 0:
             self.destroy(self)
