@@ -1,13 +1,11 @@
 import random
-from Colours import Colours
 from commands.Event import Event
 from commands.EventListener import EventListener
 from commands.EventType import EventType
-from commands.PowerUsageEvent import PowerUsageEvent
 from game_objects import Objects, Projectiles
 from game_objects.Projectiles import AtlasBullet, Bullet
 from game_objects.GameObject import GameObject
-from powers.Animations import BodySlamAnimation, DashAnimation, FalconPunchAnimation, PlayfulAnimation, SniperRifleAnimation
+from powers.Animations import BodySlamAnimation, DashAnimation, EmbraceAnimation, FalconPunchAnimation, PlayfulAnimation, SniperRifleAnimation
 from powers.Effects import Effect
 from Attribute import ModificationType, Property
 import math
@@ -342,3 +340,24 @@ class TeleportGun(Power):
         movespeed = 7
         bullet_point = (self.owner.rect.centerx + self.owner.move_xdir * Constants.PLAYER_SIZE, self.owner.rect.centery + self.owner.move_ydir * Constants.PLAYER_SIZE)
         Projectiles.TeleportBullet(bullet_point[0], bullet_point[1], self.owner.move_xdir * movespeed, self.owner.move_ydir * movespeed, self.owner, self.owner.colour, self)
+
+class Embrace(Power):
+    def __init__(self, owner: "Player"):
+        super().__init__(30, 30, owner, None)
+
+    def on_use(self):
+        super().on_use()
+        self.owner.animation = EmbraceAnimation(30, self.owner.move_xdir, self.owner.move_ydir, self.owner, 25)
+
+class Rest(Power):
+    def __init__(self, owner: "Player"):
+        super().__init__(30, 30, owner, None)
+
+    def on_use(self):
+        super().on_use()
+        boundary = 400
+        owner_rect = self.owner.rect
+        opponent_rect = self.owner.opponent.rect
+        dist = math.hypot(owner_rect.centerx - opponent_rect.centerx, owner_rect.centery - opponent_rect.centery)
+        if dist > boundary:
+            self.owner.heal(self.owner, 15)

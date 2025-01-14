@@ -162,3 +162,34 @@ class SniperRifleAnimation(Animation):
         if self.curr_step == self.duration:
             Projectiles.SniperBullet(self.owner.rect.centerx, self.owner.rect.centery, self.owner.opponent, self.owner, self.owner.colour)
             self.owner.animation = None
+
+class EmbraceAnimation(Animation):
+
+    def __init__(self, duration, dir_x, dir_y, owner, dash_speed):
+        super().__init__(duration, dir_x, dir_y, False, owner)
+        self.max_dash_speed = dash_speed
+        self.current_dash_speed = 5
+        self.hit_max = False
+
+    def step(self):
+        self.curr_step += 1
+        if self.curr_step == self.duration:
+            self.owner.animation = None
+            return
+        if self.hit_max == False:
+            self.current_dash_speed += 3
+            if self.current_dash_speed >= self.max_dash_speed:
+                self.hit_max = True
+        else:
+            self.current_dash_speed = max(self.current_dash_speed - 3, 5)
+
+        self.owner.move_direction(self.dir_x, self.dir_y, self.current_dash_speed, 0, 0, True)
+        #check for collision
+        hitbox = utils.create_rect(self.owner.rect.centerx + (self.dir_x * 2), self.owner.rect.centery + (self.dir_y * 2), 64, 64)
+        solids_not_me = self.owner.solids_not_me()
+        collide = hitbox.collideobjectsall(solids_not_me, key=lambda o: o.rect)
+        if collide != []:
+            for collision in collide:
+                if collision == self.owner.opponent:
+                    self.owner.heal(self.owner, 10)
+            self.owner.animation = None
