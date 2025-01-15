@@ -7,6 +7,7 @@ from commands.DestructionEvent import DestructionEvent
 from commands.Event import Event
 from commands.EventManager import EventManager
 from commands.EventType import EventType
+from commands.HealingEvent import HealingEvent
 from commands.ObjectCreation import ObjectCreation
 from commands.ObjectDestruction import ObjectDestruction
 from commands.PowerUsageEvent import PowerUsageEvent
@@ -74,6 +75,10 @@ class CommandRegistry:
 
     def add_damage_dealt(self, source, target, amount):
         event = DamageDealtEvent(source, target, self.clock.get_ticks(), amount)
+        self.event_manager.notify(event)
+
+    def add_healing(self, source, target, amount):
+        event = HealingEvent(source, target, self.clock.get_ticks(), amount)
         self.event_manager.notify(event)
 
     def save_replay(self, filename: str):

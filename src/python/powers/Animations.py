@@ -194,5 +194,5 @@ class EmbraceAnimation(Animation):
         if collide != []:
             for collision in collide:
                 if collision == self.owner.opponent:
-                    self.owner.heal(self.owner, 10)
+                    self.owner.heal(self.power, self.owner, 10)
             self.owner.animation = None

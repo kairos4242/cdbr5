@@ -171,7 +171,8 @@ class GameObject():
         if target.hp <= 0:
             self.destroy(target)
 
-    def heal(self, target: "GameObject", hp, attributes: list[Attribute] = list()):
+    def heal(self, source, target: "GameObject", hp, attributes: list[Attribute] = list()):
+        self.command_registry.add_healing(source, target, hp)
         print("health options", target.hp + hp, target.max_hp)
         target.hp = min(target.hp + hp, target.max_hp)
 

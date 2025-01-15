@@ -266,7 +266,7 @@ class HealthInvestment(Power):
         if self.heal_cooldown == 0 and self.active == True:
             self.active = False
             print("healing for", self.heal_amount)
-            self.owner.heal(self.owner, self.heal_amount)
+            self.owner.heal(self, self.owner, self.heal_amount)
         if self.heal_cooldown > 0:
             self.heal_cooldown -= 1
         
@@ -333,7 +333,7 @@ class Deference(Power):
             print("collision, no move")
 
         #heal
-        self.owner.heal(self.owner, 10)
+        self.owner.heal(self, self.owner, 10)
 
 class TeleportGun(Power):
     def __init__(self, owner: "Player"):
@@ -364,7 +364,7 @@ class Rest(Power):
         opponent_rect = self.owner.opponent.rect
         dist = math.hypot(owner_rect.centerx - opponent_rect.centerx, owner_rect.centery - opponent_rect.centery)
         if dist > boundary:
-            self.owner.heal(self.owner, 15)
+            self.owner.heal(self, self.owner, 15)
 
 class MaxHP(Power):
     def __init__(self, owner: "Player"):
