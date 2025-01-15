@@ -61,7 +61,7 @@ class Bomb(GameObject):
             collide = Circle.collideobjectsall(collision_circle, self.owner.solids_not_me())
             for collision in collide:
                 self.owner.deal_damage(collision, 25, [])
-                self.owner.map.screen_shake = 30
+                self.owner.map.add_screen_shake(30)
             self.destroy(self)
 
 class Sword(GameObject):
@@ -111,7 +111,7 @@ class Sword(GameObject):
                     if collision not in self.already_hit:
                         self.owner.deal_damage(collision, self.damage, [])
                         self.already_hit.append(collision)
-                        self.owner.map.screen_shake = max(self.owner.map.screen_shake, 30)
+                        self.owner.map.add_screen_shake(30)
 
 class SniperBullet(GameObject):
 

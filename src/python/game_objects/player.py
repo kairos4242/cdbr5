@@ -6,11 +6,14 @@ import pygame
 from Colours import Colours
 from ControlType import ControlType
 import os
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from CdbrLogic import Map
 
 
 class Player(GameObject):
 
-    def __init__(self, x, y, control_type: ControlType, powers, colour, map, command_registry: "CommandRegistry", image='Player 1.png'):
+    def __init__(self, x, y, control_type: ControlType, powers, colour, map: "Map", command_registry: "CommandRegistry", image='Player 1.png'):
         super().__init__(x, y, command_registry)
         self.make_solid()
         self.powers = powers

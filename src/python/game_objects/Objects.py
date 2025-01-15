@@ -163,3 +163,33 @@ class Storm(GameObject):
                         self.owner.deal_damage(collision, 5)
         if self.duration <= 0:
             self.destroy(self)
+
+class LivingStorm(GameObject):
+
+    def __init__(self, x, y, owner: "GameObject", colour, attributes = list()):
+        super().__init__(x, y, owner.command_registry)
+        self.rect = utils.create_rect(x, y, 256, 256)
+        self.owner = owner
+        self.attributes = attributes
+        self.colour = colour
+        self.image = pygame.Surface((self.rect.width, self.rect.height))
+        self.image.set_alpha(128)
+        self.image.fill(self.colour.value)
+        self.cooldown = 60 #should storms deal damage on cooldown? should it be on entry? should it just be a shorter cooldown?
+        self.max_cooldown = 60
+        
+
+    def draw(self, surface):
+        surface.blit(self.image, (self.rect.x, self.rect.y))
+
+    def step(self):
+        self.rect.centerx = self.owner.rect.centerx
+        self.rect.centery = self.owner.rect.centery
+        self.cooldown -= 1
+        if self.cooldown == 0:
+            self.cooldown = self.max_cooldown
+            collide = self.rect.collideobjectsall(self.solids_not_me(), key=lambda o: o.rect)
+            if collide != []:
+                for collision in collide:
+                    if collision != self.owner:
+                        self.owner.deal_damage(collision, 5)

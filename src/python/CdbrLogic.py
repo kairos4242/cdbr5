@@ -42,9 +42,9 @@ class Map():
         self.object_registry = ObjectRegistry()
 
         self.player1 = Player(200, 400, ControlType.HUMAN,[], Colours.Red, self, self.command_registry, image = 'Player 1.png')
-        self.player1.powers = [Powers.Storm(self.player1), Powers.BodySlam(self.player1), Powers.BloodKnight(self.player1)]
+        self.player1.powers = [Powers.Rift(self.player1), Powers.BodySlam(self.player1), Powers.BloodKnight(self.player1)]
         self.player2 = Player(700, 400, ControlType.HUMAN_PLAYER2, [], Colours.Blue, self, self.command_registry, image = 'Player 2.png')
-        self.player2.powers = [Powers.Sword(self.player2), Powers.ChipDamage(self.player2)]
+        self.player2.powers = [Powers.Sword(self.player2), Powers.ChipDamage(self.player2), Powers.Repeater(self.player2)]
 
 
         self.player1.opponent = self.player2
@@ -113,6 +113,9 @@ class Map():
         else:
             self.render_offset = [0, 0]
         self.game_screen.blit(self.screen, self.render_offset)
+
+    def add_screen_shake(self, amount: int):
+        self.screen_shake = max(self.screen_shake, amount)
 
 if __name__ == "__main__":
     game_map =  Map()

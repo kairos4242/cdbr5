@@ -1,4 +1,7 @@
 import random
+
+import pygame
+from Circle import Circle
 from commands.Event import Event
 from commands.EventListener import EventListener
 from commands.EventType import EventType
@@ -361,3 +364,50 @@ class Rest(Power):
         dist = math.hypot(owner_rect.centerx - opponent_rect.centerx, owner_rect.centery - opponent_rect.centery)
         if dist > boundary:
             self.owner.heal(self.owner, 15)
+
+class MaxHP(Power):
+    def __init__(self, owner: "Player"):
+        super().__init__(30, 30, owner, None)
+
+    def on_use(self):
+        super().on_use()
+        self.owner.gain_max_hp(self.owner, 5)
+
+class Repeater(Power):
+
+    def __init__(self, owner: "Player"):
+        super().__init__(30, 30, owner, None)
+        self.command_registry.event_manager.subscribe(EventType.POWER_USAGE, None, self)
+
+    def notify(self, event: Event):
+        # using source here as for now source and target are equivalent
+        # but if this were to change then source would more likely stay correct
+        if event.source == self.owner:
+            movespeed = 7
+            bullet_point = (self.owner.rect.centerx + self.owner.move_xdir * Constants.PLAYER_SIZE, self.owner.rect.centery + self.owner.move_ydir * Constants.PLAYER_SIZE)
+            Projectiles.Bullet(bullet_point[0], bullet_point[1], self.owner.move_xdir * movespeed, self.owner.move_ydir * movespeed, self.owner, self.owner.colour, self)
+
+class LivingStorm(Power):
+    def __init__(self, owner: "Player"):
+        super().__init__(30, 30, owner, None)
+        Objects.LivingStorm(owner.rect.centerx, owner.rect.centery, self.owner, self.owner.colour)
+
+class Rift(Power):
+
+    def __init__(self, owner: "Player"):
+        super().__init__(30, 30, owner, None)
+
+    def on_use(self):
+        super().on_use()
+        # teleport
+        teleport_dist = 128
+        angle = math.atan2(-self.owner.move_ydir, self.owner.move_xdir)
+        self.owner.move_tangible(math.cos(angle) * teleport_dist, -math.sin(angle) * teleport_dist)
+
+        explosion_radius = 128
+        damage = 10
+        collision_circle = pygame.geometry.Circle(self.owner.rect.centerx, self.owner.rect.centery, explosion_radius)
+        collide = Circle.collideobjectsall(collision_circle, self.owner.solids_not_me())
+        for collision in collide:
+            self.owner.deal_damage(collision, damage, [])
+            self.owner.map.add_screen_shake(30)

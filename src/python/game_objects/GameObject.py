@@ -172,6 +172,9 @@ class GameObject():
         print("health options", target.hp + hp, target.max_hp)
         target.hp = min(target.hp + hp, target.max_hp)
 
+    def gain_max_hp(self, target: "GameObject", hp, attributes: list[Attribute] = list()):
+        target.max_hp += hp
+
     def destroy(self, target):
         self.object_registry.remove_from_global_object_registry(target)
         self.object_registry.remove_from_global_solid_registry(target)

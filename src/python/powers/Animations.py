@@ -122,7 +122,7 @@ class FalconPunchAnimation(Animation):
                     self.owner.deal_damage(collision, 25, [])
                     collision.outside_force_x = self.dir_x * 35
                     collision.outside_force_y = self.dir_y * 35
-                    self.owner.map.screen_shake += 30
+                    self.owner.map.add_screen_shake(60)
 
     def draw(self, surface):
         for particle in self.particles:
@@ -149,7 +149,7 @@ class BodySlamAnimation(Animation):
                 self.owner.deal_damage(collision, 40, [])
                 collision.outside_force_x = self.dir_x * 25
                 collision.outside_force_y = self.dir_y * 25
-                self.owner.map.screen_shake += 30
+                self.owner.map.add_screen_shake(30)
             self.owner.animation = None
 
 class SniperRifleAnimation(Animation):
