@@ -199,19 +199,16 @@ class GameObject():
         sign_force_y = 0
         if self.outside_force_x != 0:
             sign_force_x = int(copysign(1, self.outside_force_x))
-        if self.outside_force_y != 0:
-            sign_force_y = int(copysign(1, self.outside_force_y))
-        if self.outside_force_x != 0:
             temp_force = self.outside_force_x #copying it to minimize modifications for property modification recording
             temp_force -= sign_force_x * 0.75
-            temp_force = utils.floor_int_bidirectional(self.outside_force_x)
+            temp_force = utils.floor_int_bidirectional(temp_force)
             self.outside_force_x = temp_force
         if self.outside_force_y != 0:
+            sign_force_y = int(copysign(1, self.outside_force_y))
             temp_force = self.outside_force_y
             temp_force -= sign_force_y * 0.75
-            temp_force = utils.floor_int_bidirectional(self.outside_force_y)
+            temp_force = utils.floor_int_bidirectional(temp_force)
             self.outside_force_y = temp_force
-
 
     def move(self, move_x, move_y, outside_force_x, outside_force_y):
         # might seem odd to have a function for this but I suspect it will come in handy later when we need to modify how everything moves
