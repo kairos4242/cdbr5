@@ -2,12 +2,13 @@ import random
 
 import pygame
 from Circle import Circle
+from commands.DamageDealtEvent import DamageDealtEvent
 from commands.Event import Event
 from commands.EventListener import EventListener
 from commands.EventType import EventType
+from commands.PropertyModificationEvent import PropertyModificationEvent
 from game_objects import Objects, Projectiles
 from game_objects.Projectiles import AtlasBullet, Bullet
-from game_objects.GameObject import GameObject
 from powers.Animations import BodySlamAnimation, DashAnimation, EmbraceAnimation, FalconPunchAnimation, PlayfulAnimation, SniperRifleAnimation
 from powers.Effects import Effect
 from Attribute import ModificationType, Property
@@ -75,7 +76,7 @@ class Dash(Power):
 
     def on_use(self):
         super().on_use()
-        self.owner.animation = DashAnimation(10, self.owner.move_xdir, self.owner.move_ydir, self.owner, 25)
+        self.owner.animation = DashAnimation(10, self.owner.move_xdir, self.owner.move_ydir, self, 25)
 
 class AggressiveDash(Power):
     def __init__(self, owner: "Player"):
@@ -84,7 +85,7 @@ class AggressiveDash(Power):
     def on_use(self):
         super().on_use()
         x, y = self.owner.get_direction_to_opponent()
-        self.owner.animation = DashAnimation(10, -x, -y, self.owner, 25)
+        self.owner.animation = DashAnimation(10, -x, -y, self, 25)
 
 
 class DefensiveDash(Power):
@@ -94,7 +95,7 @@ class DefensiveDash(Power):
     def on_use(self):
         super().on_use()
         x, y = self.owner.get_direction_to_opponent()
-        self.owner.animation = DashAnimation(10, x, y, self.owner, 25)
+        self.owner.animation = DashAnimation(10, x, y, self, 25)
 
 class PlayfulTrickster(Power):
     def __init__(self, owner: "Player"):
@@ -103,9 +104,9 @@ class PlayfulTrickster(Power):
     def on_use(self):
         super().on_use()
         if isinstance(self.owner.animation, PlayfulAnimation):
-            self.owner.animation = DashAnimation(10, self.owner.move_xdir, self.owner.move_ydir, self.owner, 25)
+            self.owner.animation = DashAnimation(10, self.owner.move_xdir, self.owner.move_ydir, self, 25)
         else:
-            self.owner.animation = PlayfulAnimation(self.owner)
+            self.owner.animation = PlayfulAnimation(self)
 
 class ConveyorBelt(Power):
     def __init__(self, owner: "Player"):
@@ -122,7 +123,7 @@ class ConveyorBelt(Power):
         Objects.ConveyorBelt(
             snapped_x,
             snapped_y,
-            self.owner,
+            self,
             self.owner.move_xdir,
             self.owner.move_ydir
         )
@@ -143,10 +144,10 @@ class CrossCannon(Power):
     def on_use(self):
         super().on_use()
         #create four projectiles around owner, one going in each cardinal direction
-        Bullet(self.owner.rect.centerx, self.owner.rect.centery - 50, 0, -8, self.owner, self.owner.colour)
-        Bullet(self.owner.rect.centerx, self.owner.rect.centery + 50, 0, 8, self.owner, self.owner.colour)
-        Bullet(self.owner.rect.centerx - 50, self.owner.rect.centery, -8, 0, self.owner, self.owner.colour)
-        Bullet(self.owner.rect.centerx + 50, self.owner.rect.centery, 8, 0, self.owner, self.owner.colour)
+        Bullet(self.owner.rect.centerx, self.owner.rect.centery - 50, 0, -8, self, self.owner.colour)
+        Bullet(self.owner.rect.centerx, self.owner.rect.centery + 50, 0, 8, self, self.owner.colour)
+        Bullet(self.owner.rect.centerx - 50, self.owner.rect.centery, -8, 0, self, self.owner.colour)
+        Bullet(self.owner.rect.centerx + 50, self.owner.rect.centery, 8, 0, self, self.owner.colour)
 
 class FalconPunch(Power):
     def __init__(self, owner: "Player"):
@@ -154,7 +155,7 @@ class FalconPunch(Power):
 
     def on_use(self):
         super().on_use()
-        self.owner.animation = FalconPunchAnimation(self.owner)
+        self.owner.animation = FalconPunchAnimation(self)
 
 class BodySlam(Power):
     def __init__(self, owner: "Player"):
@@ -162,7 +163,7 @@ class BodySlam(Power):
 
     def on_use(self):
         super().on_use()
-        self.owner.animation = BodySlamAnimation(self.owner)
+        self.owner.animation = BodySlamAnimation(self)
 
 class Bomb(Power):
     def __init__(self, owner: "Player"):
@@ -170,7 +171,7 @@ class Bomb(Power):
 
     def on_use(self):
         super().on_use()
-        Projectiles.Bomb(self.owner.rect.centerx, self.owner.rect.centery, self.owner, 60, 128)
+        Projectiles.Bomb(self.owner.rect.centerx, self.owner.rect.centery, self, 60, 128)
 
 class Sword(Power):
     def __init__(self, owner: "Player"):
@@ -178,7 +179,7 @@ class Sword(Power):
 
     def on_use(self):
         super().on_use()
-        Projectiles.Sword(self.owner.rect.centerx, self.owner.rect.centery, self.owner, 15, self.owner.move_xdir, self.owner.move_ydir)
+        Projectiles.Sword(self.owner.rect.centerx, self.owner.rect.centery, self, 15, self.owner.move_xdir, self.owner.move_ydir)
 
 class Turret(Power):
     def __init__(self, owner: "Player"):
@@ -190,7 +191,7 @@ class Turret(Power):
         snapped_x = utils.snap_to_grid(original_x)
         original_y = self.owner.rect.centery + (64 * self.owner.move_ydir)
         snapped_y = utils.snap_to_grid(original_y)
-        Objects.Turret(snapped_x, snapped_y, self.owner, self.owner.move_xdir, self.owner.move_ydir)
+        Objects.Turret(snapped_x, snapped_y, self, self.owner.move_xdir, self.owner.move_ydir)
 
 class Shotgun(Power):
     def __init__(self, owner: "Player"):
@@ -206,7 +207,7 @@ class Shotgun(Power):
             angle = math.radians(angle_degrees)
             angle_xspeed = utils.round_float_down_bidirectional(math.cos(angle) * movespeed)
             angle_yspeed = utils.round_float_down_bidirectional(-math.sin(angle) * movespeed)
-            Bullet(bullet_point[0], bullet_point[1], angle_xspeed, angle_yspeed, self.owner, self.owner.colour)
+            Bullet(bullet_point[0], bullet_point[1], angle_xspeed, angle_yspeed, self, self.owner.colour)
 
 class SniperRifle(Power):
     def __init__(self, owner: "Player"):
@@ -214,7 +215,7 @@ class SniperRifle(Power):
 
     def on_use(self):
         super().on_use()
-        self.owner.animation = SniperRifleAnimation(self.owner)
+        self.owner.animation = SniperRifleAnimation(self)
 
 class ChipDamage(Power):
     def __init__(self, owner: "Player"):
@@ -222,7 +223,7 @@ class ChipDamage(Power):
 
     def on_use(self):
         super().on_use()
-        self.owner.deal_damage(self.owner.opponent, 1)
+        self.owner.deal_damage(self, self.owner.opponent, 1)
 
 class AtlasStone(Power):
     def __init__(self, owner: "Player"):
@@ -233,7 +234,7 @@ class AtlasStone(Power):
         super().on_use()
         movespeed = 7
         bullet_point = (self.owner.rect.centerx + self.owner.move_xdir * Constants.PLAYER_SIZE_WITH_MARGIN, self.owner.rect.centery + self.owner.move_ydir * Constants.PLAYER_SIZE_WITH_MARGIN)
-        AtlasBullet(bullet_point[0], bullet_point[1], self.owner.move_xdir * movespeed, self.owner.move_ydir * movespeed, self.owner, self.owner.colour, self)
+        AtlasBullet(bullet_point[0], bullet_point[1], self.owner.move_xdir * movespeed, self.owner.move_ydir * movespeed, self, self.owner.colour)
 
 class Storm(Power):
     def __init__(self, owner: "Player"):
@@ -242,7 +243,7 @@ class Storm(Power):
     def on_use(self):
         super().on_use()
         storm_point = (self.owner.rect.centerx + self.owner.move_xdir * Constants.PLAYER_SIZE_WITH_MARGIN, self.owner.rect.centery + self.owner.move_ydir * Constants.PLAYER_SIZE_WITH_MARGIN)
-        Objects.Storm(storm_point[0], storm_point[1], 1200, self.owner, self.owner.colour)
+        Objects.Storm(storm_point[0], storm_point[1], 1200, self, self.owner.colour)
 
 class HealthInvestment(Power):
     def __init__(self, owner: "Player"):
@@ -258,7 +259,7 @@ class HealthInvestment(Power):
         self.heal_cooldown = self.max_heal_cooldown
         damage_amount = math.floor(self.owner.hp / 2)
         self.heal_amount = damage_amount * 2
-        self.owner.deal_damage(self.owner, damage_amount)
+        self.owner.deal_damage(self, self.owner, damage_amount)
 
     def step(self):
         super().step()
@@ -277,7 +278,7 @@ class FastLife(Power):
         super().on_use()
         damage_amount = math.floor(self.owner.hp - 1)
         self.owner.max_hp = self.owner.max_hp * 2
-        self.owner.deal_damage(self.owner, damage_amount)
+        self.owner.deal_damage(self, self.owner, damage_amount)
 
 class BloodKnight(Power):
 
@@ -290,7 +291,7 @@ class BloodKnight(Power):
             x_offset = random.randint(-256, 256)
             y_offset = random.randint(-256, 256)
             storm_point = (self.owner.rect.centerx + x_offset, self.owner.rect.centery + y_offset)
-            Objects.Storm(storm_point[0], storm_point[1], 1200, self.owner, self.owner.colour)
+            Objects.Storm(storm_point[0], storm_point[1], 1200, self, self.owner.colour)
 
 class Normality(Power):
 
@@ -300,7 +301,7 @@ class Normality(Power):
 
     def notify(self, event: Event):
         if event.target == self.owner.opponent:
-            self.owner.deal_damage(self.owner.opponent, 1)
+            self.owner.deal_damage(self, self.owner.opponent, 1)
 
 class Commonality(Power):
 
@@ -309,7 +310,7 @@ class Commonality(Power):
         self.command_registry.event_manager.subscribe(EventType.POWER_USAGE, None, self)
 
     def notify(self, event: Event):
-        self.owner.deal_damage(event.target, 1)
+        self.owner.deal_damage(self, event.target, 1)
 
 class Deference(Power):
     def __init__(self, owner: "Player"):
@@ -342,7 +343,7 @@ class TeleportGun(Power):
         super().on_use()
         movespeed = 7
         bullet_point = (self.owner.rect.centerx + self.owner.move_xdir * Constants.PLAYER_SIZE, self.owner.rect.centery + self.owner.move_ydir * Constants.PLAYER_SIZE)
-        Projectiles.TeleportBullet(bullet_point[0], bullet_point[1], self.owner.move_xdir * movespeed, self.owner.move_ydir * movespeed, self.owner, self.owner.colour, self)
+        Projectiles.TeleportBullet(bullet_point[0], bullet_point[1], self.owner.move_xdir * movespeed, self.owner.move_ydir * movespeed, self, self.owner.colour)
 
 class Embrace(Power):
     def __init__(self, owner: "Player"):
@@ -350,7 +351,7 @@ class Embrace(Power):
 
     def on_use(self):
         super().on_use()
-        self.owner.animation = EmbraceAnimation(30, self.owner.move_xdir, self.owner.move_ydir, self.owner, 25)
+        self.owner.animation = EmbraceAnimation(30, self.owner.move_xdir, self.owner.move_ydir, self, 25)
 
 class Rest(Power):
     def __init__(self, owner: "Player"):
@@ -385,12 +386,12 @@ class Repeater(Power):
         if event.source == self.owner:
             movespeed = 7
             bullet_point = (self.owner.rect.centerx + self.owner.move_xdir * Constants.PLAYER_SIZE, self.owner.rect.centery + self.owner.move_ydir * Constants.PLAYER_SIZE)
-            Projectiles.Bullet(bullet_point[0], bullet_point[1], self.owner.move_xdir * movespeed, self.owner.move_ydir * movespeed, self.owner, self.owner.colour, self)
+            Projectiles.Bullet(bullet_point[0], bullet_point[1], self.owner.move_xdir * movespeed, self.owner.move_ydir * movespeed, self, self.owner.colour, self)
 
 class LivingStorm(Power):
     def __init__(self, owner: "Player"):
         super().__init__(30, 30, owner, None)
-        Objects.LivingStorm(owner.rect.centerx, owner.rect.centery, self.owner, self.owner.colour)
+        Objects.LivingStorm(owner.rect.centerx, owner.rect.centery, self, self.owner.colour)
 
 class Rift(Power):
 
@@ -409,5 +410,18 @@ class Rift(Power):
         collision_circle = pygame.geometry.Circle(self.owner.rect.centerx, self.owner.rect.centery, explosion_radius)
         collide = Circle.collideobjectsall(collision_circle, self.owner.solids_not_me())
         for collision in collide:
-            self.owner.deal_damage(collision, damage, [])
+            self.owner.deal_damage(self, collision, damage, [])
             self.owner.map.add_screen_shake(30)
+
+class DanseMacabre(Power):
+    def __init__(self, owner: "Player"):
+        super().__init__(30, 1200, owner, None)
+        self.command_registry.event_manager.subscribe(EventType.DAMAGE_DEALT, None, self)
+
+    def notify(self, event: DamageDealtEvent):
+        if event.source.owner == self.owner:
+            self.cooldown = 0
+
+    def on_use(self):
+        super().on_use()
+        self.owner.animation = DashAnimation(10, self.owner.move_xdir, self.owner.move_ydir, self, 25)

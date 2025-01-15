@@ -5,3 +5,4 @@ class EventType(Enum):
     DESTRUCTION = 1
     PROPERTY_MODIFICATION = 2
     POWER_USAGE = 3
+    DAMAGE_DEALT = 4

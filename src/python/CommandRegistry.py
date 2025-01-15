@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING
 
 from Clock import Clock
 from commands.CreationEvent import CreationEvent
+from commands.DamageDealtEvent import DamageDealtEvent
 from commands.DestructionEvent import DestructionEvent
 from commands.Event import Event
 from commands.EventManager import EventManager
@@ -69,6 +70,10 @@ class CommandRegistry:
     def add_power_used(self, power):
         event = PowerUsageEvent(power.owner, power.owner, self.clock.get_ticks(), power)
         # maybe need to ponder a bit more here about what precisely source and target means in this context?
+        self.event_manager.notify(event)
+
+    def add_damage_dealt(self, source, target, amount):
+        event = DamageDealtEvent(source, target, self.clock.get_ticks(), amount)
         self.event_manager.notify(event)
 
     def save_replay(self, filename: str):

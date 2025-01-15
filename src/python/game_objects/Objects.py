@@ -4,6 +4,9 @@ from game_objects import Projectiles
 from game_objects.GameObject import GameObject
 import os
 import math
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from powers.Powers import Power
 import utils
 
 
@@ -20,9 +23,10 @@ class Wall(GameObject):
 
 class ConveyorBelt(GameObject):
 
-    def __init__(self, x, y, owner, x_dir, y_dir):
-        super().__init__(x, y, owner.command_registry, depth = 100)
-        self.owner = owner
+    def __init__(self, x, y, power: "Power", x_dir, y_dir):
+        super().__init__(x, y, power.owner.command_registry, depth = 100)
+        self.power = power
+        self.owner = power.owner
         self.x_dir = x_dir
         self.y_dir = y_dir
         self.speed = 10
@@ -96,9 +100,10 @@ class ConveyorBelt(GameObject):
 
 class Turret(GameObject):
 
-    def __init__(self, x, y, owner, x_dir, y_dir):
-        super().__init__(x, y, owner.command_registry, depth = 100)
-        self.owner = owner
+    def __init__(self, x, y, power: "Power", x_dir, y_dir):
+        super().__init__(x, y, power.owner.command_registry, depth = 100)
+        self.power = power
+        self.owner = power.owner
         self.x_dir = x_dir
         self.y_dir = y_dir
         if self.x_dir == 0 and self.y_dir == 0:
@@ -134,11 +139,12 @@ class Turret(GameObject):
 
 class Storm(GameObject):
 
-    def __init__(self, x, y, duration, owner: "GameObject", colour, attributes = list()):
-        super().__init__(x, y, owner.command_registry)
+    def __init__(self, x, y, duration, power: "Power", colour, attributes = list()):
+        super().__init__(x, y, power.owner.command_registry)
         self.rect = utils.create_rect(x, y, 256, 256)
         self.duration = duration
-        self.owner = owner
+        self.power = power
+        self.owner = power.owner
         self.attributes = attributes
         self.colour = colour
         self.image = pygame.Surface((self.rect.width, self.rect.height))
@@ -160,16 +166,17 @@ class Storm(GameObject):
             if collide != []:
                 for collision in collide:
                     if collision != self.owner:
-                        self.owner.deal_damage(collision, 5)
+                        self.owner.deal_damage(self.power, collision, 5)
         if self.duration <= 0:
             self.destroy(self)
 
 class LivingStorm(GameObject):
 
-    def __init__(self, x, y, owner: "GameObject", colour, attributes = list()):
-        super().__init__(x, y, owner.command_registry)
+    def __init__(self, x, y, power: "Power", colour, attributes = list()):
+        super().__init__(x, y, power.owner.command_registry)
         self.rect = utils.create_rect(x, y, 256, 256)
-        self.owner = owner
+        self.power = power
+        self.owner = power.owner
         self.attributes = attributes
         self.colour = colour
         self.image = pygame.Surface((self.rect.width, self.rect.height))
@@ -192,4 +199,4 @@ class LivingStorm(GameObject):
             if collide != []:
                 for collision in collide:
                     if collision != self.owner:
-                        self.owner.deal_damage(collision, 5)
+                        self.owner.deal_damage(self.power, collision, 5)

@@ -3,14 +3,16 @@ import math
 import random
 from Colours import Colours
 from game_objects import Projectiles
-from game_objects.GameObject import GameObject
 from powers.Particles import GrowingSpark, Spark
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from powers.Powers import Power
 import utils
 
 
 class Animation():
 
-    def __init__(self, duration: int, dir_x: int, dir_y: int, move_allowed: bool, owner: GameObject, interruptible: bool = False, interrupted_by_damage: bool = False):
+    def __init__(self, duration: int, dir_x: int, dir_y: int, move_allowed: bool, power: "Power", interruptible: bool = False, interrupted_by_damage: bool = False):
         self.curr_step = 0
         self.duration = duration
         self.dir_x = dir_x
@@ -18,7 +20,8 @@ class Animation():
         self.interruptible = interruptible #can be interrupted by self
         self.interrupted_by_damage = interrupted_by_damage #is always interrupted by damage
         self.move_allowed = move_allowed
-        self.owner = owner
+        self.power = power
+        self.owner = power.owner
         self.recast = False #allow the player to trigger the power a second time while the animation is still occurring e.g. playful/trickster
 
     @abstractmethod
@@ -31,8 +34,8 @@ class Animation():
 
 class DashAnimation(Animation):
 
-    def __init__(self, duration, dir_x, dir_y, owner, dash_speed):
-        super().__init__(duration, dir_x, dir_y, False, owner)
+    def __init__(self, duration, dir_x, dir_y, power, dash_speed):
+        super().__init__(duration, dir_x, dir_y, False, power)
         self.dash_speed = dash_speed
 
     def step(self):
@@ -44,8 +47,8 @@ class DashAnimation(Animation):
 
 class PlayfulAnimation(Animation):
 
-    def __init__(self, owner):
-        super().__init__(15, owner.move_xdir, owner.move_ydir, False, owner)
+    def __init__(self, power):
+        super().__init__(15, power.owner.move_xdir, power.owner.move_ydir, False, power)
         self.recast = True
 
     def step(self):
@@ -55,8 +58,8 @@ class PlayfulAnimation(Animation):
 
 class FalconPunchAnimation(Animation):
 
-    def __init__(self, owner):
-        super().__init__(90, owner.move_xdir, owner.move_ydir, False, owner)
+    def __init__(self, power):
+        super().__init__(90, power.owner.move_xdir, power.owner.move_ydir, False, power)
         self.recast = False
         self.punch_frame = 75
         self.particles = []
@@ -119,7 +122,7 @@ class FalconPunchAnimation(Animation):
             collide = hitbox.collideobjectsall(solids_not_me, key=lambda o: o.rect)
             if collide != []:
                 for collision in collide:
-                    self.owner.deal_damage(collision, 25, [])
+                    self.owner.deal_damage(self.power, collision, 25, [])
                     collision.outside_force_x = self.dir_x * 35
                     collision.outside_force_y = self.dir_y * 35
                     self.owner.map.add_screen_shake(60)
@@ -131,8 +134,8 @@ class FalconPunchAnimation(Animation):
 
 class BodySlamAnimation(Animation):
 
-    def __init__(self, owner):
-        super().__init__(25, owner.move_xdir, owner.move_ydir, False, owner)
+    def __init__(self, power):
+        super().__init__(25, power.owner.move_xdir, power.owner.move_ydir, False, power)
         self.dash_speed = self.owner.calculate_movespeed() * 2
 
     def step(self):
@@ -146,7 +149,7 @@ class BodySlamAnimation(Animation):
         collide = hitbox.collideobjectsall(solids_not_me, key=lambda o: o.rect)
         if collide != []:
             for collision in collide:
-                self.owner.deal_damage(collision, 40, [])
+                self.owner.deal_damage(self.power, collision, 40, [])
                 collision.outside_force_x = self.dir_x * 25
                 collision.outside_force_y = self.dir_y * 25
                 self.owner.map.add_screen_shake(30)
@@ -154,19 +157,19 @@ class BodySlamAnimation(Animation):
 
 class SniperRifleAnimation(Animation):
 
-    def __init__(self, owner):
-        super().__init__(60, owner.move_xdir, owner.move_ydir, False, owner, interrupted_by_damage=True)
+    def __init__(self, power):
+        super().__init__(60, power.owner.move_xdir, power.owner.move_ydir, False, power, interrupted_by_damage=True)
 
     def step(self):
         self.curr_step += 1
         if self.curr_step == self.duration:
-            Projectiles.SniperBullet(self.owner.rect.centerx, self.owner.rect.centery, self.owner.opponent, self.owner, self.owner.colour)
+            Projectiles.SniperBullet(self.owner.rect.centerx, self.owner.rect.centery, self.owner.opponent, self, self.owner.colour)
             self.owner.animation = None
 
 class EmbraceAnimation(Animation):
 
-    def __init__(self, duration, dir_x, dir_y, owner, dash_speed):
-        super().__init__(duration, dir_x, dir_y, False, owner)
+    def __init__(self, duration, dir_x, dir_y, power, dash_speed):
+        super().__init__(duration, dir_x, dir_y, False, power)
         self.max_dash_speed = dash_speed
         self.current_dash_speed = 5
         self.hit_max = False

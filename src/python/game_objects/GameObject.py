@@ -160,7 +160,10 @@ class GameObject():
     def objects_my_type_not_me(self):
         return list(filter(lambda obj: id(obj) != id(self), self.object_registry.objects_by_type[str(type(self))]))
 
-    def deal_damage(self, target: "GameObject", damage, attributes: list[Attribute] = list()):
+    def deal_damage(self, source, target: "GameObject", damage, attributes: list[Attribute] = list()):
+        #general philosophy on source: should be a power and not a player, unless it's coming from something static like spikes
+        #leave untyped? cause what could possibly be a common superclass of spikes and powers, zero fields or traits in common
+        self.command_registry.add_damage_dealt(source, target, damage)
         target.hp -= damage
         if target.animation != None:
             if target.animation.interrupted_by_damage == True:
