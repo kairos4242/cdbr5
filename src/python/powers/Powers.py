@@ -424,3 +424,12 @@ class DanseMacabre(Power):
     def on_use(self):
         super().on_use()
         self.owner.animation = DashAnimation(10, self.owner.move_xdir, self.owner.move_ydir, self, 25)
+
+class Blessing(Power):
+    def __init__(self, owner: "Player"):
+        super().__init__(30, 30, owner, None)
+
+    def on_use(self):
+        super().on_use()
+        self.owner.heal(self, self.owner, 10)
+        self.owner.gain_shield(self, self.owner, 10)

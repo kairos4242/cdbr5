@@ -12,6 +12,7 @@ from commands.ObjectCreation import ObjectCreation
 from commands.ObjectDestruction import ObjectDestruction
 from commands.PowerUsageEvent import PowerUsageEvent
 from commands.PropertyModificationEvent import PropertyModificationEvent
+from commands.ShieldEvent import ShieldEvent
 from game_objects.GameObjects import GameObject
 if TYPE_CHECKING:
     from commands.Command import Command
@@ -79,6 +80,10 @@ class CommandRegistry:
 
     def add_healing(self, source, target, amount):
         event = HealingEvent(source, target, self.clock.get_ticks(), amount)
+        self.event_manager.notify(event)
+
+    def add_shield(self, source, target, amount):
+        event = ShieldEvent(source, target, self.clock.get_ticks(), amount)
         self.event_manager.notify(event)
 
     def save_replay(self, filename: str):

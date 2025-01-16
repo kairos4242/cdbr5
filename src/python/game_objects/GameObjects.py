@@ -75,12 +75,19 @@ class GameObject():
         #general philosophy on source: should be a power and not a player, unless it's coming from something static like spikes
         #leave untyped? cause what could possibly be a common superclass of spikes and powers, zero fields or traits in common
         self.command_registry.add_damage_dealt(source, target, damage)
-        target.hp -= damage
+        if target.shield >= damage:
+            target.shield -= damage
+        else:
+            damage -= target.shield
+            target.shield = 0
+            target.hp -= damage
+            if target.hp <= 0:
+                self.destroy(target)
         if target.animation != None:
+            #should animations still get interrupted if you have shield? interesting design question
             if target.animation.interrupted_by_damage == True:
                 target.animation = None
-        if target.hp <= 0:
-            self.destroy(target)
+        
 
     def heal(self, source, target: "GameActor", hp, attributes: list[Attribute] = list()):
         self.command_registry.add_healing(source, target, hp)
@@ -89,6 +96,10 @@ class GameObject():
 
     def gain_max_hp(self, target: "GameActor", hp, attributes: list[Attribute] = list()):
         target.max_hp += hp
+
+    def gain_shield(self, source, target: "GameActor", amount, attributes: list[Attribute] = list()):
+        self.command_registry.add_shield(source, target, amount)
+        target.shield += amount
 
     def destroy(self, target):
         self.object_registry.remove_from_global_object_registry(target)
@@ -230,7 +241,6 @@ class GameActor(GameObject):
     def make_solid(self):
         self.solid = True
         self.object_registry.add_to_global_solid_registry(self)
-
 
     def calculate_movespeed(self) -> float:
         base_movespeed = self.movespeed

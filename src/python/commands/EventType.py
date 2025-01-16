@@ -7,3 +7,4 @@ class EventType(Enum):
     POWER_USAGE = 3
     DAMAGE_DEALT = 4
     HEALING = 5
+    SHIELD = 6
