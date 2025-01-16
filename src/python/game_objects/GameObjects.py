@@ -64,6 +64,12 @@ class GameObject():
     
     def objects_my_type_not_me(self):
         return list(filter(lambda obj: id(obj) != id(self), self.object_registry.objects_by_type[str(type(self))]))
+    
+    def solids_not_me(self):
+        return list(filter(lambda obj: id(obj) != id(self), self.object_registry.solid_objects))
+    
+    def actors_not_me(self):
+        return list(filter(lambda obj: id(obj) != id(self), self.object_registry.actors))
 
     def deal_damage(self, source, target: "GameActor", damage, attributes: list[Attribute] = list()):
         #general philosophy on source: should be a power and not a player, unless it's coming from something static like spikes
@@ -224,12 +230,6 @@ class GameActor(GameObject):
     def make_solid(self):
         self.solid = True
         self.object_registry.add_to_global_solid_registry(self)
-
-    def solids_not_me(self):
-        return list(filter(lambda obj: id(obj) != id(self), self.object_registry.solid_objects))
-    
-    def actors_not_me(self):
-        return list(filter(lambda obj: id(obj) != id(self), self.object_registry.actors))
 
 
     def calculate_movespeed(self) -> float:

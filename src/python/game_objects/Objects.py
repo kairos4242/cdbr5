@@ -98,7 +98,6 @@ class ConveyorBelt(GameObject):
         if self.image_index >= self.images_len - 1:
             self.image_index = 0
 
-
 class Turret(GameObject):
 
     def __init__(self, x, y, power: "Power", x_dir, y_dir):

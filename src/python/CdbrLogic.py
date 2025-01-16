@@ -42,7 +42,7 @@ class Map():
         self.object_registry = ObjectRegistry()
 
         self.player1 = Player(200, 400, ControlType.HUMAN,[], Colours.Red, self, self.command_registry, image = 'Player 1.png')
-        self.player1.powers = [Powers.Rift(self.player1), Powers.BodySlam(self.player1), Powers.BloodKnight(self.player1)]
+        self.player1.powers = [Powers.AtlasStone(self.player1), Powers.BodySlam(self.player1), Powers.BloodKnight(self.player1)]
         self.player2 = Player(700, 400, ControlType.HUMAN_PLAYER2, [], Colours.Blue, self, self.command_registry, image = 'Player 2.png')
         self.player2.powers = [Powers.DanseMacabre(self.player2), Powers.ChipDamage(self.player2), Powers.Repeater(self.player2)]
 
