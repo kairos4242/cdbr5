@@ -1,7 +1,8 @@
 from math import copysign
 import pygame
 from game_objects import Projectiles
-from game_objects.GameObject import GameObject
+from game_objects.GameObjects import GameActor
+from game_objects.GameObjects import GameObject
 import os
 import math
 from typing import TYPE_CHECKING
@@ -10,7 +11,7 @@ if TYPE_CHECKING:
 import utils
 
 
-class Wall(GameObject):
+class Wall(GameActor):
 
     def __init__(self, x, y, command_registry):
         super().__init__(x, y, command_registry)

@@ -2,7 +2,7 @@ import pygame
 import pygame.geometry
 from Circle import Circle
 from Colours import Colours
-from game_objects.GameObject import GameObject
+from game_objects.GameObjects import GameObject
 import sys
 import os
 from typing import TYPE_CHECKING

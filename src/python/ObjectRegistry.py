@@ -1,7 +1,9 @@
 from collections import defaultdict
 from typing import TYPE_CHECKING
+
 if TYPE_CHECKING:
-    from game_objects.GameObject import GameObject
+    from game_objects.GameObjects import GameObject
+    from game_objects.GameObjects import GameActor
 
 class ObjectRegistry(object):
     # singleton code from https://www.geeksforgeeks.org/singleton-pattern-in-python-a-complete-guide/
@@ -10,6 +12,7 @@ class ObjectRegistry(object):
             cls.instance = super(ObjectRegistry, cls).__new__(cls)
             cls.instance.objects = []
             cls.instance.solid_objects = []
+            cls.instance.actors = []
             cls.instance.objects_by_type = defaultdict(list)
             cls.instance.objects_by_depth = defaultdict(list)
         return cls.instance
@@ -35,6 +38,12 @@ class ObjectRegistry(object):
         else:
             #print("object to remove not in solid list! skipping")
             pass
+
+    def add_to_global_actor_registry(self, obj: "GameActor"):
+        self.actors.append(obj)
+
+    def remove_from_global_actor_registry(self, obj: "GameActor"):
+        self.actors.remove(obj)
 
     def get_objects(self):
         #returns objects sorted by depth in decreasing order, to ensure correct draw order

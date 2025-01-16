@@ -14,25 +14,17 @@ from powers.Effects import Effect
 import utils
 
 class GameObject():
+
+    #gameobject: no health, not solid, can deal damage to stuff and modify it but nothing can modify it
     
     def __init__(self, x, y, command_registry: "CommandRegistry", height=64, width=64, depth=0):
         self.object_registry = ObjectRegistry()
         self.object_registry.add_to_global_object_registry(self, depth)
         self.depth = depth #should be no need to modify this after creation? if there is then might need to move object in the registry
-        self._hp = 100
-        self._max_hp = 100
-        self._invulnerable = False
-        self._divine_shield = False
-        self._solid = False
-        self._material = Material.NONE
         self._movespeed = 7
-        self.rect = utils.create_rect(x, y, width, height)
-        self.effects = [] #type: list[Effect]
-        self._animation = None #type: Animation
-        self._move_xdir = 0
-        self._move_ydir = 0
         self._outside_force_x = 0
         self._outside_force_y = 0
+        self.rect = utils.create_rect(x, y, width, height)
         self.command_registry = command_registry
         self.command_registry.add_creation(self)
 
@@ -42,6 +34,88 @@ class GameObject():
         if curr_val != value:
             self.command_registry.add_modification(self, property_name.lstrip("_"), curr_val, value)
             setattr(self, property_name, value)
+
+    @property
+    def move_xdir(self):
+        return self._move_xdir
+
+    @move_xdir.setter
+    def move_xdir(self, value):
+        self.modify_property("_move_xdir", value)
+
+    @property
+    def move_ydir(self):
+        return self._move_ydir
+
+    @move_ydir.setter
+    def move_ydir(self, value):
+        self.modify_property("_move_ydir", value)
+
+    @abstractmethod
+    def step(self):
+        pass
+
+    @abstractmethod
+    def draw(self, surface):
+        pass
+    
+    def objects_not_me(self):
+        return list(filter(lambda obj: id(obj) != id(self), self.object_registry.objects))
+    
+    def objects_my_type_not_me(self):
+        return list(filter(lambda obj: id(obj) != id(self), self.object_registry.objects_by_type[str(type(self))]))
+
+    def deal_damage(self, source, target: "GameActor", damage, attributes: list[Attribute] = list()):
+        #general philosophy on source: should be a power and not a player, unless it's coming from something static like spikes
+        #leave untyped? cause what could possibly be a common superclass of spikes and powers, zero fields or traits in common
+        self.command_registry.add_damage_dealt(source, target, damage)
+        target.hp -= damage
+        if target.animation != None:
+            if target.animation.interrupted_by_damage == True:
+                target.animation = None
+        if target.hp <= 0:
+            self.destroy(target)
+
+    def heal(self, source, target: "GameActor", hp, attributes: list[Attribute] = list()):
+        self.command_registry.add_healing(source, target, hp)
+        print("health options", target.hp + hp, target.max_hp)
+        target.hp = min(target.hp + hp, target.max_hp)
+
+    def gain_max_hp(self, target: "GameActor", hp, attributes: list[Attribute] = list()):
+        target.max_hp += hp
+
+    def destroy(self, target):
+        self.object_registry.remove_from_global_object_registry(target)
+        self.object_registry.remove_from_global_solid_registry(target)
+        if isinstance(target, GameActor):
+            self.object_registry.remove_from_global_actor_registry(target)
+        self.command_registry.add_destruction(target)
+
+    def move(self, move_x, move_y, outside_force_x, outside_force_y):
+        # might seem odd to have a function for this but I suspect it will come in handy later when we need to modify how everything moves
+        self.rect.x += move_x
+        self.rect.x += outside_force_x
+        self.rect.y += move_y
+        self.rect.y += outside_force_y
+
+class GameActor(GameObject):
+    
+    def __init__(self, x, y, command_registry: "CommandRegistry", height=64, width=64, depth=0):
+
+        super().__init__(x, y, command_registry, height, width, depth)
+
+        self.object_registry.add_to_global_actor_registry(self)
+        self._hp = 100
+        self._max_hp = 100
+        self._shield = 0
+        self._invulnerable = False
+        self._divine_shield = False
+        self._solid = False
+        self._material = Material.NONE
+        self.effects = [] #type: list[Effect]
+        self._animation = None #type: Animation
+        self._move_xdir = 0
+        self._move_ydir = 0
 
     @property
     def hp(self):
@@ -58,6 +132,14 @@ class GameObject():
     @max_hp.setter
     def max_hp(self, value):
         self.modify_property("_max_hp", value)
+
+    @property
+    def shield(self):
+        return self._shield
+
+    @shield.setter
+    def shield(self, value):
+        self.modify_property("_shield", value)
 
     @property
     def invulnerable(self):
@@ -139,14 +221,6 @@ class GameObject():
     def outside_force_y(self, value):
         self.modify_property("_outside_force_y", value)
 
-    @abstractmethod
-    def step(self):
-        pass
-
-    @abstractmethod
-    def draw(self, surface):
-        pass
-
     def make_solid(self):
         self.solid = True
         self.object_registry.add_to_global_solid_registry(self)
@@ -154,35 +228,9 @@ class GameObject():
     def solids_not_me(self):
         return list(filter(lambda obj: id(obj) != id(self), self.object_registry.solid_objects))
     
-    def objects_not_me(self):
-        return list(filter(lambda obj: id(obj) != id(self), self.object_registry.objects))
-    
-    def objects_my_type_not_me(self):
-        return list(filter(lambda obj: id(obj) != id(self), self.object_registry.objects_by_type[str(type(self))]))
+    def actors_not_me(self):
+        return list(filter(lambda obj: id(obj) != id(self), self.object_registry.actors))
 
-    def deal_damage(self, source, target: "GameObject", damage, attributes: list[Attribute] = list()):
-        #general philosophy on source: should be a power and not a player, unless it's coming from something static like spikes
-        #leave untyped? cause what could possibly be a common superclass of spikes and powers, zero fields or traits in common
-        self.command_registry.add_damage_dealt(source, target, damage)
-        target.hp -= damage
-        if target.animation != None:
-            if target.animation.interrupted_by_damage == True:
-                target.animation = None
-        if target.hp <= 0:
-            self.destroy(target)
-
-    def heal(self, source, target: "GameObject", hp, attributes: list[Attribute] = list()):
-        self.command_registry.add_healing(source, target, hp)
-        print("health options", target.hp + hp, target.max_hp)
-        target.hp = min(target.hp + hp, target.max_hp)
-
-    def gain_max_hp(self, target: "GameObject", hp, attributes: list[Attribute] = list()):
-        target.max_hp += hp
-
-    def destroy(self, target):
-        self.object_registry.remove_from_global_object_registry(target)
-        self.object_registry.remove_from_global_solid_registry(target)
-        self.command_registry.add_destruction(target)
 
     def calculate_movespeed(self) -> float:
         base_movespeed = self.movespeed
@@ -210,13 +258,6 @@ class GameObject():
             temp_force -= sign_force_y * 0.75
             temp_force = utils.floor_int_bidirectional(temp_force)
             self.outside_force_y = temp_force
-
-    def move(self, move_x, move_y, outside_force_x, outside_force_y):
-        # might seem odd to have a function for this but I suspect it will come in handy later when we need to modify how everything moves
-        self.rect.x += move_x
-        self.rect.x += outside_force_x
-        self.rect.y += move_y
-        self.rect.y += outside_force_y
 
     def move_direction(self, dir_x: int, dir_y: int, distance: int, outside_force_x: float, outside_force_y: float, tangible: bool):
         dist = distance

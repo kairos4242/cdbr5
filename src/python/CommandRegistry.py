@@ -12,7 +12,7 @@ from commands.ObjectCreation import ObjectCreation
 from commands.ObjectDestruction import ObjectDestruction
 from commands.PowerUsageEvent import PowerUsageEvent
 from commands.PropertyModificationEvent import PropertyModificationEvent
-from game_objects.GameObject import GameObject
+from game_objects.GameObjects import GameObject
 if TYPE_CHECKING:
     from commands.Command import Command
 from commands.PropertyModification import PropertyModification

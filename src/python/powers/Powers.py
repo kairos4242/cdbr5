@@ -6,7 +6,6 @@ from commands.DamageDealtEvent import DamageDealtEvent
 from commands.Event import Event
 from commands.EventListener import EventListener
 from commands.EventType import EventType
-from commands.PropertyModificationEvent import PropertyModificationEvent
 from game_objects import Objects, Projectiles
 from game_objects.Projectiles import AtlasBullet, Bullet
 from powers.Animations import BodySlamAnimation, DashAnimation, EmbraceAnimation, FalconPunchAnimation, PlayfulAnimation, SniperRifleAnimation

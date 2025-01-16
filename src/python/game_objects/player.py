@@ -1,9 +1,8 @@
 from CommandRegistry import CommandRegistry
 from commands.MoveCommand import MoveCommand
 from commands.UsePowerCommand import UsePowerCommand
-from game_objects.GameObject import GameObject
+from game_objects.GameObjects import GameActor
 import pygame
-from Colours import Colours
 from ControlType import ControlType
 import os
 from typing import TYPE_CHECKING
@@ -11,7 +10,7 @@ if TYPE_CHECKING:
     from CdbrLogic import Map
 
 
-class Player(GameObject):
+class Player(GameActor):
 
     def __init__(self, x, y, control_type: ControlType, powers, colour, map: "Map", command_registry: "CommandRegistry", image='Player 1.png'):
         super().__init__(x, y, command_registry)

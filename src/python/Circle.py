@@ -1,6 +1,6 @@
 import pygame.geometry
 
-from game_objects.GameObject import GameObject
+from game_objects.GameObjects import GameObject
 
 class Circle:
 
