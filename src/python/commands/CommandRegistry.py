@@ -4,9 +4,7 @@ from Clock import Clock
 from commands.CreationEvent import CreationEvent
 from commands.DamageDealtEvent import DamageDealtEvent
 from commands.DestructionEvent import DestructionEvent
-from commands.Event import Event
 from commands.EventManager import EventManager
-from commands.EventType import EventType
 from commands.HealingEvent import HealingEvent
 from commands.ObjectCreation import ObjectCreation
 from commands.ObjectDestruction import ObjectDestruction
@@ -25,6 +23,7 @@ class CommandRegistry:
     def __init__(self, clock: Clock, event_manager: EventManager):
         self.clock = clock
         self.active_command = None
+        self.command_list = [] # type: list[Command]
         self.other_modifications = []
         self.other_creations = []
         self.other_destructions = []
@@ -32,6 +31,7 @@ class CommandRegistry:
 
     def add_active_command(self, command: "Command"):
         self.active_command = command
+        self.command_list.append(command)
 
     def clear_active_command(self):
         self.active_command = None
@@ -87,4 +87,17 @@ class CommandRegistry:
         self.event_manager.notify(event)
 
     def save_replay(self, filename: str):
-        output = pickle.dumps(self)
+        with open(filename, "w") as f:
+            for command in self.command_list:
+                f.write(command.to_string())
+            f.close()
+
+
+    def replay_frame(self):
+        # get current frame
+        # play all commands for next frame
+        # increment clock
+        curr_frame = self.clock.get_ticks()
+        while self.command_list[0].timestamp == curr_frame:
+            command = self.command_list.pop(0)
+            command.execute()

@@ -9,7 +9,7 @@ import pygame
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from powers.Animations import Animation
-    from CommandRegistry import CommandRegistry
+    from commands.CommandRegistry import CommandRegistry
 from powers.Effects import Effect
 import utils
 

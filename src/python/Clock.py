@@ -1,6 +1,6 @@
 class Clock:
 
-    # simple clock, pygame clock get_ticks() looks like it returns ms and not actual frames elapsed, this will return frames for replay purposes
+    # simple clock, pygame clock get_ticks() looks like it returns ms and not actual frames elapsed, this will return current game frame for replay purposes
     def __init__(self):
         self._ticks = 0
 

@@ -1,4 +1,5 @@
-from CommandRegistry import CommandRegistry
+from commands.CommandRegistry import CommandRegistry
+from HotkeyManager import HotkeyManager
 from commands.MoveCommand import MoveCommand
 from commands.UsePowerCommand import UsePowerCommand
 from game_objects.GameObjects import GameActor
@@ -12,13 +13,15 @@ if TYPE_CHECKING:
 
 class Player(GameActor):
 
-    def __init__(self, x, y, control_type: ControlType, powers, colour, map: "Map", command_registry: "CommandRegistry", image='Player 1.png'):
+    def __init__(self, x, y, control_type: ControlType, powers, colour, map: "Map", command_registry: "CommandRegistry", hotkey_manager: "HotkeyManager", image='Player 1.png', name="Player 1"):
         super().__init__(x, y, command_registry)
         self.make_solid()
         self.powers = powers
         self.control_type = control_type
+        self.hotkey_manager = hotkey_manager
         self.opponent = None
         self.colour = colour
+        self.name = name
         self.image = pygame.image.load(os.path.join('assets', 'testing', image)).convert_alpha()
         self.map = map
 
@@ -43,43 +46,7 @@ class Player(GameActor):
             else:
                 effect.duration -= 1
 
-        keys = pygame.key.get_pressed()
-        movespeed = int(self.calculate_movespeed())
-
-        if self.control_type == ControlType.HUMAN:
-            # get keys
-            # hotkey system here in future?
-            key_left = keys[pygame.K_a]
-            key_right = keys[pygame.K_d]
-            key_up = keys[pygame.K_w]
-            key_down = keys[pygame.K_s]
-            key_shoot = keys[pygame.K_SPACE]
-            key_power2 = keys[pygame.K_j]
-
-        elif self.control_type == ControlType.HUMAN_PLAYER2:
-            key_left = keys[pygame.K_LEFT]
-            key_right = keys[pygame.K_RIGHT]
-            key_up = keys[pygame.K_UP]
-            key_down = keys[pygame.K_DOWN]
-            key_shoot = False
-            key_power2 = False
-            events = self.map.events
-            for event in events:
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    if event.button == 1:
-                        key_shoot = True
-                    elif event.button == 3:
-                        key_power2 = True
-
-        self.move_xdir = (-key_left + key_right)
-        self.move_ydir = (-key_up + key_down)
-
         self.move()
-
-        if key_shoot:
-            self.use_power(0)
-        if key_power2:
-            self.use_power(1)
 
         self.apply_friction()
 
@@ -87,7 +54,14 @@ class Player(GameActor):
         if self.animation != None:
             if not self.animation.move_allowed:
                 return
-        MoveCommand(self, self.command_registry).execute()
+        self.move_direction(
+            self.move_xdir, 
+            self.move_ydir, 
+            int(self.calculate_movespeed()),
+            self.outside_force_x,
+            self.outside_force_y,
+            True
+        )
 
     def use_power(self, power_num: int):
         if self.animation != None:

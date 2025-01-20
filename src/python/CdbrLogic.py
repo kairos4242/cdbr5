@@ -1,5 +1,8 @@
 from Clock import Clock
-from CommandRegistry import CommandRegistry
+from input_controllers.PlayerInputController import PlayerInputController
+from commands.CommandRegistry import CommandRegistry
+from HotkeyManager import HotkeyManager
+from Hotkeys import Hotkeys
 from commands.EventManager import EventManager
 from game_objects.Objects import Wall
 from game_objects.player import Player
@@ -10,21 +13,67 @@ from ObjectRegistry import ObjectRegistry
 from ControlType import ControlType
 from Colours import Colours
 import Config
+from input_controllers.ReplayInputController import ReplayInputController
 from powers import Powers
 import os
 import ctypes
 ctypes.windll.user32.SetProcessDPIAware()
 
-class Map():
+class Game():
 
     def __init__(self):
-        "Set up initial map configuration."
 
         pygame.init()
 
         # create game window
         self.game_screen = pygame.display.set_mode(Config.SCREEN_SIZE, flags=pygame.SCALED | pygame.FULLSCREEN, vsync=1)
+
+        self.hotkey_manager = HotkeyManager.load_default_hotkeys()
+
+        self.input_controller = ReplayInputController(self.hotkey_manager, "test_filename.cdbr")
+        #self.input_controller = PlayerInputController(self.hotkey_manager)
+
+        # set frame rate
+        self.pygame_clock = pygame.time.Clock()
+        self.FPS = 60
+
+        self.map = Map(self.game_screen, self.hotkey_manager, self.pygame_clock, self.input_controller)
+
+        self.game_loop()
+
+    def game_loop(self):
+        # game loop
+        run_game = True
+        while run_game:
+
+            self.pygame_clock.tick(self.FPS)
+
+            # event handler
+            self.events = pygame.event.get()
+            for event in self.events:
+                if event.type == pygame.QUIT:
+                    run_game = False
+
+            # check manual quit
+            keys = pygame.key.get_pressed()
+            if self.hotkey_manager.check_pressed(keys, Hotkeys.QUIT):
+                run_game = False
+
+            if self.hotkey_manager.check_pressed(keys, Hotkeys.SAVE_REPLAY):
+                self.map.command_registry.save_replay("test_filename.cdbr")
+
+            self.map.step(keys)
+
+            pygame.display.update()
+
+class Map():
+
+    def __init__(self, game_screen: "pygame.Surface", hotkey_manager: "HotkeyManager", pygame_clock: "pygame.time.Clock", input_controller: "PlayerInputController"):
+        "Set up initial map configuration."
+
+        self.game_screen = game_screen
         self.screen = pygame.surface.Surface((1920, 1080)) #screen to draw everything to before game screen for fullscreen effects like screen shake
+        self.hotkey_manager = hotkey_manager
 
         self.TUROK_30PT = pygame.freetype.Font("pygame_tutorial/assets/fonts/turok.ttf", 30)
         self.ARIAL_16PT = pygame.freetype.SysFont("Arial", 16)
@@ -36,59 +85,46 @@ class Map():
 
         self.events = []
 
+        self.pygame_clock = pygame_clock
+
         self.clock = Clock()
         self.event_manager = EventManager()
+        
         self.command_registry = CommandRegistry(self.clock, self.event_manager)
         self.object_registry = ObjectRegistry()
 
-        self.player1 = Player(200, 400, ControlType.HUMAN,[], Colours.Red, self, self.command_registry, image = 'Player 1.png')
-        self.player1.powers = [Powers.Blessing(self.player1), Powers.BodySlam(self.player1), Powers.BloodKnight(self.player1)]
-        self.player2 = Player(700, 400, ControlType.HUMAN_PLAYER2, [], Colours.Blue, self, self.command_registry, image = 'Player 2.png')
+        self.player1 = Player(200, 400, ControlType.HUMAN,[], Colours.Red, self, self.command_registry, self.hotkey_manager, image = 'Player 1.png', name = 'Player 1')
+        self.player1.powers = [Powers.Blessing(self.player1), Powers.BodySlam(self.player1)]
+        self.player2 = Player(700, 400, ControlType.HUMAN_PLAYER2, [], Colours.Blue, self, self.command_registry, self.hotkey_manager, image = 'Player 2.png', name = 'Player 2')
         self.player2.powers = [Powers.DanseMacabre(self.player2), Powers.ChipDamage(self.player2), Powers.Repeater(self.player2)]
+
+        self.input_controller = input_controller
 
 
         self.player1.opponent = self.player2
         self.player2.opponent = self.player1
-
-        # do we need references to all the walls? maybe not?
 
         for i in range(150, 700, 64):
             Wall(i, 200, self.command_registry)
 
         pygame.display.set_caption("CDBR5")
 
-        # set frame rate
-        self.pygame_clock = pygame.time.Clock()
-        self.FPS = 60
+    def step(self, keys_pressed):
 
-        self.game_loop()
+        self.clock.tick()
 
-    def game_loop(self):
-        # game loop
-        run_game = True
-        while run_game:
+        self.keys = keys_pressed
 
-            self.pygame_clock.tick(self.FPS)
-            self.clock.tick()
+        moves = self.input_controller.get_move_input(self.player1, self.player2, self.keys, self.clock)
+        for move in moves:
+            move.execute(self.command_registry)
 
-            # event handler
-            self.events = pygame.event.get()
-            for event in self.events:
-                if event.type == pygame.QUIT:
-                    run_game = False
+        #run steps
+        for object in self.object_registry.objects:
+            object.step()
 
-            # check manual quit
-            keys = pygame.key.get_pressed()
-            if keys[pygame.K_ESCAPE]:
-                run_game = False
-
-            #run steps
-            for object in self.object_registry.objects:
-                object.step()
-
-            #update display
-            self.draw_game_objects()
-            pygame.display.update()
+        #update display
+        self.draw_game_objects()
         
     def draw_game_objects(self):
         #self.screen.fill(Colours.PapayaWhip.value)
@@ -124,4 +160,4 @@ class Map():
         self.screen_shake = max(self.screen_shake, amount)
 
 if __name__ == "__main__":
-    game_map =  Map()
+    game =  Game()
