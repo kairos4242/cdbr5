@@ -32,5 +32,5 @@ class MoveCommand(Command):
             modification.undo()
 
     def to_string(self):
-        string = f"{self.target.name}!{self.x_dir}!{self.y_dir}!{self.timestamp}\n"
+        string = f"Move,{self.target.name},{self.x_dir},{self.y_dir},{self.timestamp}\n"
         return string

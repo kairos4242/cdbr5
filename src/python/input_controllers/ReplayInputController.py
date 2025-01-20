@@ -3,6 +3,7 @@ from HotkeyManager import HotkeyManager
 from Hotkeys import Hotkeys
 from typing import TYPE_CHECKING
 
+from commands.UsePowerCommand import UsePowerCommand
 from input_controllers.InputController import InputController
 from commands.Command import Command
 if TYPE_CHECKING:
@@ -19,6 +20,7 @@ class ReplayInputController(InputController):
         #hardcoding this to two players for now, not thrilled about it
         self.hotkey_manager = hotkey_manager
         self.command_list = self.load_replay(filename)
+        self.step_commands = []
 
     def load_replay(self, filename: str) -> list[Command]:
         with open(filename, "r") as f:
@@ -26,15 +28,20 @@ class ReplayInputController(InputController):
             commands = f.readlines()
             for command in commands:
                 print(command)
-                name, xdir, ydir, timestamp = command.split('!')
-                assembled_command = MoveCommand(name, int(xdir), int(ydir), int(timestamp))
+                command_type = command.split(',')[0]
+                if command_type == "Move":
+                    _, name, xdir, ydir, timestamp = command.split(',')
+                    assembled_command = MoveCommand(name, int(xdir), int(ydir), int(timestamp))
+                elif command_type == "Power":
+                    _, name, index, timestamp = command.split(',')
+                    assembled_command = UsePowerCommand(name, int(index), int(timestamp))
+                else:
+                    raise Exception(f"Unrecognized command type: {command_type}")
                 assembled_commands.append(assembled_command)
             f.close()
         return assembled_commands
-
-
-    def get_move_input(self, player1: "Player", player2: "Player", keys, clock: "Clock") -> list["Command"]:
-
+    
+    def get_input(self, player1: "Player", player2: "Player", keys, clock: "Clock") -> list["Command"]:
         commands = [] #type: list[Command]
         curr_step = clock.get_ticks()
 
@@ -51,15 +58,3 @@ class ReplayInputController(InputController):
                 raise Exception(f"name from replay unrecognized: {command.target}")
 
         return commands
-
-
-    def get_power_input(self, player1: "Player", player2: "Player", keys):
-
-        key_power1 = self.hotkey_manager.check_pressed(keys, Hotkeys.P1_AB1)
-        key_power2 = self.hotkey_manager.check_pressed(keys, Hotkeys.P1_AB2)
-        key_power3 = self.hotkey_manager.check_pressed(keys, Hotkeys.P1_AB3)
-
-
-        key_power1 = self.hotkey_manager.check_pressed(keys, Hotkeys.P2_AB1)
-        key_power2 = self.hotkey_manager.check_pressed(keys, Hotkeys.P2_AB2)
-        key_power3 = self.hotkey_manager.check_pressed(keys, Hotkeys.P2_AB3)

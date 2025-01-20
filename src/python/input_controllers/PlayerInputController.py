@@ -3,6 +3,7 @@ from HotkeyManager import HotkeyManager
 from Hotkeys import Hotkeys
 from typing import TYPE_CHECKING
 
+from commands.UsePowerCommand import UsePowerCommand
 from input_controllers.InputController import InputController
 if TYPE_CHECKING:
     from commands.Command import Command
@@ -17,6 +18,16 @@ class PlayerInputController(InputController):
 
         #hardcoding this to two players for now, not thrilled about it
         self.hotkey_manager = hotkey_manager
+
+
+    def get_input(self, player1: "Player", player2: "Player", keys, clock: "Clock") -> list["Command"]:
+
+        moves = self.get_move_input(player1, player2, keys, clock)
+        powers = self.get_power_input(player1, player2, keys, clock)
+
+        all_commands = moves + powers
+
+        return all_commands
 
     def get_move_input(self, player1: "Player", player2: "Player", keys, clock: "Clock") -> list["Command"]:
 
@@ -47,13 +58,37 @@ class PlayerInputController(InputController):
         return commands
 
 
-    def get_power_input(self, player1: "Player", player2: "Player", keys):
+    def get_power_input(self, player1: "Player", player2: "Player", keys, clock: "Clock"):
 
-        key_power1 = self.hotkey_manager.check_pressed(keys, Hotkeys.P1_AB1)
-        key_power2 = self.hotkey_manager.check_pressed(keys, Hotkeys.P1_AB2)
-        key_power3 = self.hotkey_manager.check_pressed(keys, Hotkeys.P1_AB3)
+        commands = []
 
+        p1_keys = [
+            self.hotkey_manager.check_pressed(keys, Hotkeys.P1_AB1),
+            self.hotkey_manager.check_pressed(keys, Hotkeys.P1_AB2),
+            self.hotkey_manager.check_pressed(keys, Hotkeys.P1_AB3)
+        ]
 
-        key_power1 = self.hotkey_manager.check_pressed(keys, Hotkeys.P2_AB1)
-        key_power2 = self.hotkey_manager.check_pressed(keys, Hotkeys.P2_AB2)
-        key_power3 = self.hotkey_manager.check_pressed(keys, Hotkeys.P2_AB3)
+        for index, key in enumerate(p1_keys):
+            if key:
+                power_index = index - 1
+                power = player1.powers[power_index]
+                if power.cooldown <= 0:
+                    print("Using power")
+                    commands.append(UsePowerCommand(player1, power_index, clock.get_ticks()))
+
+        
+        p2_keys = [
+            self.hotkey_manager.check_pressed(keys, Hotkeys.P2_AB1),
+            self.hotkey_manager.check_pressed(keys, Hotkeys.P2_AB2),
+            self.hotkey_manager.check_pressed(keys, Hotkeys.P2_AB3)
+        ]
+
+        for index, key in enumerate(p2_keys):
+            if key:
+                power_index = index - 1
+                power = player2.powers[power_index]
+                if power.cooldown <= 0:
+                    print("Using power")
+                    commands.append(UsePowerCommand(player2, power_index, clock.get_ticks()))
+
+        return commands

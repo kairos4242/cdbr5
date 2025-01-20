@@ -30,8 +30,8 @@ class Game():
 
         self.hotkey_manager = HotkeyManager.load_default_hotkeys()
 
-        self.input_controller = ReplayInputController(self.hotkey_manager, "test_filename.cdbr")
-        #self.input_controller = PlayerInputController(self.hotkey_manager)
+        #self.input_controller = ReplayInputController(self.hotkey_manager, "test_filename.cdbr")
+        self.input_controller = PlayerInputController(self.hotkey_manager)
 
         # set frame rate
         self.pygame_clock = pygame.time.Clock()
@@ -94,7 +94,7 @@ class Map():
         self.object_registry = ObjectRegistry()
 
         self.player1 = Player(200, 400, ControlType.HUMAN,[], Colours.Red, self, self.command_registry, self.hotkey_manager, image = 'Player 1.png', name = 'Player 1')
-        self.player1.powers = [Powers.Blessing(self.player1), Powers.BodySlam(self.player1)]
+        self.player1.powers = [Powers.Blessing(self.player1), Powers.CrossCannon(self.player1)]
         self.player2 = Player(700, 400, ControlType.HUMAN_PLAYER2, [], Colours.Blue, self, self.command_registry, self.hotkey_manager, image = 'Player 2.png', name = 'Player 2')
         self.player2.powers = [Powers.DanseMacabre(self.player2), Powers.ChipDamage(self.player2), Powers.Repeater(self.player2)]
 
@@ -115,7 +115,7 @@ class Map():
 
         self.keys = keys_pressed
 
-        moves = self.input_controller.get_move_input(self.player1, self.player2, self.keys, self.clock)
+        moves = self.input_controller.get_input(self.player1, self.player2, self.keys, self.clock)
         for move in moves:
             move.execute(self.command_registry)
 
