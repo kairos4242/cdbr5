@@ -26,3 +26,6 @@ def round_float_down_bidirectional(value: float):
     abs_val = abs(value)
     abs_floor = math.floor(abs_val)
     return math.copysign(abs_floor, value)
+
+def sign(value: int):
+    return (value > 0) - (value < 0)

@@ -156,6 +156,8 @@ class GameActor(GameObject):
 
     @shield.setter
     def shield(self, value):
+        if value < 0:
+            value = 0
         self.modify_property("_shield", value)
 
     @property

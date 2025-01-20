@@ -197,6 +197,33 @@ class TeleportBullet(Projectile):
                     self.owner.rect.centery = self.rect.centery
                 self.destroy(self)
 
+class ShieldBoomerang(Projectile):
+
+    def __init__(self, x, y, x_speed, y_speed, power: "Power", colour, attributes = list()):
+        super().__init__(x, y, power, attributes)
+        self.x_speed = utils.floor_int_bidirectional(x_speed)
+        self.y_speed = utils.floor_int_bidirectional(y_speed)
+        x_dir = utils.sign(self.x_speed)
+        y_dir = utils.sign(self.y_speed)
+        self.x_decay = x_dir
+        self.y_decay = y_dir
+        self.colour = colour
+        self.shield_amount = 25
+
+    def draw(self, surface):
+        pygame.draw.rect(surface, self.colour.value, self.rect)
+
+    def step(self):
+        self.move(self.x_speed, self.y_speed, 0, 0)
+        self.x_speed -= self.x_decay
+        self.y_speed -= self.y_decay
+        if self.rect.centerx < -16 or self.rect.centerx > Config.SCREEN_WIDTH or self.rect.centery < -16 or self.rect.centery > Config.SCREEN_HEIGHT:
+            self.destroy(self)
+        collide = self.rect.collideobjects(self.solids_not_me(), key=lambda o: o.rect)
+        if collide != None:
+            self.gain_shield(self.power, collide, self.shield_amount)
+            self.destroy(self)
+
 SWORD_IMAGES = []
 NUM_FRAMES = 20
 for i in range(NUM_FRAMES - 1):
