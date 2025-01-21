@@ -2,10 +2,10 @@ import random
 
 import pygame
 from Circle import Circle
-from commands.DamageDealtEvent import DamageDealtEvent
-from commands.Event import Event
-from commands.EventListener import EventListener
-from commands.EventType import EventType
+from events.DamageDealtEvent import DamageDealtEvent
+from events.Event import Event
+from events.EventListener import EventListener
+from events.EventType import EventType
 from game_objects import Objects, Projectiles
 from game_objects.Projectiles import AtlasBullet, Bullet
 from powers.Animations import BodySlamAnimation, DashAnimation, EmbraceAnimation, FalconPunchAnimation, PlayfulAnimation, SniperRifleAnimation

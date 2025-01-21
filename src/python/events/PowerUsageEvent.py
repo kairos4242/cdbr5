@@ -1,5 +1,5 @@
-from commands.Event import Event
-from commands.EventType import EventType
+from events.Event import Event
+from events.EventType import EventType
 
 
 

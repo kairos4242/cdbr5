@@ -3,7 +3,7 @@ from input_controllers.PlayerInputController import PlayerInputController
 from commands.CommandRegistry import CommandRegistry
 from HotkeyManager import HotkeyManager
 from Hotkeys import Hotkeys
-from commands.EventManager import EventManager
+from events.EventManager import EventManager
 from game_objects.Objects import Wall
 from game_objects.player import Player
 import pygame

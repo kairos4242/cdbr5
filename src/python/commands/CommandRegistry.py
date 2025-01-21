@@ -1,16 +1,16 @@
 from typing import TYPE_CHECKING
 
 from Clock import Clock
-from commands.CreationEvent import CreationEvent
-from commands.DamageDealtEvent import DamageDealtEvent
-from commands.DestructionEvent import DestructionEvent
-from commands.EventManager import EventManager
-from commands.HealingEvent import HealingEvent
+from events.CreationEvent import CreationEvent
+from events.DamageDealtEvent import DamageDealtEvent
+from events.DestructionEvent import DestructionEvent
+from events.EventManager import EventManager
+from events.HealingEvent import HealingEvent
 from commands.ObjectCreation import ObjectCreation
 from commands.ObjectDestruction import ObjectDestruction
-from commands.PowerUsageEvent import PowerUsageEvent
-from commands.PropertyModificationEvent import PropertyModificationEvent
-from commands.ShieldEvent import ShieldEvent
+from events.PowerUsageEvent import PowerUsageEvent
+from events.PropertyModificationEvent import PropertyModificationEvent
+from events.ShieldEvent import ShieldEvent
 from game_objects.GameObjects import GameObject
 if TYPE_CHECKING:
     from commands.Command import Command

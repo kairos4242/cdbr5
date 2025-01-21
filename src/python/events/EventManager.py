@@ -1,7 +1,7 @@
 from collections import defaultdict
-from commands.EventListener import EventListener
-from commands.Event import Event
-from commands.EventType import EventType
+from events.EventListener import EventListener
+from events.Event import Event
+from events.EventType import EventType
 
 
 class EventManager:
