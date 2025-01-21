@@ -9,6 +9,7 @@ from events.EventType import EventType
 from game_objects import Objects, Projectiles
 from game_objects.Projectiles import AtlasBullet, Bullet
 from powers.Timeline import BodySlamTimeline, DashTimeline, EmbraceTimeline, FalconPunchTimeline, PlayfulTimeline, SniperRifleTimeline
+from animations import Animations
 from powers.Effects import Effect
 from Attribute import ModificationType, Property
 import math
@@ -34,6 +35,7 @@ class Power(EventListener):
         self.owner = owner
         self.command_registry = self.owner.command_registry
         self.type = type
+        self.animation = None
 
     def step(self):
         if self.cooldown > 0:
@@ -79,7 +81,7 @@ class Dash(Power):
 
     def on_use(self):
         super().on_use()
-        self.owner.animation = DashTimeline(10, self.owner.move_xdir, self.owner.move_ydir, self, 25)
+        self.owner.timeline = DashTimeline(10, self.owner.move_xdir, self.owner.move_ydir, self, 25)
 
 class AggressiveDash(Power):
     def __init__(self, owner: "Player"):
@@ -88,7 +90,7 @@ class AggressiveDash(Power):
     def on_use(self):
         super().on_use()
         x, y = self.owner.get_direction_to_opponent()
-        self.owner.animation = DashTimeline(10, -x, -y, self, 25)
+        self.owner.timeline = DashTimeline(10, -x, -y, self, 25)
 
 
 class DefensiveDash(Power):
@@ -98,7 +100,7 @@ class DefensiveDash(Power):
     def on_use(self):
         super().on_use()
         x, y = self.owner.get_direction_to_opponent()
-        self.owner.animation = DashTimeline(10, x, y, self, 25)
+        self.owner.timeline = DashTimeline(10, x, y, self, 25)
 
 class PlayfulTrickster(Power):
     def __init__(self, owner: "Player"):
@@ -106,10 +108,10 @@ class PlayfulTrickster(Power):
 
     def on_use(self):
         super().on_use()
-        if isinstance(self.owner.animation, PlayfulTimeline):
-            self.owner.animation = DashTimeline(10, self.owner.move_xdir, self.owner.move_ydir, self, 25)
+        if isinstance(self.owner.timeline, PlayfulTimeline):
+            self.owner.timeline = DashTimeline(10, self.owner.move_xdir, self.owner.move_ydir, self, 25)
         else:
-            self.owner.animation = PlayfulTimeline(self)
+            self.owner.timeline = PlayfulTimeline(self)
 
 class ConveyorBelt(Power):
     def __init__(self, owner: "Player"):
@@ -158,7 +160,7 @@ class FalconPunch(Power):
 
     def on_use(self):
         super().on_use()
-        self.owner.animation = FalconPunchTimeline(self)
+        self.owner.timeline = FalconPunchTimeline(self)
 
 class BodySlam(Power):
     def __init__(self, owner: "Player"):
@@ -166,7 +168,7 @@ class BodySlam(Power):
 
     def on_use(self):
         super().on_use()
-        self.owner.animation = BodySlamTimeline(self)
+        self.owner.timeline = BodySlamTimeline(self)
 
 class Bomb(Power):
     def __init__(self, owner: "Player"):
@@ -218,7 +220,7 @@ class SniperRifle(Power):
 
     def on_use(self):
         super().on_use()
-        self.owner.animation = SniperRifleTimeline(self)
+        self.owner.timeline = SniperRifleTimeline(self)
 
 class ChipDamage(Power):
     def __init__(self, owner: "Player"):
@@ -242,11 +244,12 @@ class AtlasStone(Power):
 class Storm(Power):
     def __init__(self, owner: "Player"):
         super().__init__(30, 30, owner, PowerType.ATTACK)
+        self.animation = self.owner.animation_manager.get_animation(Animations.StormAnimation)
 
     def on_use(self):
         super().on_use()
         storm_point = (self.owner.rect.centerx + self.owner.move_xdir * Constants.PLAYER_SIZE_WITH_MARGIN, self.owner.rect.centery + self.owner.move_ydir * Constants.PLAYER_SIZE_WITH_MARGIN)
-        Objects.Storm(storm_point[0], storm_point[1], 1200, self, self.owner.colour)
+        Objects.Storm(storm_point[0], storm_point[1], 1200, self, self.animation, self.owner.colour)
 
 class HealthInvestment(Power):
     def __init__(self, owner: "Player"):
@@ -294,7 +297,7 @@ class BloodKnight(Power):
             x_offset = random.randint(-256, 256)
             y_offset = random.randint(-256, 256)
             storm_point = (self.owner.rect.centerx + x_offset, self.owner.rect.centery + y_offset)
-            Objects.Storm(storm_point[0], storm_point[1], 1200, self, self.owner.colour)
+            Objects.Storm(storm_point[0], storm_point[1], 1200, self, self.owner.animation_manager.get_animation(Animations.StormAnimation), self.owner.colour)
 
 class Normality(Power):
 
@@ -354,7 +357,7 @@ class Embrace(Power):
 
     def on_use(self):
         super().on_use()
-        self.owner.animation = EmbraceTimeline(30, self.owner.move_xdir, self.owner.move_ydir, self, 25)
+        self.owner.timeline = EmbraceTimeline(30, self.owner.move_xdir, self.owner.move_ydir, self, 25)
 
 class Rest(Power):
     def __init__(self, owner: "Player"):
@@ -427,7 +430,7 @@ class DanseMacabre(Power):
 
     def on_use(self):
         super().on_use()
-        self.owner.animation = DashTimeline(10, self.owner.move_xdir, self.owner.move_ydir, self, 25)
+        self.owner.timeline = DashTimeline(10, self.owner.move_xdir, self.owner.move_ydir, self, 25)
 
 class Blessing(Power):
     def __init__(self, owner: "Player"):

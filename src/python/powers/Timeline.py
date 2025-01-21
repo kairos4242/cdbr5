@@ -41,7 +41,7 @@ class DashTimeline(Timeline):
     def step(self):
         self.curr_step += 1
         if self.curr_step == self.duration:
-            self.owner.animation = None
+            self.owner.timeline = None
         else:
             self.owner.move_direction(self.dir_x, self.dir_y, self.dash_speed, 0, 0, True)
 
@@ -115,7 +115,7 @@ class FalconPunchTimeline(Timeline):
 
         self.curr_step += 1
         if self.curr_step == self.duration:
-            self.owner.animation = None
+            self.owner.timeline = None
         if self.curr_step == self.punch_frame:
             hitbox = utils.create_rect(self.owner.rect.centerx + (self.dir_x * 64), self.owner.rect.centery + (self.dir_y * 64), 64, 64)
             solids_not_me = self.owner.solids_not_me()
@@ -142,7 +142,7 @@ class BodySlamTimeline(Timeline):
 
         self.curr_step += 1
         if self.curr_step == self.duration:
-            self.owner.animation = None
+            self.owner.timeline = None
         self.owner.move_direction(self.dir_x, self.dir_y, self.dash_speed, 0, 0, True)
         hitbox = utils.create_rect(self.owner.rect.centerx + (self.dir_x * 8), self.owner.rect.centery + (self.dir_y * 8), 64, 64)
         solids_not_me = self.owner.solids_not_me()
@@ -153,7 +153,7 @@ class BodySlamTimeline(Timeline):
                 collision.outside_force_x = self.dir_x * 25
                 collision.outside_force_y = self.dir_y * 25
                 self.owner.map.add_screen_shake(30)
-            self.owner.animation = None
+            self.owner.timeline = None
 
 class SniperRifleTimeline(Timeline):
 
@@ -164,7 +164,7 @@ class SniperRifleTimeline(Timeline):
         self.curr_step += 1
         if self.curr_step == self.duration:
             Projectiles.SniperBullet(self.owner.rect.centerx, self.owner.rect.centery, self.owner.opponent, self, self.owner.colour)
-            self.owner.animation = None
+            self.owner.timeline = None
 
 class EmbraceTimeline(Timeline):
 
@@ -177,7 +177,7 @@ class EmbraceTimeline(Timeline):
     def step(self):
         self.curr_step += 1
         if self.curr_step == self.duration:
-            self.owner.animation = None
+            self.owner.timeline = None
             return
         if self.hit_max == False:
             self.current_dash_speed += 3
@@ -195,4 +195,4 @@ class EmbraceTimeline(Timeline):
             for collision in collide:
                 if collision == self.owner.opponent:
                     self.owner.heal(self.power, self.owner, 10)
-            self.owner.animation = None
+            self.owner.timeline = None

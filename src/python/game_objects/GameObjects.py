@@ -83,10 +83,10 @@ class GameObject():
             target.hp -= damage
             if target.hp <= 0:
                 self.destroy(target)
-        if target.animation != None:
+        if target.timeline != None:
             #should animations still get interrupted if you have shield? interesting design question
-            if target.animation.interrupted_by_damage == True:
-                target.animation = None
+            if target.timeline.interrupted_by_damage == True:
+                target.timeline = None
         
 
     def heal(self, source, target: "GameActor", hp, attributes: list[Attribute] = list()):
@@ -130,7 +130,7 @@ class GameActor(GameObject):
         self._solid = False
         self._material = Material.NONE
         self.effects = [] #type: list[Effect]
-        self._animation = None #type: Timeline
+        self._timeline = None #type: Timeline
         self._move_xdir = 0
         self._move_ydir = 0
 
@@ -201,12 +201,12 @@ class GameActor(GameObject):
         self.modify_property("_movespeed", value)
 
     @property
-    def animation(self):
-        return self._animation
+    def timeline(self):
+        return self._timeline
 
-    @animation.setter
-    def animation(self, value):
-        self.modify_property("_animation", value)
+    @timeline.setter
+    def timeline(self, value):
+        self.modify_property("_timeline", value)
 
     @property
     def move_xdir(self):

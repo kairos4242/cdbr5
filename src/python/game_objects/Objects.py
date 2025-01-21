@@ -8,6 +8,7 @@ import math
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from powers.Powers import Power
+    from animations.Animations import StormAnimation
 import utils
 
 
@@ -137,22 +138,23 @@ class Turret(GameObject):
     def draw(self, surface):
         surface.blit(self.image, (self.rect.x, self.rect.y))
 
-STORM_IMAGES = []
+"""STORM_IMAGES = []
 NUM_FRAMES = 480
 for i in range(NUM_FRAMES - 1):
     number = f"{i:05d}" #leading zeros
     #TODO this should have .convert_alpha() once we have a proper animation solution
     image = pygame.image.load(os.path.join('assets', 'testing', 'Storm', f'Storm_{number}.png'))
-    STORM_IMAGES.append(image)
+    STORM_IMAGES.append(image)"""
 
 class Storm(GameObject):
 
-    def __init__(self, x, y, duration, power: "Power", colour, attributes = list()):
+    def __init__(self, x, y, duration, power: "Power", animation: "StormAnimation", colour, attributes = list()):
         super().__init__(x, y, power.owner.command_registry)
         self.rect = utils.create_rect(x, y, 256, 256)
         self.duration = duration
         self.power = power
         self.owner = power.owner
+        self.animation = animation
         self.attributes = attributes
         self.colour = colour
         self.image = pygame.Surface((self.rect.width, self.rect.height))
@@ -161,11 +163,11 @@ class Storm(GameObject):
         self.cooldown = 60 #should storms deal damage on cooldown? should it be on entry? should it just be a shorter cooldown?
         self.max_cooldown = 60
         self.frame_index = 0
-        self.max_frame_index = 479
+        self.max_frame_index = self.animation.num_frames - 1
         
 
     def draw(self, surface):
-        curr_image = STORM_IMAGES[self.frame_index]
+        curr_image = self.animation.get_sprite(self.frame_index)
         surface.blit(curr_image, (self.rect.x, self.rect.y))
         self.frame_index += 1
         if self.frame_index >= self.max_frame_index:
