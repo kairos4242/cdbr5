@@ -137,6 +137,13 @@ class Turret(GameObject):
     def draw(self, surface):
         surface.blit(self.image, (self.rect.x, self.rect.y))
 
+STORM_IMAGES = []
+NUM_FRAMES = 480
+for i in range(NUM_FRAMES - 1):
+    number = f"{i:05d}" #leading zeros
+    image = pygame.image.load(os.path.join('assets', 'testing', 'Storm', f'Storm_{number}.png'))
+    STORM_IMAGES.append(image)
+
 class Storm(GameObject):
 
     def __init__(self, x, y, duration, power: "Power", colour, attributes = list()):
@@ -152,10 +159,16 @@ class Storm(GameObject):
         self.image.fill(self.colour.value)
         self.cooldown = 60 #should storms deal damage on cooldown? should it be on entry? should it just be a shorter cooldown?
         self.max_cooldown = 60
+        self.frame_index = 0
+        self.max_frame_index = 479
         
 
     def draw(self, surface):
-        surface.blit(self.image, (self.rect.x, self.rect.y))
+        curr_image = STORM_IMAGES[self.frame_index]
+        surface.blit(curr_image, (self.rect.x, self.rect.y))
+        self.frame_index += 1
+        if self.frame_index >= self.max_frame_index:
+            self.frame_index = 0
 
     def step(self):
         self.duration -= 1

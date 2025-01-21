@@ -70,7 +70,7 @@ class PlayerInputController(InputController):
 
         for index, key in enumerate(p1_keys):
             if key:
-                power_index = index - 1
+                power_index = index
                 power = player1.powers[power_index]
                 if power.cooldown <= 0:
                     print("Using power")
@@ -85,7 +85,7 @@ class PlayerInputController(InputController):
 
         for index, key in enumerate(p2_keys):
             if key:
-                power_index = index - 1
+                power_index = index
                 power = player2.powers[power_index]
                 if power.cooldown <= 0:
                     print("Using power")

@@ -18,7 +18,7 @@ if TYPE_CHECKING:
     from game_objects.player import Player
 from powers.PowerType import PowerType
 import utils
-
+import os
 
 class Power(EventListener):
 
