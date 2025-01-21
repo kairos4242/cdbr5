@@ -8,7 +8,7 @@ from events.EventListener import EventListener
 from events.EventType import EventType
 from game_objects import Objects, Projectiles
 from game_objects.Projectiles import AtlasBullet, Bullet
-from powers.Animations import BodySlamAnimation, DashAnimation, EmbraceAnimation, FalconPunchAnimation, PlayfulAnimation, SniperRifleAnimation
+from powers.Timeline import BodySlamTimeline, DashTimeline, EmbraceTimeline, FalconPunchTimeline, PlayfulTimeline, SniperRifleTimeline
 from powers.Effects import Effect
 from Attribute import ModificationType, Property
 import math
@@ -79,7 +79,7 @@ class Dash(Power):
 
     def on_use(self):
         super().on_use()
-        self.owner.animation = DashAnimation(10, self.owner.move_xdir, self.owner.move_ydir, self, 25)
+        self.owner.animation = DashTimeline(10, self.owner.move_xdir, self.owner.move_ydir, self, 25)
 
 class AggressiveDash(Power):
     def __init__(self, owner: "Player"):
@@ -88,7 +88,7 @@ class AggressiveDash(Power):
     def on_use(self):
         super().on_use()
         x, y = self.owner.get_direction_to_opponent()
-        self.owner.animation = DashAnimation(10, -x, -y, self, 25)
+        self.owner.animation = DashTimeline(10, -x, -y, self, 25)
 
 
 class DefensiveDash(Power):
@@ -98,7 +98,7 @@ class DefensiveDash(Power):
     def on_use(self):
         super().on_use()
         x, y = self.owner.get_direction_to_opponent()
-        self.owner.animation = DashAnimation(10, x, y, self, 25)
+        self.owner.animation = DashTimeline(10, x, y, self, 25)
 
 class PlayfulTrickster(Power):
     def __init__(self, owner: "Player"):
@@ -106,10 +106,10 @@ class PlayfulTrickster(Power):
 
     def on_use(self):
         super().on_use()
-        if isinstance(self.owner.animation, PlayfulAnimation):
-            self.owner.animation = DashAnimation(10, self.owner.move_xdir, self.owner.move_ydir, self, 25)
+        if isinstance(self.owner.animation, PlayfulTimeline):
+            self.owner.animation = DashTimeline(10, self.owner.move_xdir, self.owner.move_ydir, self, 25)
         else:
-            self.owner.animation = PlayfulAnimation(self)
+            self.owner.animation = PlayfulTimeline(self)
 
 class ConveyorBelt(Power):
     def __init__(self, owner: "Player"):
@@ -158,7 +158,7 @@ class FalconPunch(Power):
 
     def on_use(self):
         super().on_use()
-        self.owner.animation = FalconPunchAnimation(self)
+        self.owner.animation = FalconPunchTimeline(self)
 
 class BodySlam(Power):
     def __init__(self, owner: "Player"):
@@ -166,7 +166,7 @@ class BodySlam(Power):
 
     def on_use(self):
         super().on_use()
-        self.owner.animation = BodySlamAnimation(self)
+        self.owner.animation = BodySlamTimeline(self)
 
 class Bomb(Power):
     def __init__(self, owner: "Player"):
@@ -218,7 +218,7 @@ class SniperRifle(Power):
 
     def on_use(self):
         super().on_use()
-        self.owner.animation = SniperRifleAnimation(self)
+        self.owner.animation = SniperRifleTimeline(self)
 
 class ChipDamage(Power):
     def __init__(self, owner: "Player"):
@@ -354,7 +354,7 @@ class Embrace(Power):
 
     def on_use(self):
         super().on_use()
-        self.owner.animation = EmbraceAnimation(30, self.owner.move_xdir, self.owner.move_ydir, self, 25)
+        self.owner.animation = EmbraceTimeline(30, self.owner.move_xdir, self.owner.move_ydir, self, 25)
 
 class Rest(Power):
     def __init__(self, owner: "Player"):
@@ -427,7 +427,7 @@ class DanseMacabre(Power):
 
     def on_use(self):
         super().on_use()
-        self.owner.animation = DashAnimation(10, self.owner.move_xdir, self.owner.move_ydir, self, 25)
+        self.owner.animation = DashTimeline(10, self.owner.move_xdir, self.owner.move_ydir, self, 25)
 
 class Blessing(Power):
     def __init__(self, owner: "Player"):

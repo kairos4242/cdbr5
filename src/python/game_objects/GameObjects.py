@@ -8,7 +8,7 @@ from Attribute import Attribute, ModificationType, Property
 import pygame
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from powers.Animations import Animation
+    from powers.Timeline import Timeline
     from commands.CommandRegistry import CommandRegistry
 from powers.Effects import Effect
 import utils
@@ -130,7 +130,7 @@ class GameActor(GameObject):
         self._solid = False
         self._material = Material.NONE
         self.effects = [] #type: list[Effect]
-        self._animation = None #type: Animation
+        self._animation = None #type: Timeline
         self._move_xdir = 0
         self._move_ydir = 0
 

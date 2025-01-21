@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 import utils
 
 
-class Animation():
+class Timeline():
 
     def __init__(self, duration: int, dir_x: int, dir_y: int, move_allowed: bool, power: "Power", interruptible: bool = False, interrupted_by_damage: bool = False):
         self.curr_step = 0
@@ -32,7 +32,7 @@ class Animation():
     def draw(self, surface):
         pass
 
-class DashAnimation(Animation):
+class DashTimeline(Timeline):
 
     def __init__(self, duration, dir_x, dir_y, power, dash_speed):
         super().__init__(duration, dir_x, dir_y, False, power)
@@ -45,7 +45,7 @@ class DashAnimation(Animation):
         else:
             self.owner.move_direction(self.dir_x, self.dir_y, self.dash_speed, 0, 0, True)
 
-class PlayfulAnimation(Animation):
+class PlayfulTimeline(Timeline):
 
     def __init__(self, power):
         super().__init__(15, power.owner.move_xdir, power.owner.move_ydir, False, power)
@@ -56,7 +56,7 @@ class PlayfulAnimation(Animation):
         if self.curr_step <= self.duration:
             self.owner.move_direction(self.dir_x, self.dir_y, 15, 0, 0, True)
 
-class FalconPunchAnimation(Animation):
+class FalconPunchTimeline(Timeline):
 
     def __init__(self, power):
         super().__init__(90, power.owner.move_xdir, power.owner.move_ydir, False, power)
@@ -132,7 +132,7 @@ class FalconPunchAnimation(Animation):
             particle.draw(surface)
 
 
-class BodySlamAnimation(Animation):
+class BodySlamTimeline(Timeline):
 
     def __init__(self, power):
         super().__init__(25, power.owner.move_xdir, power.owner.move_ydir, False, power)
@@ -155,7 +155,7 @@ class BodySlamAnimation(Animation):
                 self.owner.map.add_screen_shake(30)
             self.owner.animation = None
 
-class SniperRifleAnimation(Animation):
+class SniperRifleTimeline(Timeline):
 
     def __init__(self, power):
         super().__init__(60, power.owner.move_xdir, power.owner.move_ydir, False, power, interrupted_by_damage=True)
@@ -166,7 +166,7 @@ class SniperRifleAnimation(Animation):
             Projectiles.SniperBullet(self.owner.rect.centerx, self.owner.rect.centery, self.owner.opponent, self, self.owner.colour)
             self.owner.animation = None
 
-class EmbraceAnimation(Animation):
+class EmbraceTimeline(Timeline):
 
     def __init__(self, duration, dir_x, dir_y, power, dash_speed):
         super().__init__(duration, dir_x, dir_y, False, power)

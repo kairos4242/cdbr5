@@ -141,6 +141,7 @@ STORM_IMAGES = []
 NUM_FRAMES = 480
 for i in range(NUM_FRAMES - 1):
     number = f"{i:05d}" #leading zeros
+    #TODO this should have .convert_alpha() once we have a proper animation solution
     image = pygame.image.load(os.path.join('assets', 'testing', 'Storm', f'Storm_{number}.png'))
     STORM_IMAGES.append(image)
 
