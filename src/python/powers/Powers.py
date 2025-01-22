@@ -92,7 +92,6 @@ class AggressiveDash(Power):
         x, y = self.owner.get_direction_to_opponent()
         self.owner.timeline = DashTimeline(10, -x, -y, self, 25)
 
-
 class DefensiveDash(Power):
     def __init__(self, owner: "Player"):
         super().__init__(30, 30, owner)

@@ -18,6 +18,7 @@ from input_controllers.ReplayInputController import ReplayInputController
 from powers import Powers
 import os
 import ctypes
+import random
 ctypes.windll.user32.SetProcessDPIAware()
 
 class Game():
@@ -25,6 +26,8 @@ class Game():
     def __init__(self):
 
         pygame.init()
+
+        random.seed(10)
 
         # create game window
         self.game_screen = pygame.display.set_mode(Config.SCREEN_SIZE, flags=pygame.SCALED | pygame.FULLSCREEN, vsync=1)
@@ -108,7 +111,7 @@ class Map():
             self.animation_manager,
             image = 'Player 1.png',
             name = 'Player 1')
-        self.player1.powers = [Powers.Storm(self.player1), Powers.CrossCannon(self.player1)]
+
         self.player2 = Player(
             700, 
             400, 
@@ -121,7 +124,9 @@ class Map():
             self.animation_manager, 
             image = 'Player 2.png', 
             name = 'Player 2')
-        self.player2.powers = [Powers.DanseMacabre(self.player2), Powers.ChipDamage(self.player2), Powers.Repeater(self.player2)]
+        
+        self.player1.powers = [Powers.Storm(self.player1), Powers.CrossCannon(self.player1)]
+        self.player2.powers = [Powers.BloodKnight(self.player2), Powers.ChipDamage(self.player2), Powers.Repeater(self.player2)]
 
         
         self.player1.opponent = self.player2

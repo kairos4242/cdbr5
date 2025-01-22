@@ -1,11 +1,4 @@
-Move,Player 1,0,1,151
-Move,Player 1,1,1,160
-Power,Player 1,-1,175
-Move,Player 1,0,1,184
-Move,Player 1,1,1,192
-Move,Player 1,1,0,198
-Power,Player 1,-1,205
-Move,Player 1,1,-1,210
-Move,Player 1,0,-1,215
-Move,Player 1,-1,-1,222
-Move,Player 1,-1,0,224
+Power,Player 1,1,46
+Power,Player 1,1,76
+Power,Player 1,1,159
+Power,Player 1,1,189

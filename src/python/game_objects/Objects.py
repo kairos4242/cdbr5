@@ -11,7 +11,6 @@ if TYPE_CHECKING:
     from animations.Animations import StormAnimation
 import utils
 
-
 class Wall(GameActor):
 
     def __init__(self, x, y, command_registry):
