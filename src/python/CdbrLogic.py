@@ -9,6 +9,7 @@ from game_objects.Objects import Wall
 from game_objects.player import Player
 import pygame
 import pygame.freetype
+import pygame_gui
 import random
 from ObjectRegistry import ObjectRegistry
 from ControlType import ControlType
@@ -34,6 +35,12 @@ class Game():
 
         self.hotkey_manager = HotkeyManager.load_default_hotkeys()
 
+        self.ui_manager = pygame_gui.UIManager(Config.SCREEN_SIZE, theme_path="base_theme.json")
+
+        self.hello_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((350, 275), (100, 50)),
+                                             text='Say Hello',
+                                             manager=self.ui_manager)
+
         #self.input_controller = ReplayInputController(self.hotkey_manager, "test_filename.cdbr")
         self.input_controller = PlayerInputController(self.hotkey_manager)
 
@@ -50,13 +57,21 @@ class Game():
         run_game = True
         while run_game:
 
-            self.pygame_clock.tick(self.FPS)
+            time_delta = self.pygame_clock.tick(self.FPS) / 1000
 
             # event handler
             self.events = pygame.event.get()
             for event in self.events:
                 if event.type == pygame.QUIT:
                     run_game = False
+
+                if event.type == pygame_gui.UI_BUTTON_PRESSED:
+                    if event.ui_element == self.hello_button:
+                        print('Hello World!')
+
+                self.ui_manager.process_events(event)
+
+            self.ui_manager.update(time_delta)
 
             # check manual quit
             keys = pygame.key.get_pressed()
@@ -67,7 +82,7 @@ class Game():
                 self.map.command_registry.save_replay("test_filename.cdbr")
 
             self.map.step(keys)
-
+            self.ui_manager.draw_ui(self.game_screen)
             pygame.display.update()
 
 class Map():
