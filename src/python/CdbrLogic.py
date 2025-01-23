@@ -1,4 +1,5 @@
 from Clock import Clock
+from Rooms import MainMenu, Room
 from animations.Animations import AnimationManager
 from input_controllers.PlayerInputController import PlayerInputController
 from commands.CommandRegistry import CommandRegistry
@@ -9,6 +10,7 @@ from game_objects.Objects import Wall
 from game_objects.player import Player
 import pygame
 import pygame.freetype
+from pygame import Event
 import pygame_gui
 import random
 from ObjectRegistry import ObjectRegistry
@@ -35,12 +37,6 @@ class Game():
 
         self.hotkey_manager = HotkeyManager.load_default_hotkeys()
 
-        self.ui_manager = pygame_gui.UIManager(Config.SCREEN_SIZE, theme_path="base_theme.json")
-
-        self.hello_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((350, 275), (100, 50)),
-                                             text='Say Hello',
-                                             manager=self.ui_manager)
-
         #self.input_controller = ReplayInputController(self.hotkey_manager, "test_filename.cdbr")
         self.input_controller = PlayerInputController(self.hotkey_manager)
 
@@ -48,47 +44,43 @@ class Game():
         self.pygame_clock = pygame.time.Clock()
         self.FPS = 60
 
-        self.map = Map(self.game_screen, self.hotkey_manager, self.pygame_clock, self.input_controller)
+        self.room = MainMenu(self, self.game_screen, self.pygame_clock, pygame_gui.UIManager(Config.SCREEN_SIZE, theme_path="base_theme.json"))
+        self.map = Map(self, self.game_screen, self.hotkey_manager, self.pygame_clock, self.input_controller, pygame_gui.UIManager(Config.SCREEN_SIZE, theme_path="base_theme.json"))
 
         self.game_loop()
 
+    def goto_room(self, room: "Room"):
+        self.room = room
+
+    def end_game(self):
+        self.run_game = False
+
     def game_loop(self):
         # game loop
-        run_game = True
-        while run_game:
+        self.run_game = True
+        while self.run_game:
 
             time_delta = self.pygame_clock.tick(self.FPS) / 1000
 
-            # event handler
             self.events = pygame.event.get()
-            for event in self.events:
-                if event.type == pygame.QUIT:
-                    run_game = False
-
-                if event.type == pygame_gui.UI_BUTTON_PRESSED:
-                    if event.ui_element == self.hello_button:
-                        print('Hello World!')
-
-                self.ui_manager.process_events(event)
-
-            self.ui_manager.update(time_delta)
 
             # check manual quit
             keys = pygame.key.get_pressed()
             if self.hotkey_manager.check_pressed(keys, Hotkeys.QUIT):
-                run_game = False
+                self.end_game()
 
             if self.hotkey_manager.check_pressed(keys, Hotkeys.SAVE_REPLAY):
                 self.map.command_registry.save_replay("test_filename.cdbr")
 
-            self.map.step(keys)
-            self.ui_manager.draw_ui(self.game_screen)
+            self.room.step(keys, self.events, time_delta)
             pygame.display.update()
 
-class Map():
+class Map(Room):
 
-    def __init__(self, game_screen: "pygame.Surface", hotkey_manager: "HotkeyManager", pygame_clock: "pygame.time.Clock", input_controller: "PlayerInputController"):
+    def __init__(self, game: Game, game_screen: "pygame.Surface", hotkey_manager: "HotkeyManager", pygame_clock: "pygame.time.Clock", input_controller: "PlayerInputController", ui_manager: pygame_gui.UIManager):
         "Set up initial map configuration."
+
+        super().__init__(game, game_screen, pygame_clock, ui_manager)
 
         self.game_screen = game_screen
         self.screen = pygame.surface.Surface((1920, 1080)) #screen to draw everything to before game screen for fullscreen effects like screen shake
@@ -152,9 +144,22 @@ class Map():
 
         pygame.display.set_caption("CDBR5")
 
-    def step(self, keys_pressed):
+    def step(self, keys_pressed, events: list[Event], time_delta: float):
 
         self.clock.tick()
+        self.ui_manager.update(time_delta)
+
+        # event handler
+        self.events = pygame.event.get()
+        for event in events:
+            if event.type == pygame.QUIT:
+                self.game.end_game()
+
+            if event.type == pygame_gui.UI_BUTTON_PRESSED:
+                if event.ui_element == self.hello_button:
+                    self.goto_room(self.map)
+
+            self.ui_manager.process_events(event)
 
         self.keys = keys_pressed
 
@@ -168,6 +173,7 @@ class Map():
 
         #update display
         self.draw_game_objects()
+        self.ui_manager.draw_ui(self.game_screen)
         
     def draw_game_objects(self):
         #self.screen.fill(Colours.PapayaWhip.value)
