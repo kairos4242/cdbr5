@@ -135,6 +135,38 @@ class Map(Room):
         self.player1.powers = [Powers.Storm(self.player1), Powers.CrossCannon(self.player1)]
         self.player2.powers = [Powers.BloodKnight(self.player2), Powers.ChipDamage(self.player2), Powers.Repeater(self.player2)]
 
+        # Set up power buttons
+
+        self.player1_buttons = []
+        prev_button = None
+        for index, power in enumerate(self.player1.powers):
+            if index == 0:
+                button_layout_rect = button_layout_rect = pygame.Rect(50, 0, 100, 50)
+                anchors = {'top': 'top', 'left': 'left'}
+            else:
+                button_layout_rect = button_layout_rect = pygame.Rect(10, 0, 100, 50)
+                anchors = {'top': 'top', 'left': 'left', 'left_target': prev_button}
+            button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((0, 0), (100, 50)),
+                                        text=power.name, manager=self.ui_manager,
+                                        anchors=anchors)
+            self.player1_buttons.append(button)
+            prev_button = button
+
+        self.player2_buttons = []
+        prev_button = None
+        for index, power in enumerate(self.player2.powers):
+            if index == 0:
+                button_layout_rect = button_layout_rect = pygame.Rect(-100, 0, 100, 50)
+                anchors = {'top': 'top', 'right': 'right'}
+            else:
+                anchors = {'top': 'top', 'right': 'right', 'right_target': prev_button}
+                button_layout_rect = button_layout_rect = pygame.Rect(-110, 0, 100, 50)
+            button = pygame_gui.elements.UIButton(relative_rect=button_layout_rect,
+                                        text=power.name, manager=self.ui_manager,
+                                        anchors=anchors)
+            self.player2_buttons.append(button)
+            prev_button = button
+
         
         self.player1.opponent = self.player2
         self.player2.opponent = self.player1
@@ -156,8 +188,11 @@ class Map(Room):
                 self.game.end_game()
 
             if event.type == pygame_gui.UI_BUTTON_PRESSED:
-                if event.ui_element == self.hello_button:
-                    self.goto_room(self.map)
+                if event.ui_element in self.player1_buttons:
+                    print("player1 button pressed")
+                elif event.ui_element in self.player2_buttons:
+                    print("player2 button pressed")
+
 
             self.ui_manager.process_events(event)
 
@@ -178,7 +213,7 @@ class Map(Room):
     def draw_game_objects(self):
         #self.screen.fill(Colours.PapayaWhip.value)
         self.screen.blit(self.background)
-        self.ARIAL_16PT.render_to(self.screen, (0, 0), str(self.pygame_clock.get_fps()), Colours.Black.value)
+        self.ARIAL_16PT.render_to(self.screen, (0, Config.SCREEN_HEIGHT - 30), str(self.pygame_clock.get_fps()), Colours.Black.value)
         p1_hp = self.player1.hp
         p1_max_hp = self.player1.max_hp
         p2_hp = self.player2.hp

@@ -23,7 +23,6 @@ class MainMenu(Room):
 
     def __init__(self, game: "Game", game_screen: "pygame.Surface", pygame_clock: "pygame.time.Clock", ui_manager: "pygame_gui.UIManager"):
         super().__init__(game, game_screen, pygame_clock, ui_manager)
-        # self.hello_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((350, 275), (100, 50)), text='Get Cooking', manager=self.ui_manager)
         self.hello_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((350, 275), (100, 50)),
                                              text='Get Cooking',
                                              manager=self.ui_manager)
