@@ -2,6 +2,7 @@ from Clock import Clock
 from Rooms import MainMenu, Room
 from animations.Animations import AnimationManager
 from input_controllers.PlayerInputController import PlayerInputController
+from input_controllers.ReplayInputController import ReplayInputController
 from commands.CommandRegistry import CommandRegistry
 from HotkeyManager import HotkeyManager
 from Hotkeys import Hotkeys
@@ -17,7 +18,6 @@ from ObjectRegistry import ObjectRegistry
 from ControlType import ControlType
 from Colours import Colours
 import Config
-from input_controllers.ReplayInputController import ReplayInputController
 from powers import Powers
 import os
 import ctypes
