@@ -44,8 +44,8 @@ class Game():
         self.pygame_clock = pygame.time.Clock()
         self.FPS = 60
 
-        self.room = MainMenu(self, self.game_screen, self.pygame_clock, pygame_gui.UIManager(Config.SCREEN_SIZE, theme_path="base_theme.json"))
-        self.map = Map(self, self.game_screen, self.hotkey_manager, self.pygame_clock, self.input_controller, pygame_gui.UIManager(Config.SCREEN_SIZE, theme_path="base_theme.json"))
+        self.room = MainMenu(self, self.game_screen, self.pygame_clock, pygame_gui.UIManager(Config.SCREEN_SIZE, theme_path="base_theme.json", enable_live_theme_updates=False))
+        self.map = Map(self, self.game_screen, self.hotkey_manager, self.pygame_clock, self.input_controller, pygame_gui.UIManager(Config.SCREEN_SIZE, theme_path="base_theme.json", enable_live_theme_updates=False))
 
         self.game_loop()
 
