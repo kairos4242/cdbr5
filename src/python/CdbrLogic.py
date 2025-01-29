@@ -132,19 +132,37 @@ class Map(Room):
             image = 'Player 2.png', 
             name = 'Player 2')
         
-        self.player1.powers = [Powers.Storm(self.player1), Powers.CrossCannon(self.player1)]
+        self.player1.powers = [Powers.Swap(self.player1), Powers.CrossCannon(self.player1), Powers.AggressiveDash(self.player1), Powers.ConveyorBelt(self.player1), Powers.FalconPunch(self.player1)]
         self.player2.powers = [Powers.BloodKnight(self.player2), Powers.ChipDamage(self.player2), Powers.Repeater(self.player2)]
 
         # Set up power buttons
+
+        power_bar_layout_rect = pygame.Rect(0, -150, 404, 100)
+        power_bar_surface = pygame.image.load(os.path.join('assets', 'testing', 'Power Bar.png')).convert()
+        anchors = {'centerx': 'centerx', 'bottom': 'bottom'}
+        self.power_bar = pygame_gui.elements.UIImage(relative_rect=power_bar_layout_rect,
+                                        image_surface=power_bar_surface, manager=self.ui_manager,
+                                        anchors=anchors)
+        
+        self.player1_power_icons = []
+        for index, power in enumerate(self.player1.powers):
+            pos = -152 + (index * 76)
+            icon_layout_rect = pygame.Rect(pos, -128, 55, 55)
+            power_name = power.name
+            surface = pygame.image.load(os.path.join('assets', 'testing', 'Power Icons', f'{power_name}_55.png')).convert()
+            icon = pygame_gui.elements.UIImage(relative_rect=icon_layout_rect,
+                                        image_surface=surface, manager=self.ui_manager,
+                                        anchors=anchors)
+            self.player1_power_icons.append(icon)
 
         self.player1_buttons = []
         prev_button = None
         for index, power in enumerate(self.player1.powers):
             if index == 0:
-                button_layout_rect = button_layout_rect = pygame.Rect(50, 0, 100, 50)
+                button_layout_rect = pygame.Rect(50, 0, 100, 50)
                 anchors = {'top': 'top', 'left': 'left'}
             else:
-                button_layout_rect = button_layout_rect = pygame.Rect(10, 0, 100, 50)
+                button_layout_rect = pygame.Rect(10, 0, 100, 50)
                 anchors = {'top': 'top', 'left': 'left', 'left_target': prev_button}
             button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((0, 0), (100, 50)),
                                         text=power.name, manager=self.ui_manager,
@@ -166,7 +184,6 @@ class Map(Room):
                                         anchors=anchors)
             self.player2_buttons.append(button)
             prev_button = button
-
         
         self.player1.opponent = self.player2
         self.player2.opponent = self.player1
