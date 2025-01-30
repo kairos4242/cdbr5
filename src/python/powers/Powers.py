@@ -8,6 +8,7 @@ from events.EventListener import EventListener
 from events.EventType import EventType
 from game_objects import Objects, Projectiles
 from game_objects.Projectiles import AtlasBullet, Bullet
+from powers.PowerIcon import PowerIcon
 from powers.Timeline import BodySlamTimeline, DashTimeline, EmbraceTimeline, FalconPunchTimeline, PlayfulTimeline, SniperRifleTimeline
 from animations import Animations
 from powers.Effects import Effect
@@ -38,6 +39,7 @@ class Power(EventListener):
         self.command_registry = self.owner.command_registry
         self.type = type
         self.animation = None
+        self.icon = None # type: PowerIcon
 
     def step(self):
         if self.cooldown > 0:
@@ -51,6 +53,8 @@ class Power(EventListener):
         if self.type == PowerType.TALENT:
             #remove power, don't trigger any sort of power exhausted or power removed event
             self.owner.powers.remove(self)
+        if self.icon != None:
+            self.icon.on_use()
 
     def on_remove(self):
         pass

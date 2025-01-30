@@ -22,6 +22,8 @@ from powers import Powers
 import os
 import ctypes
 import random
+
+from powers.PowerIcon import PowerIcon
 ctypes.windll.user32.SetProcessDPIAware()
 
 class Game():
@@ -150,10 +152,9 @@ class Map(Room):
             icon_layout_rect = pygame.Rect(pos, -128, 55, 55)
             power_name = power.name
             surface = pygame.image.load(os.path.join('assets', 'testing', 'Power Icons', f'{power_name}_55.png')).convert()
-            icon = pygame_gui.elements.UIImage(relative_rect=icon_layout_rect,
-                                        image_surface=surface, manager=self.ui_manager,
-                                        anchors=anchors)
+            icon = PowerIcon(icon_layout_rect, surface, self.ui_manager, anchors)
             self.player1_power_icons.append(icon)
+            power.icon = icon
 
         self.player1_buttons = []
         prev_button = None
@@ -222,6 +223,9 @@ class Map(Room):
         #run steps
         for object in self.object_registry.objects:
             object.step()
+
+        for power_icon in self.player1_power_icons:
+            power_icon.step()
 
         #update display
         self.draw_game_objects()
