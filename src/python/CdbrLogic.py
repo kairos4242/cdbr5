@@ -152,7 +152,7 @@ class Map(Room):
             icon_layout_rect = pygame.Rect(pos, -128, 55, 55)
             power_name = power.name
             surface = pygame.image.load(os.path.join('assets', 'testing', 'Power Icons', f'{power_name}_55.png')).convert()
-            icon = PowerIcon(icon_layout_rect, surface, self.ui_manager, anchors)
+            icon = PowerIcon(icon_layout_rect, surface, self.ui_manager, anchors, power)
             self.player1_power_icons.append(icon)
             power.icon = icon
 
@@ -210,6 +210,11 @@ class Map(Room):
                     print("player1 button pressed")
                 elif event.ui_element in self.player2_buttons:
                     print("player2 button pressed")
+
+            if event.type == pygame_gui.UI_BUTTON_ON_HOVERED:
+                print("UI Button Hovered")
+            if event.type == pygame_gui.UI_BUTTON_ON_UNHOVERED:
+                print("UI Button Unhovered")
 
 
             self.ui_manager.process_events(event)
