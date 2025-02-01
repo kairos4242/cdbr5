@@ -8,6 +8,8 @@ import pygame
 from ControlType import ControlType
 import os
 from typing import TYPE_CHECKING
+
+from game_objects.Teams import Team
 if TYPE_CHECKING:
     from CdbrLogic import Map
 
@@ -20,21 +22,29 @@ class Player(GameActor):
             y, 
             control_type: ControlType, 
             powers, 
-            colour, 
+            colour,
+            team: "Team",
             map: "Map", 
             command_registry: "CommandRegistry", 
             hotkey_manager: "HotkeyManager", 
             animation_manager: "AnimationManager", 
             image='Player 1.png', 
-            name="Player 1"):
+            name="Player 1"
+    ):
         super().__init__(x, y, command_registry)
         self.make_solid()
         self.powers = powers
         self.control_type = control_type
         self.hotkey_manager = hotkey_manager
         self.animation_manager = animation_manager
-        self.opponent = None
         self.colour = colour
+
+        self.team = team
+        if not self.team.is_member(self):
+            self.team.add_member(self)
+
+        self.opponent = None
+
         self.name = name
         self.image = pygame.image.load(os.path.join('assets', 'testing', image)).convert_alpha()
         self.map = map

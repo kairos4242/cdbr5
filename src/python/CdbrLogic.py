@@ -1,6 +1,7 @@
 from Clock import Clock
 from Rooms import MainMenu, Room
 from animations.Animations import AnimationManager
+from game_objects.Teams import Team, TeamManager
 from input_controllers.PlayerInputController import PlayerInputController
 from input_controllers.ReplayInputController import ReplayInputController
 from commands.CommandRegistry import CommandRegistry
@@ -87,8 +88,6 @@ class Map(Room):
         self.game_screen = game_screen
         self.screen = pygame.surface.Surface((1920, 1080)) #screen to draw everything to before game screen for fullscreen effects like screen shake
         self.hotkey_manager = hotkey_manager
-
-        self.TUROK_30PT = pygame.freetype.Font("pygame_tutorial/assets/fonts/turok.ttf", 30)
         self.ARIAL_16PT = pygame.freetype.SysFont("Arial", 16)
 
         self.background = pygame.image.load(os.path.join('assets', 'testing', 'Cream Black Background.png')).convert()
@@ -108,12 +107,17 @@ class Map(Room):
         self.command_registry = CommandRegistry(self.clock, self.event_manager)
         self.object_registry = ObjectRegistry()
 
+        self.p1team = Team("Player 1 Team")
+        self.p2team = Team("Player 2 Team")
+        self.team_manager = TeamManager([self.p1team, self.p2team])
+
         self.player1 = Player(
             200,
             400,
             ControlType.HUMAN,
             [],
             Colours.Red,
+            self.p1team,
             self,
             self.command_registry,
             self.hotkey_manager,
@@ -126,16 +130,20 @@ class Map(Room):
             400, 
             ControlType.HUMAN_PLAYER2, 
             [], 
-            Colours.Blue, 
-            self, 
+            Colours.Blue,
+            self.p2team,
+            self,
             self.command_registry, 
             self.hotkey_manager, 
             self.animation_manager, 
             image = 'Player 2.png', 
             name = 'Player 2')
         
-        self.player1.powers = [Powers.Swap(self.player1), Powers.CrossCannon(self.player1), Powers.AggressiveDash(self.player1), Powers.ConveyorBelt(self.player1), Powers.FalconPunch(self.player1)]
-        self.player2.powers = [Powers.BloodKnight(self.player2), Powers.ChipDamage(self.player2), Powers.Repeater(self.player2)]
+        self.player1.opponent = self.team_manager.get_first_enemy(self.p1team)
+        self.player2.opponent = self.team_manager.get_first_enemy(self.p2team)
+        
+        self.player1.powers = [Powers.Deference(self.player1), Powers.CrossCannon(self.player1), Powers.AggressiveDash(self.player1), Powers.ConveyorBelt(self.player1), Powers.FalconPunch(self.player1)]
+        self.player2.powers = [Powers.ChipDamage(self.player2), Powers.Repeater(self.player2)]
 
         # Set up power buttons
 
