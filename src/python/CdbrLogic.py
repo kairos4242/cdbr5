@@ -80,33 +80,7 @@ class Game():
 
 class Map(Room):
 
-    def __init__(self, game: Game, game_screen: "pygame.Surface", hotkey_manager: "HotkeyManager", pygame_clock: "pygame.time.Clock", input_controller: "PlayerInputController", ui_manager: pygame_gui.UIManager):
-        "Set up initial map configuration."
-
-        super().__init__(game, game_screen, pygame_clock, ui_manager)
-
-        self.game_screen = game_screen
-        self.screen = pygame.surface.Surface((1920, 1080)) #screen to draw everything to before game screen for fullscreen effects like screen shake
-        self.hotkey_manager = hotkey_manager
-        self.ARIAL_16PT = pygame.freetype.SysFont("Arial", 16)
-
-        self.background = pygame.image.load(os.path.join('assets', 'testing', 'Cream Black Background.png')).convert()
-
-        self.screen_shake = 0
-        self.render_offset = [0, 0]
-
-        self.events = []
-
-        self.pygame_clock = pygame_clock
-
-        self.clock = Clock()
-        self.event_manager = EventManager()
-        self.animation_manager = AnimationManager()
-        self.input_controller = input_controller
-        
-        self.command_registry = CommandRegistry(self.clock, self.event_manager)
-        self.object_registry = ObjectRegistry()
-
+    def setup_players(self):
         self.p1team = Team("Player 1 Team")
         self.p2team = Team("Player 2 Team")
         self.team_manager = TeamManager([self.p1team, self.p2team])
@@ -144,6 +118,36 @@ class Map(Room):
         
         self.player1.powers = [Powers.Deference(self.player1), Powers.CrossCannon(self.player1), Powers.AggressiveDash(self.player1), Powers.ConveyorBelt(self.player1), Powers.FalconPunch(self.player1)]
         self.player2.powers = [Powers.ChipDamage(self.player2), Powers.Repeater(self.player2)]
+
+
+    def __init__(self, game: Game, game_screen: "pygame.Surface", hotkey_manager: "HotkeyManager", pygame_clock: "pygame.time.Clock", input_controller: "PlayerInputController", ui_manager: pygame_gui.UIManager):
+        "Set up initial map configuration."
+
+        super().__init__(game, game_screen, pygame_clock, ui_manager)
+
+        self.game_screen = game_screen
+        self.screen = pygame.surface.Surface((1920, 1080)) #screen to draw everything to before game screen for fullscreen effects like screen shake
+        self.hotkey_manager = hotkey_manager
+        self.ARIAL_16PT = pygame.freetype.SysFont("Arial", 16)
+
+        self.background = pygame.image.load(os.path.join('assets', 'testing', 'Cream Black Background.png')).convert()
+
+        self.screen_shake = 0
+        self.render_offset = [0, 0]
+
+        self.events = []
+
+        self.pygame_clock = pygame_clock
+
+        self.clock = Clock()
+        self.event_manager = EventManager()
+        self.animation_manager = AnimationManager()
+        self.input_controller = input_controller
+        
+        self.command_registry = CommandRegistry(self.clock, self.event_manager)
+        self.object_registry = ObjectRegistry()
+
+        self.setup_players()
 
         # Set up power buttons
 
@@ -193,9 +197,6 @@ class Map(Room):
                                         anchors=anchors)
             self.player2_buttons.append(button)
             prev_button = button
-        
-        self.player1.opponent = self.player2
-        self.player2.opponent = self.player1
 
         for i in range(150, 700, 64):
             Wall(i, 200, self.command_registry)
@@ -218,11 +219,6 @@ class Map(Room):
                     print("player1 button pressed")
                 elif event.ui_element in self.player2_buttons:
                     print("player2 button pressed")
-
-            if event.type == pygame_gui.UI_BUTTON_ON_HOVERED:
-                print("UI Button Hovered")
-            if event.type == pygame_gui.UI_BUTTON_ON_UNHOVERED:
-                print("UI Button Unhovered")
 
 
             self.ui_manager.process_events(event)

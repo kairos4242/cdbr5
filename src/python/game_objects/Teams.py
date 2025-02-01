@@ -2,19 +2,22 @@ from game_objects.GameObjects import GameActor
 
 
 class TeamManager:
-    def __init__(self, teams = []):
+    def __init__(self, teams = None):
 
-        self.teams = teams #type: list[Team]
+        # doing it this way because of https://www.pullrequest.com/blog/python-pitfalls-the-perils-of-using-lists-and-dicts-as-default-arguments/
+        if teams != None:
+            self.teams = teams #type: list[Team]
+        else:
+            self.teams = []
 
     def get_all_enemies(self, team):
-        teams_to_check = [team2 for team2 in self.teams if team2 != team]
+        teams_to_check = [team_to_check for team_to_check in self.teams if team_to_check != team]
         opps = []
         for team in teams_to_check:
             opps.extend(team.members)
         return opps
 
     def get_first_enemy(self, team):
-        
         opps = self.get_all_enemies(team)
         try:
             return opps[0]
@@ -35,8 +38,9 @@ class TeamManager:
 
 class Team:
 
-    def __init__(self, name, members: list = []):
-        self.members = members
+    def __init__(self, name):
+        # not a constructor parameter because https://www.pullrequest.com/blog/python-pitfalls-the-perils-of-using-lists-and-dicts-as-default-arguments/
+        self.members = list()
         self.name = name
 
     def add_member(self, member: "GameActor"):
