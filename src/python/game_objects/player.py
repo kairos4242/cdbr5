@@ -117,9 +117,7 @@ class NeutralPlayer(Player):
             map: "Map", 
             command_registry: "CommandRegistry", 
             hotkey_manager: "HotkeyManager", 
-            animation_manager: "AnimationManager", 
-            image='Player 1.png', 
-            name="Player 1"
+            animation_manager: "AnimationManager"
     ):
         self.powers = powers
         self.command_registry = command_registry
