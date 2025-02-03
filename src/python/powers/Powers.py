@@ -59,6 +59,11 @@ class Power(EventListener):
     def on_remove(self):
         pass
 
+class NullPower(Power):
+
+    def __init__(self, owner: "Player"):
+        super().__init__("No Power", 30, 30, owner)
+
 class Sprint(Power):
 
     def __init__(self, owner: "Player"):

@@ -162,8 +162,7 @@ class Storm(GameObject):
         self.cooldown = 60 #should storms deal damage on cooldown? should it be on entry? should it just be a shorter cooldown?
         self.max_cooldown = 60
         self.frame_index = 0
-        self.max_frame_index = self.animation.num_frames - 1
-        
+        self.max_frame_index = self.animation.num_frames - 1 
 
     def draw(self, surface):
         curr_image = self.animation.get_sprite(self.frame_index)

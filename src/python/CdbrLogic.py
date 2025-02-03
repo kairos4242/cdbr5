@@ -48,7 +48,7 @@ class Game():
         self.FPS = 60
 
         self.room = MainMenu(self, self.game_screen, self.pygame_clock, pygame_gui.UIManager(Config.SCREEN_SIZE, theme_path="base_theme.json", enable_live_theme_updates=False))
-        self.map = Map(self, self.game_screen, self.hotkey_manager, self.pygame_clock, self.input_controller, pygame_gui.UIManager(Config.SCREEN_SIZE, theme_path="base_theme.json", enable_live_theme_updates=False))
+        self.map = Map(self, self.game_screen, self.hotkey_manager, self.pygame_clock, self.input_controller, pygame_gui.UIManager(Config.SCREEN_SIZE, theme_path="base_theme.json", enable_live_theme_updates=False), (200, 400), (700, 400))
 
         self.game_loop()
 
@@ -80,53 +80,29 @@ class Game():
 
 class Map(Room):
 
-    def setup_players(self):
-        self.p1team = Team("Player 1 Team")
-        self.p2team = Team("Player 2 Team")
-        self.team_manager = TeamManager([self.p1team, self.p2team])
-
-        self.player1 = Player(
-            200,
-            400,
-            ControlType.HUMAN,
-            [],
-            Colours.Red,
-            self.p1team,
-            self,
-            self.command_registry,
-            self.hotkey_manager,
-            self.animation_manager,
-            image = 'Player 1.png',
-            name = 'Player 1')
-
-        self.player2 = Player(
-            700, 
-            400, 
-            ControlType.HUMAN_PLAYER2, 
-            [], 
-            Colours.Blue,
-            self.p2team,
-            self,
-            self.command_registry, 
-            self.hotkey_manager, 
-            self.animation_manager, 
-            image = 'Player 2.png', 
-            name = 'Player 2')
-        
-        self.player1.opponent = self.team_manager.get_first_enemy(self.p1team)
-        self.player2.opponent = self.team_manager.get_first_enemy(self.p2team)
-        
-        self.player1.powers = [Powers.Deference(self.player1), Powers.CrossCannon(self.player1), Powers.AggressiveDash(self.player1), Powers.ConveyorBelt(self.player1), Powers.FalconPunch(self.player1)]
-        self.player2.powers = [Powers.ChipDamage(self.player2), Powers.Repeater(self.player2)]
-
-
-    def __init__(self, game: Game, game_screen: "pygame.Surface", hotkey_manager: "HotkeyManager", pygame_clock: "pygame.time.Clock", input_controller: "PlayerInputController", ui_manager: pygame_gui.UIManager):
+    def __init__(self, 
+                game: Game, 
+                game_screen: "pygame.Surface", 
+                hotkey_manager: "HotkeyManager", 
+                pygame_clock: "pygame.time.Clock", 
+                input_controller: "PlayerInputController", 
+                ui_manager: pygame_gui.UIManager,
+                p1_pos: tuple[int, int],
+                p2_pos:tuple[int, int]
+                ):
         "Set up initial map configuration."
 
         super().__init__(game, game_screen, pygame_clock, ui_manager)
 
-        self.game_screen = game_screen
+        self.setup_dependencies(hotkey_manager, pygame_clock, input_controller)
+
+        self.setup_players(p1_pos, p2_pos)
+
+        self.setup_gui()
+
+    def setup_dependencies(self, hotkey_manager, pygame_clock, input_controller):
         self.screen = pygame.surface.Surface((1920, 1080)) #screen to draw everything to before game screen for fullscreen effects like screen shake
+        pygame.display.set_caption("CDBR5")
         self.hotkey_manager = hotkey_manager
         self.ARIAL_16PT = pygame.freetype.SysFont("Arial", 16)
 
@@ -147,8 +123,46 @@ class Map(Room):
         self.command_registry = CommandRegistry(self.clock, self.event_manager)
         self.object_registry = ObjectRegistry()
 
-        self.setup_players()
+    def setup_players(self, p1_pos: tuple[int, int], p2_pos: tuple[int, int]):
+        self.p1team = Team("Player 1 Team")
+        self.p2team = Team("Player 2 Team")
+        self.team_manager = TeamManager([self.p1team, self.p2team])
 
+        self.player1 = Player(
+            p1_pos[0],
+            p1_pos[1],
+            ControlType.HUMAN,
+            [],
+            Colours.Red,
+            self.p1team,
+            self,
+            self.command_registry,
+            self.hotkey_manager,
+            self.animation_manager,
+            image = 'Player 1.png',
+            name = 'Player 1')
+
+        self.player2 = Player(
+            p2_pos[0], 
+            p2_pos[1], 
+            ControlType.HUMAN_PLAYER2, 
+            [], 
+            Colours.Blue,
+            self.p2team,
+            self,
+            self.command_registry, 
+            self.hotkey_manager, 
+            self.animation_manager, 
+            image = 'Player 2.png', 
+            name = 'Player 2')
+        
+        self.player1.opponent = self.team_manager.get_first_enemy(self.p1team)
+        self.player2.opponent = self.team_manager.get_first_enemy(self.p2team)
+        
+        self.player1.powers = [Powers.Deference(self.player1), Powers.CrossCannon(self.player1), Powers.AggressiveDash(self.player1), Powers.ConveyorBelt(self.player1), Powers.FalconPunch(self.player1)]
+        self.player2.powers = [Powers.ChipDamage(self.player2), Powers.Repeater(self.player2)]
+
+    def setup_gui(self):
         # Set up power buttons
 
         power_bar_layout_rect = pygame.Rect(0, -150, 404, 100)
@@ -197,11 +211,6 @@ class Map(Room):
                                         anchors=anchors)
             self.player2_buttons.append(button)
             prev_button = button
-
-        for i in range(150, 700, 64):
-            Wall(i, 200, self.command_registry)
-
-        pygame.display.set_caption("CDBR5")
 
     def step(self, keys_pressed, events: list[Event], time_delta: float):
 
