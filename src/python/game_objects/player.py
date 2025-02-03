@@ -106,3 +106,29 @@ class Player(GameActor):
         print(x, y)
 
         return [x, y]
+    
+class NeutralPlayer(Player):
+
+    def __init__(
+            self, 
+            powers, 
+            colour,
+            team: "Team",
+            map: "Map", 
+            command_registry: "CommandRegistry", 
+            hotkey_manager: "HotkeyManager", 
+            animation_manager: "AnimationManager", 
+            image='Player 1.png', 
+            name="Player 1"
+    ):
+        self.powers = powers
+        self.command_registry = command_registry
+        self.hotkey_manager = hotkey_manager
+        self.animation_manager = animation_manager
+        self.colour = colour
+
+        self.team = team
+        if not self.team.is_member(self):
+            self.team.add_member(self)
+
+        self.map = map
