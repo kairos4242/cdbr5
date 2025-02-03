@@ -1,4 +1,6 @@
+from Colours import Colours
 from Rooms import MainMenu, Room
+from game_objects.player import PlayerPrototype
 from input_controllers.PlayerInputController import PlayerInputController
 from input_controllers.ReplayInputController import ReplayInputController
 from HotkeyManager import HotkeyManager
@@ -12,6 +14,7 @@ from maps.Maps import GoombaMap
 import ctypes
 import random
 
+from powers import Powers
 from powers.PowerIcon import PowerIcon
 ctypes.windll.user32.SetProcessDPIAware()
 
@@ -35,8 +38,35 @@ class Game():
         self.pygame_clock = pygame.time.Clock()
         self.FPS = 60
 
+        self.p1_prototype = PlayerPrototype(
+            money=0,
+            income=5,
+            win_bonus=5,
+            powers=[Powers.ConveyorBelt(None), Powers.CrossCannon(None), Powers.AggressiveDash(None), Powers.Blink(None), Powers.FalconPunch(None)],
+            colour=Colours.Red,
+            name="Player 1"
+        )
+
+        self.p2_prototype = PlayerPrototype(
+            money=0,
+            income=5,
+            win_bonus=5,
+            powers=[Powers.ConveyorBelt(None), Powers.CrossCannon(None), Powers.AggressiveDash(None), Powers.ConveyorBelt(None), Powers.FalconPunch(None)],
+            colour=Colours.Blue,
+            name="Player 2"
+        )
+
         self.room = MainMenu(self, self.game_screen, self.pygame_clock, pygame_gui.UIManager(Config.SCREEN_SIZE, theme_path="base_theme.json", enable_live_theme_updates=False))
-        self.map = GoombaMap(self, self.game_screen, self.hotkey_manager, self.pygame_clock, self.input_controller, pygame_gui.UIManager(Config.SCREEN_SIZE, theme_path="base_theme.json", enable_live_theme_updates=False))
+        self.map = GoombaMap(
+            self, 
+            self.game_screen, 
+            self.hotkey_manager, 
+            self.pygame_clock, 
+            self.input_controller, 
+            pygame_gui.UIManager(Config.SCREEN_SIZE, theme_path="base_theme.json", enable_live_theme_updates=False),
+            self.p1_prototype,
+            self.p2_prototype
+        )
 
         self.game_loop()
 

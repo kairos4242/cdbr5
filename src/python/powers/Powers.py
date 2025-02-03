@@ -20,7 +20,6 @@ if TYPE_CHECKING:
     from game_objects.player import Player
 from powers.PowerType import PowerType
 import utils
-import os
 
 class Power(EventListener):
 
@@ -36,10 +35,21 @@ class Power(EventListener):
         self.max_cooldown = max_cooldown
         self.name = name
         self.owner = owner
-        self.command_registry = self.owner.command_registry
+        if owner != None:
+            self.command_registry = self.owner.command_registry
+        else:
+            self.command_registry = None
         self.type = type
         self.animation = None
         self.icon = None # type: PowerIcon
+
+    def attach(self, owner: "Player"):
+        self.owner = owner
+        self.command_registry = owner.command_registry
+
+    def detach(self):
+        self.owner = None
+        self.command_registry = None
 
     def step(self):
         if self.cooldown > 0:
@@ -300,6 +310,9 @@ class BloodKnight(Power):
 
     def __init__(self, owner: "Player"):
         super().__init__("Blood Knight", 30, 30, owner)
+
+    def attach(self, owner: "Player"):
+        super().attach(owner)
         self.command_registry.event_manager.subscribe(EventType.PROPERTY_MODIFICATION, "hp", self)
 
     def notify(self, event: Event):
@@ -313,6 +326,9 @@ class Normality(Power):
 
     def __init__(self, owner: "Player"):
         super().__init__("Normality", 30, 30, owner)
+
+    def attach(self, owner: "Player"):
+        super().attach(owner)
         self.command_registry.event_manager.subscribe(EventType.POWER_USAGE, None, self)
 
     def notify(self, event: Event):
@@ -323,6 +339,9 @@ class Commonality(Power):
 
     def __init__(self, owner: "Player"):
         super().__init__("Commonality", 30, 30, owner)
+    
+    def attach(self, owner: "Player"):
+        super().attach(owner)
         self.command_registry.event_manager.subscribe(EventType.POWER_USAGE, None, self)
 
     def notify(self, event: Event):
@@ -394,6 +413,9 @@ class Repeater(Power):
 
     def __init__(self, owner: "Player"):
         super().__init__("Repeater", 30, 30, owner, PowerType.ATTACK)
+
+    def attach(self, owner: "Player"):
+        super().attach(owner)
         self.command_registry.event_manager.subscribe(EventType.POWER_USAGE, None, self)
 
     def notify(self, event: Event):
@@ -407,6 +429,9 @@ class Repeater(Power):
 class LivingStorm(Power):
     def __init__(self, owner: "Player"):
         super().__init__("Living Storm", 30, 30, owner, PowerType.ATTACK)
+
+    def attach(self, owner: "Player"):
+        super().attach(owner)
         Objects.LivingStorm(owner.rect.centerx, owner.rect.centery, self, self.owner.colour)
 
 class Rift(Power):
@@ -432,6 +457,9 @@ class Rift(Power):
 class DanseMacabre(Power):
     def __init__(self, owner: "Player"):
         super().__init__("Danse Macabre", 30, 1200, owner)
+
+    def attach(self, owner: "Player"):
+        super().attach(owner)
         self.command_registry.event_manager.subscribe(EventType.DAMAGE_DEALT, None, self)
 
     def notify(self, event: DamageDealtEvent):

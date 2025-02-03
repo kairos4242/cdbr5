@@ -10,9 +10,54 @@ import os
 from typing import TYPE_CHECKING
 
 from game_objects.Teams import Team
+from powers.Powers import Power
 if TYPE_CHECKING:
     from CdbrLogic import Map
 
+class PlayerPrototype:
+
+    def __init__(
+            self,
+            money: int,
+            income: int,
+            win_bonus: int,
+            powers: list[Power],
+            colour,
+            name
+    ):
+        self.money = money
+        self.income = income
+        self.win_bonus = win_bonus
+        self.powers = powers
+        self.colour = colour
+        self.name = name
+
+    def get_income(self):
+        self.money += self.income
+
+    def get_win_bonus(self):
+        self.money += self.win_bonus
+
+    def to_player(self, x, y, control_type, team, map, command_registry, hotkey_manager, animation_manager, image):
+        new_player = Player(
+            x,
+            y,
+            control_type,
+            self.powers,
+            self.colour,
+            team,
+            map,
+            command_registry=command_registry,
+            hotkey_manager=hotkey_manager,
+            animation_manager=animation_manager,
+            image=image,
+            name=self.name
+        )
+
+        for power in self.powers:
+            power.attach(new_player)
+
+        return new_player
 
 class Player(GameActor):
 

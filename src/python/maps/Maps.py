@@ -15,7 +15,7 @@ from events.Event import Event
 from events.EventManager import EventManager
 from game_objects.Objects import Storm, Turret, Wall
 from game_objects.Teams import Team, TeamManager
-from game_objects.player import NeutralPlayer, Player
+from game_objects.player import NeutralPlayer, Player, PlayerPrototype
 from input_controllers.PlayerInputController import PlayerInputController
 from powers import Powers
 from powers.PowerIcon import PowerIcon
@@ -34,7 +34,9 @@ class Map(Room):
                 input_controller: "PlayerInputController", 
                 ui_manager: pygame_gui.UIManager,
                 p1_pos: tuple[int, int],
-                p2_pos:tuple[int, int]
+                p2_pos:tuple[int, int],
+                p1_prototype: "PlayerPrototype",
+                p2_prototype: "PlayerPrototype"
                 ):
         "Set up initial map configuration."
 
@@ -42,7 +44,7 @@ class Map(Room):
 
         self.setup_dependencies(hotkey_manager, pygame_clock, input_controller)
 
-        self.setup_players(p1_pos, p2_pos)
+        self.setup_players(p1_pos, p2_pos, p1_prototype, p2_prototype)
 
         self.setup_gui()
 
@@ -69,47 +71,41 @@ class Map(Room):
         self.command_registry = CommandRegistry(self.clock, self.event_manager)
         self.object_registry = ObjectRegistry()
 
-    def setup_players(self, p1_pos: tuple[int, int], p2_pos: tuple[int, int]):
+    def setup_players(self, p1_pos: tuple[int, int], p2_pos: tuple[int, int], p1_prototype: "PlayerPrototype", p2_prototype: "PlayerPrototype"):
         self.p1team = Team("Player 1 Team")
         self.p2team = Team("Player 2 Team")
         self.neutral_team = Team("Neutral Team")
         self.team_manager = TeamManager([self.p1team, self.p2team])
 
-        self.player1 = Player(
+        self.player1 = p1_prototype.to_player(
             p1_pos[0],
             p1_pos[1],
             ControlType.HUMAN,
-            [],
-            Colours.Red,
             self.p1team,
             self,
             self.command_registry,
             self.hotkey_manager,
             self.animation_manager,
-            image = 'Player 1.png',
-            name = 'Player 1')
+            image = 'Player 1.png'
+        )
 
-        self.player2 = Player(
-            p2_pos[0], 
-            p2_pos[1], 
-            ControlType.HUMAN_PLAYER2, 
-            [], 
-            Colours.Blue,
+        self.player2 = p2_prototype.to_player(
+            p2_pos[0],
+            p2_pos[1],
+            ControlType.HUMAN,
             self.p2team,
             self,
-            self.command_registry, 
-            self.hotkey_manager, 
-            self.animation_manager, 
-            image = 'Player 2.png', 
-            name = 'Player 2')
+            self.command_registry,
+            self.hotkey_manager,
+            self.animation_manager,
+            image = 'Player 2.png'
+        )
         
         self.neutral_player = NeutralPlayer(None, Colours.Black, self.neutral_team, self, self.command_registry, self.hotkey_manager, self.animation_manager)
         
         self.player1.opponent = self.team_manager.get_first_enemy(self.p1team)
         self.player2.opponent = self.team_manager.get_first_enemy(self.p2team)
         
-        self.player1.powers = [Powers.ConveyorBelt(self.player1), Powers.CrossCannon(self.player1), Powers.AggressiveDash(self.player1), Powers.ConveyorBelt(self.player1), Powers.FalconPunch(self.player1)]
-        self.player2.powers = [Powers.ChipDamage(self.player2), Powers.Repeater(self.player2)]
         # idea with this is it serves as the source for all damage natural hazards on the map or such do
         self.neutral_power = Powers.NullPower(self.neutral_player)
         self.neutral_player.powers = [self.neutral_power]
@@ -238,9 +234,9 @@ class Map(Room):
 
 class GoombaMap(Map):
 
-    def __init__(self, game, game_screen, hotkey_manager, pygame_clock, input_controller, ui_manager):
+    def __init__(self, game, game_screen, hotkey_manager, pygame_clock, input_controller, ui_manager, p1_prototype, p2_prototype):
         
-        super().__init__(game, game_screen, hotkey_manager, pygame_clock, input_controller, ui_manager, (200, 400), (700, 400))
+        super().__init__(game, game_screen, hotkey_manager, pygame_clock, input_controller, ui_manager, (200, 400), (700, 400), p1_prototype, p2_prototype)
 
         for i in range(150, 700, 64):
             Wall(i, 200, self.command_registry)
