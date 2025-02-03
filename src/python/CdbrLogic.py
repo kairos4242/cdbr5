@@ -159,7 +159,7 @@ class Map(Room):
         self.player1.opponent = self.team_manager.get_first_enemy(self.p1team)
         self.player2.opponent = self.team_manager.get_first_enemy(self.p2team)
         
-        self.player1.powers = [Powers.Deference(self.player1), Powers.CrossCannon(self.player1), Powers.AggressiveDash(self.player1), Powers.ConveyorBelt(self.player1), Powers.FalconPunch(self.player1)]
+        self.player1.powers = [Powers.ConveyorBelt(self.player1), Powers.CrossCannon(self.player1), Powers.AggressiveDash(self.player1), Powers.ConveyorBelt(self.player1), Powers.FalconPunch(self.player1)]
         self.player2.powers = [Powers.ChipDamage(self.player2), Powers.Repeater(self.player2)]
 
     def setup_gui(self):

@@ -25,7 +25,7 @@ class Wall(GameActor):
 class ConveyorBelt(GameObject):
 
     def __init__(self, x, y, power: "Power", x_dir, y_dir):
-        super().__init__(x, y, power.owner.command_registry, depth = 100)
+        super().__init__(x, y, power.command_registry, depth = 100)
         self.power = power
         self.owner = power.owner
         self.x_dir = x_dir
@@ -101,7 +101,7 @@ class ConveyorBelt(GameObject):
 class Turret(GameObject):
 
     def __init__(self, x, y, power: "Power", x_dir, y_dir):
-        super().__init__(x, y, power.owner.command_registry, depth = 100)
+        super().__init__(x, y, power.command_registry, depth = 100)
         self.power = power
         self.owner = power.owner
         self.x_dir = x_dir
@@ -148,7 +148,7 @@ for i in range(NUM_FRAMES - 1):
 class Storm(GameObject):
 
     def __init__(self, x, y, duration, power: "Power", animation: "StormAnimation", colour, attributes = list()):
-        super().__init__(x, y, power.owner.command_registry)
+        super().__init__(x, y, power.command_registry)
         self.rect = utils.create_rect(x, y, 256, 256)
         self.duration = duration
         self.power = power
@@ -187,7 +187,7 @@ class Storm(GameObject):
 class LivingStorm(GameObject):
 
     def __init__(self, x, y, power: "Power", colour, attributes = list()):
-        super().__init__(x, y, power.owner.command_registry)
+        super().__init__(x, y, power.command_registry)
         self.rect = utils.create_rect(x, y, 256, 256)
         self.power = power
         self.owner = power.owner

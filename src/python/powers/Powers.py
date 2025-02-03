@@ -133,7 +133,7 @@ class ConveyorBelt(Power):
         #namespace pollution issue here with conveyor belt power and conveyor belt object
         original_x = self.owner.rect.centerx + (64 * self.owner.move_xdir)
         snapped_x = utils.snap_to_grid(original_x)
-        original_y = utils.rect.centery + (64 * self.owner.move_ydir)
+        original_y = self.owner.rect.centery + (64 * self.owner.move_ydir)
         snapped_y = utils.snap_to_grid(original_y)
         Objects.ConveyorBelt(
             snapped_x,
