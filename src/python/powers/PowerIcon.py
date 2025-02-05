@@ -1,5 +1,6 @@
 import pygame
 import pygame_gui
+import copy
 
 from typing import TYPE_CHECKING
 
@@ -31,7 +32,7 @@ class PowerIcon():
 
     def on_possible_press(self, prototype: "PlayerPrototype", mouse_coords: tuple[int, int]) -> bool:
         if self.icon.hovered:
-            prototype.powers.append(self.power)
+            prototype.powers.append(copy.deepcopy(self.power))
             return True
         return False
         
