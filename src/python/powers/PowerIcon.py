@@ -32,8 +32,12 @@ class PowerIcon():
 
     def on_possible_press(self, prototype: "PlayerPrototype", mouse_coords: tuple[int, int]) -> bool:
         if self.icon.hovered:
-            prototype.powers.append(copy.deepcopy(self.power))
-            return True
+            if prototype.money >= self.power.cost:
+                prototype.money -= self.power.cost
+                prototype.powers.append(copy.deepcopy(self.power))
+                return True
+            else:
+                print(f"Player {prototype.name} has insufficient funds to buy {self.power.name}")
         return False
         
     def on_use(self):

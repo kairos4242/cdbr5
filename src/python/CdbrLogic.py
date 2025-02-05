@@ -37,18 +37,18 @@ class Game():
         self.FPS = 60
 
         self.p1_prototype = PlayerPrototype(
-            money=0,
-            income=5,
-            win_bonus=5,
+            money=100,
+            income=20,
+            win_bonus=10,
             powers=[Powers.ConveyorBelt(None)],
             colour=Colours.Red,
             name="Player 1"
         )
 
         self.p2_prototype = PlayerPrototype(
-            money=0,
-            income=5,
-            win_bonus=5,
+            money=100,
+            income=20,
+            win_bonus=10,
             powers=[Powers.AtlasStone(None)],
             colour=Colours.Blue,
             name="Player 2"

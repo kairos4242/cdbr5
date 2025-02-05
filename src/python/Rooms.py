@@ -63,6 +63,7 @@ class Shop(Room):
         self.shop_commons = [Powers.Blink(None), Powers.CrossCannon(None), Powers.AtlasStone(None)]
         self.shop_icons = [] #type: list[PowerIcon]
         self.player_icons = [] #type: list[PowerIcon]
+        self.player_money = None
         anchors = {'centerx': 'centerx', 'centery': 'centery'}
         for index, power in enumerate(self.shop_commons):
             pos = -152 + (index * 76)
@@ -83,6 +84,8 @@ class Shop(Room):
         for icon in self.player_icons:
             icon.kill()
         self.player_icons = []
+        if self.player_money != None:
+            self.player_money.kill()
 
         anchors = {'centerx': 'centerx', 'bottom': 'bottom'}
         for index, power in enumerate(prototype.powers):
@@ -92,6 +95,9 @@ class Shop(Room):
             surface = pygame.image.load(os.path.join('assets', 'testing', 'Power Icons', f'{power_name}_55.png')).convert()
             icon = PowerIcon(icon_layout_rect, surface, self.ui_manager, anchors, power)
             self.player_icons.append(icon)
+
+        money_layout_rect = pygame.Rect(0, -256, 64, 64)
+        self.player_money = pygame_gui.elements.UITextBox("$" + str(prototype.money), money_layout_rect, self.ui_manager, anchors = anchors)
 
     def step(self, keys_pressed, events: list["Event"], time_delta: float):
 

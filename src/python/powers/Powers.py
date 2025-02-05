@@ -28,9 +28,10 @@ class Power(EventListener):
         self.cooldown = 100
         self.owner = None
         self.name = "Power"
+        self.cost = 50
         self.uses = None # intended here to mean infinite uses, not sure if this is the best way to do it
 
-    def __init__(self, name: str, cooldown: int, max_cooldown: int, owner: "Player", type: "PowerType" = PowerType.SKILL):
+    def __init__(self, name: str, cooldown: int, max_cooldown: int, owner: "Player", type: "PowerType" = PowerType.SKILL, cost: int = 50):
         self.cooldown = cooldown
         self.max_cooldown = max_cooldown
         self.name = name
@@ -40,6 +41,7 @@ class Power(EventListener):
         else:
             self.command_registry = None
         self.type = type
+        self.cost = cost
         self.animation = None
         self.icon = None # type: PowerIcon
 
