@@ -1,5 +1,5 @@
 from Colours import Colours
-from Rooms import MainMenu, Room
+from Rooms import MainMenu, Room, Shop
 from game_objects.player import PlayerPrototype
 from input_controllers.PlayerInputController import PlayerInputController
 from input_controllers.ReplayInputController import ReplayInputController
@@ -42,7 +42,7 @@ class Game():
             money=0,
             income=5,
             win_bonus=5,
-            powers=[Powers.ConveyorBelt(None), Powers.CrossCannon(None), Powers.AggressiveDash(None), Powers.Blink(None), Powers.FalconPunch(None)],
+            powers=[Powers.ConveyorBelt(None)],
             colour=Colours.Red,
             name="Player 1"
         )
@@ -51,24 +51,27 @@ class Game():
             money=0,
             income=5,
             win_bonus=5,
-            powers=[Powers.ConveyorBelt(None), Powers.CrossCannon(None), Powers.AggressiveDash(None), Powers.ConveyorBelt(None), Powers.FalconPunch(None)],
+            powers=[Powers.AtlasStone(None)],
             colour=Colours.Blue,
             name="Player 2"
         )
 
         self.room = MainMenu(self, self.game_screen, self.pygame_clock, pygame_gui.UIManager(Config.SCREEN_SIZE, theme_path="base_theme.json", enable_live_theme_updates=False))
-        self.map = GoombaMap(
-            self, 
-            self.game_screen, 
-            self.hotkey_manager, 
-            self.pygame_clock, 
-            self.input_controller, 
+        self.shop = Shop(self, self.game_screen, self.pygame_clock, pygame_gui.UIManager(Config.SCREEN_SIZE, theme_path="base_theme.json", enable_live_theme_updates=False))
+
+        self.game_loop()
+
+    def generate_map(self):
+        return GoombaMap(
+            self,
+            self.game_screen,
+            self.hotkey_manager,
+            self.pygame_clock,
+            self.input_controller,
             pygame_gui.UIManager(Config.SCREEN_SIZE, theme_path="base_theme.json", enable_live_theme_updates=False),
             self.p1_prototype,
             self.p2_prototype
         )
-
-        self.game_loop()
 
     def goto_room(self, room: "Room"):
         self.room = room

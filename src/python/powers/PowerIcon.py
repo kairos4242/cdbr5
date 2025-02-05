@@ -2,8 +2,11 @@ import pygame
 import pygame_gui
 
 from typing import TYPE_CHECKING
+
+
 if TYPE_CHECKING:
     from powers.Powers import Power
+    from game_objects.player import PlayerPrototype
 
 class PowerIcon():
 
@@ -25,10 +28,20 @@ class PowerIcon():
         self.tooltip = None
         self.hover_time_max = 20
         self.hover_time = self.hover_time_max
+
+    def on_possible_press(self, prototype: "PlayerPrototype", mouse_coords: tuple[int, int]) -> bool:
+        if self.icon.hovered:
+            prototype.powers.append(self.power)
+            return True
+        return False
         
     def on_use(self):
         self.scale = 1.25
         self.icon.set_dimensions((self.original_width * self.scale, self.original_height * self.scale))
+
+    def kill(self):
+        self.icon.hide()
+        self.icon.kill()
 
     def step(self):
         if self.scale > 1:

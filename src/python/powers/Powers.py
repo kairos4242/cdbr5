@@ -70,7 +70,7 @@ class Power(EventListener):
         pass
 
 class NullPower(Power):
-
+    # default power for things like damage from neutral storms and such
     def __init__(self, owner: "Player"):
         super().__init__("No Power", 30, 30, owner)
 

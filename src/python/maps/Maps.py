@@ -149,11 +149,11 @@ class Map(Room):
         prev_button = None
         for index, power in enumerate(self.player2.powers):
             if index == 0:
-                button_layout_rect = button_layout_rect = pygame.Rect(-100, 0, 100, 50)
+                button_layout_rect = pygame.Rect(-100, 0, 100, 50)
                 anchors = {'top': 'top', 'right': 'right'}
             else:
                 anchors = {'top': 'top', 'right': 'right', 'right_target': prev_button}
-                button_layout_rect = button_layout_rect = pygame.Rect(-110, 0, 100, 50)
+                button_layout_rect = pygame.Rect(-110, 0, 100, 50)
             button = pygame_gui.elements.UIButton(relative_rect=button_layout_rect,
                                         text=power.name, manager=self.ui_manager,
                                         anchors=anchors)
