@@ -13,9 +13,7 @@ import Config
 from maps.Maps import GoombaMap
 import ctypes
 import random
-
 from powers import Powers
-from powers.PowerIcon import PowerIcon
 ctypes.windll.user32.SetProcessDPIAware()
 
 class Game():

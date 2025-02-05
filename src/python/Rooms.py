@@ -118,5 +118,9 @@ class Shop(Room):
                         self.regenerate_player_icons(self.active_player)
 
             self.ui_manager.process_events(event)
-            pygame.draw.rect(self.game_screen, Colours.Black.value, (0, 0, 1920, 1080))
-            self.ui_manager.draw_ui(self.game_screen)
+
+        for icon in self.shop_icons:
+            icon.step()
+
+        pygame.draw.rect(self.game_screen, Colours.Black.value, (0, 0, 1920, 1080))
+        self.ui_manager.draw_ui(self.game_screen)
