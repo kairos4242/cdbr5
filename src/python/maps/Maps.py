@@ -12,7 +12,9 @@ from Rooms import Room
 from animations import Animations
 from commands.CommandRegistry import CommandRegistry
 from events.Event import Event
+from events.EventListener import EventListener
 from events.EventManager import EventManager
+from events.EventType import EventType
 from game_objects.Objects import Storm, Turret, Wall
 from game_objects.Teams import Team, TeamManager
 from game_objects.player import NeutralPlayer, Player, PlayerPrototype
@@ -24,7 +26,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from CdbrLogic import Game
 
-class Map(Room):
+class Map(Room, EventListener):
 
     def __init__(self, 
                 game: "Game", 
@@ -47,6 +49,8 @@ class Map(Room):
         self.setup_players(p1_pos, p2_pos, p1_prototype, p2_prototype)
 
         self.setup_gui()
+
+        self.command_registry.event_manager.subscribe(EventType.PLAYER_DEATH, None, self)
 
     def setup_dependencies(self, hotkey_manager, pygame_clock, input_controller):
         self.screen = pygame.surface.Surface((1920, 1080)) #screen to draw everything to before game screen for fullscreen effects like screen shake
@@ -72,6 +76,8 @@ class Map(Room):
         self.object_registry = ObjectRegistry()
 
     def setup_players(self, p1_pos: tuple[int, int], p2_pos: tuple[int, int], p1_prototype: "PlayerPrototype", p2_prototype: "PlayerPrototype"):
+        self.p1_prototype = p1_prototype
+        self.p2_prototype = p2_prototype
         self.p1team = Team("Player 1 Team")
         self.p2team = Team("Player 2 Team")
         self.neutral_team = Team("Neutral Team")
@@ -230,6 +236,17 @@ class Map(Room):
     def add_screen_shake(self, amount: int):
         self.screen_shake = max(self.screen_shake, amount)
 
+    def notify(self, event: Event):
+        # this gives us the losing player, but not necessarily a reference to the winning player
+        losing_prototype = event.target.prototype #type: PlayerPrototype
+        if losing_prototype == self.p1_prototype:
+            winning_prototype = self.p2_prototype
+        else:
+            winning_prototype = self.p1_prototype
+        losing_prototype.get_income()
+        winning_prototype.get_income()
+        winning_prototype.get_win_bonus()
+        self.game.goto_room(self.game.generate_shop())
 
 
 class GoombaMap(Map):

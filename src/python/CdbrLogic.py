@@ -1,4 +1,5 @@
 from Colours import Colours
+from ObjectRegistry import ObjectRegistry
 from Rooms import MainMenu, Room, Shop
 from game_objects.player import PlayerPrototype
 from input_controllers.PlayerInputController import PlayerInputController
@@ -38,8 +39,8 @@ class Game():
 
         self.p1_prototype = PlayerPrototype(
             money=100,
-            income=20,
-            win_bonus=10,
+            income=50,
+            win_bonus=25,
             powers=[Powers.ConveyorBelt(None)],
             colour=Colours.Red,
             name="Player 1"
@@ -47,19 +48,22 @@ class Game():
 
         self.p2_prototype = PlayerPrototype(
             money=100,
-            income=20,
-            win_bonus=10,
+            income=50,
+            win_bonus=25,
             powers=[Powers.AtlasStone(None)],
             colour=Colours.Blue,
             name="Player 2"
         )
 
         self.room = MainMenu(self, self.game_screen, self.pygame_clock, pygame_gui.UIManager(Config.SCREEN_SIZE, theme_path="base_theme.json", enable_live_theme_updates=False))
-        self.shop = Shop(self, self.game_screen, self.pygame_clock, pygame_gui.UIManager(Config.SCREEN_SIZE, theme_path="base_theme.json", enable_live_theme_updates=False))
-
+        
         self.game_loop()
 
+    def generate_shop(self):
+        return Shop(self, self.game_screen, self.pygame_clock, pygame_gui.UIManager(Config.SCREEN_SIZE, theme_path="base_theme.json", enable_live_theme_updates=False))
+
     def generate_map(self):
+        ObjectRegistry().clear_object_registry()
         return GoombaMap(
             self,
             self.game_screen,

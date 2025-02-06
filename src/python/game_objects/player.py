@@ -3,7 +3,7 @@ from commands.CommandRegistry import CommandRegistry
 from HotkeyManager import HotkeyManager
 from commands.MoveCommand import MoveCommand
 from commands.UsePowerCommand import UsePowerCommand
-from game_objects.GameObjects import GameActor
+from game_objects.GameObjects import GameActor, GameObject
 import pygame
 from ControlType import ControlType
 import os
@@ -51,7 +51,8 @@ class PlayerPrototype:
             hotkey_manager=hotkey_manager,
             animation_manager=animation_manager,
             image=image,
-            name=self.name
+            name=self.name,
+            prototype = self
         )
 
         for power in self.powers:
@@ -74,7 +75,8 @@ class Player(GameActor):
             hotkey_manager: "HotkeyManager", 
             animation_manager: "AnimationManager", 
             image='Player 1.png', 
-            name="Player 1"
+            name="Player 1",
+            prototype: "PlayerPrototype" = None
     ):
         super().__init__(x, y, command_registry)
         self.make_solid()
@@ -83,6 +85,7 @@ class Player(GameActor):
         self.hotkey_manager = hotkey_manager
         self.animation_manager = animation_manager
         self.colour = colour
+        self.prototype = prototype
 
         self.team = team
         if not self.team.is_member(self):
@@ -151,6 +154,9 @@ class Player(GameActor):
         print(x, y)
 
         return [x, y]
+    
+    def on_destroy(self, source: "GameObject"):
+        self.command_registry.add_player_died(source, self)
     
 class NeutralPlayer(Player):
 

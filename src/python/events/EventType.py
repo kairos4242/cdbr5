@@ -8,3 +8,4 @@ class EventType(Enum):
     DAMAGE_DEALT = 4
     HEALING = 5
     SHIELD = 6
+    PLAYER_DEATH = 7

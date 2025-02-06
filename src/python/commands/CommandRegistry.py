@@ -8,6 +8,7 @@ from events.EventManager import EventManager
 from events.HealingEvent import HealingEvent
 from commands.ObjectCreation import ObjectCreation
 from commands.ObjectDestruction import ObjectDestruction
+from events.PlayerDeathEvent import PlayerDeathEvent
 from events.PowerUsageEvent import PowerUsageEvent
 from events.PropertyModificationEvent import PropertyModificationEvent
 from events.ShieldEvent import ShieldEvent
@@ -76,6 +77,10 @@ class CommandRegistry:
 
     def add_damage_dealt(self, source, target, amount):
         event = DamageDealtEvent(source, target, self.clock.get_ticks(), amount)
+        self.event_manager.notify(event)
+
+    def add_player_died(self, source, target):
+        event = PlayerDeathEvent(source, target, self.clock.get_ticks())
         self.event_manager.notify(event)
 
     def add_healing(self, source, target, amount):

@@ -52,3 +52,10 @@ class ObjectRegistry(object):
             for obj in self.objects_by_depth[depth]:
                 result.append(obj)
         return result
+    
+    def clear_object_registry(self):
+        self.objects = []
+        self.solid_objects = []
+        self.actors = []
+        self.objects_by_type = defaultdict(list)
+        self.objects_by_depth = defaultdict(list)

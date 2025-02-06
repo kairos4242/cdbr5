@@ -44,7 +44,7 @@ class MainMenu(Room):
 
             if event.type == pygame_gui.UI_BUTTON_PRESSED:
                 if event.ui_element == self.hello_button:
-                    self.game.goto_room(self.game.shop)
+                    self.game.goto_room(self.game.generate_shop())
 
             self.ui_manager.process_events(event)
             self.ui_manager.draw_ui(self.game_screen)

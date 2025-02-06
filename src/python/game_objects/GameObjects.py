@@ -58,6 +58,9 @@ class GameObject():
     @abstractmethod
     def draw(self, surface):
         pass
+
+    def on_destroy(self, source: "GameObject"):
+        pass
     
     def objects_not_me(self):
         return list(filter(lambda obj: id(obj) != id(self), self.object_registry.objects))
@@ -102,6 +105,7 @@ class GameObject():
         target.shield += amount
 
     def destroy(self, target):
+        target.on_destroy(self)
         self.object_registry.remove_from_global_object_registry(target)
         self.object_registry.remove_from_global_solid_registry(target)
         if isinstance(target, GameActor):
