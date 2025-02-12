@@ -31,8 +31,8 @@ class Power(EventListener):
         self.cost = 50
         self.uses = None # intended here to mean infinite uses, not sure if this is the best way to do it
 
-    def __init__(self, name: str, cooldown: int, max_cooldown: int, owner: "Player", type: "PowerType" = PowerType.SKILL, cost: int = 50):
-        self.cooldown = cooldown
+    def __init__(self, name: str, max_cooldown: int, owner: "Player", type: "PowerType" = PowerType.SKILL, cost: int = 50):
+        self.cooldown = 0
         self.max_cooldown = max_cooldown
         self.name = name
         self.owner = owner
@@ -74,12 +74,12 @@ class Power(EventListener):
 class NullPower(Power):
     # default power for things like damage from neutral storms and such
     def __init__(self, owner: "Player"):
-        super().__init__("No Power", 30, 30, owner)
+        super().__init__("No Power", 30, owner)
 
 class Sprint(Power):
 
     def __init__(self, owner: "Player"):
-        super().__init__("Sprint", 30, 30, owner)
+        super().__init__("Sprint", 30, owner)
 
     def on_use(self):
         super().on_use()
@@ -90,7 +90,7 @@ class Sprint(Power):
 class Blink(Power):
 
     def __init__(self, owner: "Player"):
-        super().__init__("Blink", 30, 30, owner)
+        super().__init__("Blink", 30, owner)
 
     def on_use(self):
         super().on_use()
@@ -100,7 +100,7 @@ class Blink(Power):
 
 class Dash(Power):
     def __init__(self, owner: "Player"):
-        super().__init__("Dash", 30, 30, owner)
+        super().__init__("Dash", 30, owner)
 
     def on_use(self):
         super().on_use()
@@ -108,7 +108,7 @@ class Dash(Power):
 
 class AggressiveDash(Power):
     def __init__(self, owner: "Player"):
-        super().__init__("Aggressive Dash", 30, 30, owner)
+        super().__init__("Aggressive Dash", 30, owner)
 
     def on_use(self):
         super().on_use()
@@ -117,7 +117,7 @@ class AggressiveDash(Power):
 
 class DefensiveDash(Power):
     def __init__(self, owner: "Player"):
-        super().__init__("Defensive Dash", 30, 30, owner)
+        super().__init__("Defensive Dash", 30, owner)
 
     def on_use(self):
         super().on_use()
@@ -126,7 +126,7 @@ class DefensiveDash(Power):
 
 class PlayfulTrickster(Power):
     def __init__(self, owner: "Player"):
-        super().__init__("Playful/Trickster", 30, 30, owner)
+        super().__init__("Playful/Trickster", 30, owner)
 
     def on_use(self):
         super().on_use()
@@ -137,7 +137,7 @@ class PlayfulTrickster(Power):
 
 class ConveyorBelt(Power):
     def __init__(self, owner: "Player"):
-        super().__init__("Conveyor Belt", 30, 30, owner)
+        super().__init__("Conveyor Belt", 100, owner)
 
     def on_use(self):
         super().on_use()
@@ -157,7 +157,7 @@ class ConveyorBelt(Power):
 
 class Swap(Power):
     def __init__(self, owner: "Player"):
-        super().__init__("Swap", 30, 30, owner)
+        super().__init__("Swap", 30, owner)
 
     def on_use(self):
         super().on_use()
@@ -166,7 +166,7 @@ class Swap(Power):
 
 class CrossCannon(Power):
     def __init__(self, owner: "Player"):
-        super().__init__("Cross Cannon", 30, 30, owner, PowerType.ATTACK)
+        super().__init__("Cross Cannon", 30, owner, PowerType.ATTACK)
 
     def on_use(self):
         super().on_use()
@@ -178,7 +178,7 @@ class CrossCannon(Power):
 
 class FalconPunch(Power):
     def __init__(self, owner: "Player"):
-        super().__init__("Falcon Punch", 30, 30, owner, PowerType.ATTACK)
+        super().__init__("Falcon Punch", 30, owner, PowerType.ATTACK)
 
     def on_use(self):
         super().on_use()
@@ -186,7 +186,7 @@ class FalconPunch(Power):
 
 class BodySlam(Power):
     def __init__(self, owner: "Player"):
-        super().__init__("Body Slam", 30, 30, owner, PowerType.ATTACK)
+        super().__init__("Body Slam", 30, owner, PowerType.ATTACK)
 
     def on_use(self):
         super().on_use()
@@ -194,7 +194,7 @@ class BodySlam(Power):
 
 class Bomb(Power):
     def __init__(self, owner: "Player"):
-        super().__init__("Bomb", 30, 30, owner, PowerType.ATTACK)
+        super().__init__("Bomb", 30, owner, PowerType.ATTACK)
 
     def on_use(self):
         super().on_use()
@@ -202,7 +202,7 @@ class Bomb(Power):
 
 class Sword(Power):
     def __init__(self, owner: "Player"):
-        super().__init__("Sword", 30, 30, owner, PowerType.ATTACK)
+        super().__init__("Sword", 30, owner, PowerType.ATTACK)
 
     def on_use(self):
         super().on_use()
@@ -222,7 +222,7 @@ class Turret(Power):
 
 class Shotgun(Power):
     def __init__(self, owner: "Player"):
-        super().__init__("Shotgun", 30, 30, owner, PowerType.ATTACK)
+        super().__init__("Shotgun", 30, owner, PowerType.ATTACK)
 
     def on_use(self):
         super().on_use()
@@ -238,7 +238,7 @@ class Shotgun(Power):
 
 class SniperRifle(Power):
     def __init__(self, owner: "Player"):
-        super().__init__("Sniper Rifle", 30, 30, owner, PowerType.ATTACK)
+        super().__init__("Sniper Rifle", 30, owner, PowerType.ATTACK)
 
     def on_use(self):
         super().on_use()
@@ -246,7 +246,7 @@ class SniperRifle(Power):
 
 class ChipDamage(Power):
     def __init__(self, owner: "Player"):
-        super().__init__("Chip Damage", 30, 30, owner, PowerType.ATTACK)
+        super().__init__("Chip Damage", 30, owner, PowerType.ATTACK)
 
     def on_use(self):
         super().on_use()
@@ -254,7 +254,7 @@ class ChipDamage(Power):
 
 class AtlasStone(Power):
     def __init__(self, owner: "Player"):
-        super().__init__("Atlas Stone", 30, 30, owner, PowerType.ATTACK)
+        super().__init__("Atlas Stone", 30, owner, PowerType.ATTACK)
         self.damage = 1
 
     def on_use(self):
@@ -265,7 +265,7 @@ class AtlasStone(Power):
 
 class Storm(Power):
     def __init__(self, owner: "Player"):
-        super().__init__("Storm", 30, 30, owner, PowerType.ATTACK)
+        super().__init__("Storm", 30, owner, PowerType.ATTACK)
         self.animation = self.owner.animation_manager.get_animation(Animations.StormAnimation)
 
     def on_use(self):
@@ -275,7 +275,7 @@ class Storm(Power):
 
 class HealthInvestment(Power):
     def __init__(self, owner: "Player"):
-        super().__init__("Health Investment", 30, 30, owner)
+        super().__init__("Health Investment", 30, owner)
         self.heal_cooldown = 0
         self.max_heal_cooldown = 120
         self.heal_amount = 0
@@ -300,7 +300,7 @@ class HealthInvestment(Power):
         
 class FastLife(Power):
     def __init__(self, owner: "Player"):
-        super().__init__("Fast Life", 30, 30, owner)
+        super().__init__("Fast Life", 30, owner)
 
     def on_use(self):
         super().on_use()
@@ -311,7 +311,7 @@ class FastLife(Power):
 class BloodKnight(Power):
 
     def __init__(self, owner: "Player"):
-        super().__init__("Blood Knight", 30, 30, owner)
+        super().__init__("Blood Knight", 30, owner)
 
     def attach(self, owner: "Player"):
         super().attach(owner)
@@ -327,7 +327,7 @@ class BloodKnight(Power):
 class Normality(Power):
 
     def __init__(self, owner: "Player"):
-        super().__init__("Normality", 30, 30, owner)
+        super().__init__("Normality", 30, owner)
 
     def attach(self, owner: "Player"):
         super().attach(owner)
@@ -340,7 +340,7 @@ class Normality(Power):
 class Commonality(Power):
 
     def __init__(self, owner: "Player"):
-        super().__init__("Commonality", 30, 30, owner)
+        super().__init__("Commonality", 30, owner)
     
     def attach(self, owner: "Player"):
         super().attach(owner)
@@ -351,7 +351,7 @@ class Commonality(Power):
 
 class Deference(Power):
     def __init__(self, owner: "Player"):
-        super().__init__("Deference", 30, 30, owner)
+        super().__init__("Deference", 30, owner)
 
     def on_use(self):
         # this should probably be an animation in the same vein as the other teleports
@@ -374,7 +374,7 @@ class Deference(Power):
 
 class TeleportGun(Power):
     def __init__(self, owner: "Player"):
-        super().__init__("Teleport Gun", 30, 30, owner, PowerType.ATTACK)
+        super().__init__("Teleport Gun", 30, owner, PowerType.ATTACK)
 
     def on_use(self):
         super().on_use()
@@ -384,7 +384,7 @@ class TeleportGun(Power):
 
 class Embrace(Power):
     def __init__(self, owner: "Player"):
-        super().__init__("Embrace", 30, 30, owner)
+        super().__init__("Embrace", 30, owner)
 
     def on_use(self):
         super().on_use()
@@ -392,7 +392,7 @@ class Embrace(Power):
 
 class Rest(Power):
     def __init__(self, owner: "Player"):
-        super().__init__("Rest", 30, 30, owner)
+        super().__init__("Rest", 30, owner)
 
     def on_use(self):
         super().on_use()
@@ -405,7 +405,7 @@ class Rest(Power):
 
 class MaxHP(Power):
     def __init__(self, owner: "Player"):
-        super().__init__("Max HP", 30, 30, owner)
+        super().__init__("Max HP", 30, owner)
 
     def on_use(self):
         super().on_use()
@@ -414,7 +414,7 @@ class MaxHP(Power):
 class Repeater(Power):
 
     def __init__(self, owner: "Player"):
-        super().__init__("Repeater", 30, 30, owner, PowerType.ATTACK)
+        super().__init__("Repeater", 30, owner, PowerType.ATTACK)
 
     def attach(self, owner: "Player"):
         super().attach(owner)
@@ -430,7 +430,7 @@ class Repeater(Power):
 
 class LivingStorm(Power):
     def __init__(self, owner: "Player"):
-        super().__init__("Living Storm", 30, 30, owner, PowerType.ATTACK)
+        super().__init__("Living Storm", 30, owner, PowerType.ATTACK)
 
     def attach(self, owner: "Player"):
         super().attach(owner)
@@ -439,7 +439,7 @@ class LivingStorm(Power):
 class Rift(Power):
 
     def __init__(self, owner: "Player"):
-        super().__init__("Rift", 30, 30, owner, PowerType.ATTACK)
+        super().__init__("Rift", 30, owner, PowerType.ATTACK)
 
     def on_use(self):
         super().on_use()
@@ -474,7 +474,7 @@ class DanseMacabre(Power):
 
 class Blessing(Power):
     def __init__(self, owner: "Player"):
-        super().__init__("Blessing", 30, 30, owner)
+        super().__init__("Blessing", 30, owner)
 
     def on_use(self):
         super().on_use()
@@ -483,7 +483,7 @@ class Blessing(Power):
 
 class ShieldBoomerang(Power):
     def __init__(self, owner: "Player"):
-        super().__init__("Shield Boomerang", 30, 30, owner)
+        super().__init__("Shield Boomerang", 30, owner)
 
     def on_use(self):
         super().on_use()
@@ -497,7 +497,7 @@ class ShieldBoomerang(Power):
 
 class TempShield(Power):
     def __init__(self, owner: "Player"):
-        super().__init__("Temp Shield", 30, 30, owner)
+        super().__init__("Temp Shield", 30, owner)
         self.shield_removal_timer = 60
         self.shield_removal_max_timer = 60
         self.active = False
@@ -520,7 +520,7 @@ class TempShield(Power):
 
 class ShieldMultiplier(Power):
     def __init__(self, owner: "Player"):
-        super().__init__("Shield Multiplier", 30, 30, owner)
+        super().__init__("Shield Multiplier", 30, owner)
 
     def on_use(self):
         super().on_use()
@@ -528,7 +528,7 @@ class ShieldMultiplier(Power):
 
 class Anchor(Power):
     def __init__(self, owner: "Player"):
-        super().__init__("Anchor", 30, 30, owner, PowerType.PASSIVE)
+        super().__init__("Anchor", 30, owner, PowerType.PASSIVE)
         self.used = False
 
     def step(self):
@@ -540,7 +540,7 @@ class Anchor(Power):
 
 class HornCleat(Power):
     def __init__(self, owner: "Player"):
-        super().__init__("Horn Cleat", 30, 30, owner, PowerType.PASSIVE)
+        super().__init__("Horn Cleat", 30, owner, PowerType.PASSIVE)
         self.countdown = 600
 
     def step(self):
@@ -550,7 +550,7 @@ class HornCleat(Power):
 
 class CaptainsWheel(Power):
     def __init__(self, owner: "Player"):
-        super().__init__("Captain's Wheel", 30, 30, owner, PowerType.PASSIVE)
+        super().__init__("Captain's Wheel", 30, owner, PowerType.PASSIVE)
         self.countdown = 1200
 
     def step(self):
@@ -560,7 +560,7 @@ class CaptainsWheel(Power):
 
 class Contract(Power):
     def __init__(self, owner: "Player"):
-        super().__init__("Contract", 30, 30, owner, PowerType.PASSIVE)
+        super().__init__("Contract", 30, owner, PowerType.PASSIVE)
         self.used = False
 
     def step(self):
@@ -572,7 +572,7 @@ class Contract(Power):
 
 class QuillPen(Power):
     def __init__(self, owner: "Player"):
-        super().__init__("Quill Pen", 30, 30, owner, PowerType.PASSIVE)
+        super().__init__("Quill Pen", 30, owner, PowerType.PASSIVE)
         self.countdown = 600
 
     def step(self):
@@ -582,7 +582,7 @@ class QuillPen(Power):
 
 class Signature(Power):
     def __init__(self, owner: "Player"):
-        super().__init__("Signature", 30, 30, owner, PowerType.PASSIVE)
+        super().__init__("Signature", 30, owner, PowerType.PASSIVE)
         self.countdown = 1200
 
     def step(self):
