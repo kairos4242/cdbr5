@@ -73,12 +73,12 @@ class Power(EventListener):
 
 class NullPower(Power):
     # default power for things like damage from neutral storms and such
-    def __init__(self, owner: "Player"):
+    def __init__(self, owner: "Player" = None):
         super().__init__("No Power", 30, owner)
 
 class Sprint(Power):
 
-    def __init__(self, owner: "Player"):
+    def __init__(self, owner: "Player" = None):
         super().__init__("Sprint", 30, owner)
 
     def on_use(self):
@@ -89,7 +89,7 @@ class Sprint(Power):
 
 class Blink(Power):
 
-    def __init__(self, owner: "Player"):
+    def __init__(self, owner: "Player" = None):
         super().__init__("Blink", 30, owner)
 
     def on_use(self):
@@ -99,7 +99,7 @@ class Blink(Power):
         self.owner.move_tangible(teleport_dist * self.owner.move_xdir, teleport_dist * self.owner.move_ydir)
 
 class Dash(Power):
-    def __init__(self, owner: "Player"):
+    def __init__(self, owner: "Player" = None):
         super().__init__("Dash", 30, owner)
 
     def on_use(self):
@@ -107,7 +107,7 @@ class Dash(Power):
         self.owner.timeline = DashTimeline(10, self.owner.move_xdir, self.owner.move_ydir, self, 25)
 
 class AggressiveDash(Power):
-    def __init__(self, owner: "Player"):
+    def __init__(self, owner: "Player" = None):
         super().__init__("Aggressive Dash", 30, owner)
 
     def on_use(self):
@@ -116,7 +116,7 @@ class AggressiveDash(Power):
         self.owner.timeline = DashTimeline(10, -x, -y, self, 25)
 
 class DefensiveDash(Power):
-    def __init__(self, owner: "Player"):
+    def __init__(self, owner: "Player" = None):
         super().__init__("Defensive Dash", 30, owner)
 
     def on_use(self):
@@ -125,7 +125,7 @@ class DefensiveDash(Power):
         self.owner.timeline = DashTimeline(10, x, y, self, 25)
 
 class PlayfulTrickster(Power):
-    def __init__(self, owner: "Player"):
+    def __init__(self, owner: "Player" = None):
         super().__init__("Playful/Trickster", 30, owner)
 
     def on_use(self):
@@ -136,7 +136,7 @@ class PlayfulTrickster(Power):
             self.owner.timeline = PlayfulTimeline(self)
 
 class ConveyorBelt(Power):
-    def __init__(self, owner: "Player"):
+    def __init__(self, owner: "Player" = None):
         super().__init__("Conveyor Belt", 100, owner)
 
     def on_use(self):
@@ -156,7 +156,7 @@ class ConveyorBelt(Power):
         )
 
 class Swap(Power):
-    def __init__(self, owner: "Player"):
+    def __init__(self, owner: "Player" = None):
         super().__init__("Swap", 30, owner)
 
     def on_use(self):
@@ -165,7 +165,7 @@ class Swap(Power):
         self.owner.rect.x, self.owner.rect.y, self.owner.opponent.rect.x, self.owner.opponent.rect.y = self.owner.opponent.rect.x, self.owner.opponent.rect.y, self.owner.rect.x, self.owner.rect.y
 
 class CrossCannon(Power):
-    def __init__(self, owner: "Player"):
+    def __init__(self, owner: "Player" = None):
         super().__init__("Cross Cannon", 30, owner, PowerType.ATTACK)
 
     def on_use(self):
@@ -177,7 +177,7 @@ class CrossCannon(Power):
         Bullet(self.owner.rect.centerx + 50, self.owner.rect.centery, 8, 0, self, self.owner.colour)
 
 class FalconPunch(Power):
-    def __init__(self, owner: "Player"):
+    def __init__(self, owner: "Player" = None):
         super().__init__("Falcon Punch", 30, owner, PowerType.ATTACK)
 
     def on_use(self):
@@ -185,7 +185,7 @@ class FalconPunch(Power):
         self.owner.timeline = FalconPunchTimeline(self)
 
 class BodySlam(Power):
-    def __init__(self, owner: "Player"):
+    def __init__(self, owner: "Player" = None):
         super().__init__("Body Slam", 30, owner, PowerType.ATTACK)
 
     def on_use(self):
@@ -193,7 +193,7 @@ class BodySlam(Power):
         self.owner.timeline = BodySlamTimeline(self)
 
 class Bomb(Power):
-    def __init__(self, owner: "Player"):
+    def __init__(self, owner: "Player" = None):
         super().__init__("Bomb", 30, owner, PowerType.ATTACK)
 
     def on_use(self):
@@ -201,7 +201,7 @@ class Bomb(Power):
         Projectiles.Bomb(self.owner.rect.centerx, self.owner.rect.centery, self, 60, 128)
 
 class Sword(Power):
-    def __init__(self, owner: "Player"):
+    def __init__(self, owner: "Player" = None):
         super().__init__("Sword", 30, owner, PowerType.ATTACK)
 
     def on_use(self):
@@ -209,8 +209,8 @@ class Sword(Power):
         Projectiles.Sword(self.owner.rect.centerx, self.owner.rect.centery, self, 15, self.owner.move_xdir, self.owner.move_ydir)
 
 class Turret(Power):
-    def __init__(self, owner: "Player"):
-        super().__init__("Turret", 150, 150, owner, PowerType.ATTACK)
+    def __init__(self, owner: "Player" = None):
+        super().__init__("Turret", 150, owner, PowerType.ATTACK)
 
     def on_use(self):
         super().on_use()
@@ -221,7 +221,7 @@ class Turret(Power):
         Objects.Turret(snapped_x, snapped_y, self, self.owner.move_xdir, self.owner.move_ydir)
 
 class Shotgun(Power):
-    def __init__(self, owner: "Player"):
+    def __init__(self, owner: "Player" = None):
         super().__init__("Shotgun", 30, owner, PowerType.ATTACK)
 
     def on_use(self):
@@ -237,7 +237,7 @@ class Shotgun(Power):
             Bullet(bullet_point[0], bullet_point[1], angle_xspeed, angle_yspeed, self, self.owner.colour)
 
 class SniperRifle(Power):
-    def __init__(self, owner: "Player"):
+    def __init__(self, owner: "Player" = None):
         super().__init__("Sniper Rifle", 30, owner, PowerType.ATTACK)
 
     def on_use(self):
@@ -245,7 +245,7 @@ class SniperRifle(Power):
         self.owner.timeline = SniperRifleTimeline(self)
 
 class ChipDamage(Power):
-    def __init__(self, owner: "Player"):
+    def __init__(self, owner: "Player" = None):
         super().__init__("Chip Damage", 30, owner, PowerType.ATTACK)
 
     def on_use(self):
@@ -253,7 +253,7 @@ class ChipDamage(Power):
         self.owner.deal_damage(self, self.owner.opponent, 1)
 
 class AtlasStone(Power):
-    def __init__(self, owner: "Player"):
+    def __init__(self, owner: "Player" = None):
         super().__init__("Atlas Stone", 30, owner, PowerType.ATTACK)
         self.damage = 1
 
@@ -264,8 +264,11 @@ class AtlasStone(Power):
         AtlasBullet(bullet_point[0], bullet_point[1], self.owner.move_xdir * movespeed, self.owner.move_ydir * movespeed, self, self.owner.colour)
 
 class Storm(Power):
-    def __init__(self, owner: "Player"):
+    def __init__(self, owner: "Player" = None):
         super().__init__("Storm", 30, owner, PowerType.ATTACK)
+
+    def attach(self, owner: "Player"):
+        super().attach(owner)
         self.animation = self.owner.animation_manager.get_animation(Animations.StormAnimation)
 
     def on_use(self):
@@ -274,7 +277,7 @@ class Storm(Power):
         Objects.Storm(storm_point[0], storm_point[1], 1200, self, self.animation, self.owner.colour)
 
 class HealthInvestment(Power):
-    def __init__(self, owner: "Player"):
+    def __init__(self, owner: "Player" = None):
         super().__init__("Health Investment", 30, owner)
         self.heal_cooldown = 0
         self.max_heal_cooldown = 120
@@ -299,7 +302,7 @@ class HealthInvestment(Power):
             self.heal_cooldown -= 1
         
 class FastLife(Power):
-    def __init__(self, owner: "Player"):
+    def __init__(self, owner: "Player" = None):
         super().__init__("Fast Life", 30, owner)
 
     def on_use(self):
@@ -310,7 +313,7 @@ class FastLife(Power):
 
 class BloodKnight(Power):
 
-    def __init__(self, owner: "Player"):
+    def __init__(self, owner: "Player" = None):
         super().__init__("Blood Knight", 30, owner)
 
     def attach(self, owner: "Player"):
@@ -326,7 +329,7 @@ class BloodKnight(Power):
 
 class Normality(Power):
 
-    def __init__(self, owner: "Player"):
+    def __init__(self, owner: "Player" = None):
         super().__init__("Normality", 30, owner)
 
     def attach(self, owner: "Player"):
@@ -339,7 +342,7 @@ class Normality(Power):
 
 class Commonality(Power):
 
-    def __init__(self, owner: "Player"):
+    def __init__(self, owner: "Player" = None):
         super().__init__("Commonality", 30, owner)
     
     def attach(self, owner: "Player"):
@@ -350,7 +353,7 @@ class Commonality(Power):
         self.owner.deal_damage(self, event.target, 1)
 
 class Deference(Power):
-    def __init__(self, owner: "Player"):
+    def __init__(self, owner: "Player" = None):
         super().__init__("Deference", 30, owner)
 
     def on_use(self):
@@ -373,7 +376,7 @@ class Deference(Power):
         self.owner.heal(self, self.owner, 10)
 
 class TeleportGun(Power):
-    def __init__(self, owner: "Player"):
+    def __init__(self, owner: "Player" = None):
         super().__init__("Teleport Gun", 30, owner, PowerType.ATTACK)
 
     def on_use(self):
@@ -383,7 +386,7 @@ class TeleportGun(Power):
         Projectiles.TeleportBullet(bullet_point[0], bullet_point[1], self.owner.move_xdir * movespeed, self.owner.move_ydir * movespeed, self, self.owner.colour)
 
 class Embrace(Power):
-    def __init__(self, owner: "Player"):
+    def __init__(self, owner: "Player" = None):
         super().__init__("Embrace", 30, owner)
 
     def on_use(self):
@@ -391,7 +394,7 @@ class Embrace(Power):
         self.owner.timeline = EmbraceTimeline(30, self.owner.move_xdir, self.owner.move_ydir, self, 25)
 
 class Rest(Power):
-    def __init__(self, owner: "Player"):
+    def __init__(self, owner: "Player" = None):
         super().__init__("Rest", 30, owner)
 
     def on_use(self):
@@ -404,7 +407,7 @@ class Rest(Power):
             self.owner.heal(self, self.owner, 15)
 
 class MaxHP(Power):
-    def __init__(self, owner: "Player"):
+    def __init__(self, owner: "Player" = None):
         super().__init__("Max HP", 30, owner)
 
     def on_use(self):
@@ -413,7 +416,7 @@ class MaxHP(Power):
 
 class Repeater(Power):
 
-    def __init__(self, owner: "Player"):
+    def __init__(self, owner: "Player" = None):
         super().__init__("Repeater", 30, owner, PowerType.ATTACK)
 
     def attach(self, owner: "Player"):
@@ -429,7 +432,7 @@ class Repeater(Power):
             Projectiles.Bullet(bullet_point[0], bullet_point[1], self.owner.move_xdir * movespeed, self.owner.move_ydir * movespeed, self, self.owner.colour, self)
 
 class LivingStorm(Power):
-    def __init__(self, owner: "Player"):
+    def __init__(self, owner: "Player" = None):
         super().__init__("Living Storm", 30, owner, PowerType.ATTACK)
 
     def attach(self, owner: "Player"):
@@ -457,7 +460,7 @@ class Rift(Power):
             self.owner.map.add_screen_shake(30)
 
 class DanseMacabre(Power):
-    def __init__(self, owner: "Player"):
+    def __init__(self, owner: "Player" = None):
         super().__init__("Danse Macabre", 30, 1200, owner)
 
     def attach(self, owner: "Player"):
@@ -473,7 +476,7 @@ class DanseMacabre(Power):
         self.owner.timeline = DashTimeline(10, self.owner.move_xdir, self.owner.move_ydir, self, 25)
 
 class Blessing(Power):
-    def __init__(self, owner: "Player"):
+    def __init__(self, owner: "Player" = None):
         super().__init__("Blessing", 30, owner)
 
     def on_use(self):
@@ -482,7 +485,7 @@ class Blessing(Power):
         self.owner.gain_shield(self, self.owner, 10)
 
 class ShieldBoomerang(Power):
-    def __init__(self, owner: "Player"):
+    def __init__(self, owner: "Player" = None):
         super().__init__("Shield Boomerang", 30, owner)
 
     def on_use(self):
@@ -496,7 +499,7 @@ class ShieldBoomerang(Power):
         Projectiles.ShieldBoomerang(bullet_point[0], bullet_point[1], math.cos(angle) * movespeed, -math.sin(angle) * movespeed, self, self.owner.colour)
 
 class TempShield(Power):
-    def __init__(self, owner: "Player"):
+    def __init__(self, owner: "Player" = None):
         super().__init__("Temp Shield", 30, owner)
         self.shield_removal_timer = 60
         self.shield_removal_max_timer = 60
@@ -519,7 +522,7 @@ class TempShield(Power):
         self.active = True
 
 class ShieldMultiplier(Power):
-    def __init__(self, owner: "Player"):
+    def __init__(self, owner: "Player" = None):
         super().__init__("Shield Multiplier", 30, owner)
 
     def on_use(self):
@@ -527,7 +530,7 @@ class ShieldMultiplier(Power):
         self.owner.gain_shield(self, self.owner, self.owner.shield)
 
 class Anchor(Power):
-    def __init__(self, owner: "Player"):
+    def __init__(self, owner: "Player" = None):
         super().__init__("Anchor", 30, owner, PowerType.PASSIVE)
         self.used = False
 
@@ -539,7 +542,7 @@ class Anchor(Power):
             self.owner.gain_shield(self, self.owner, 10)
 
 class HornCleat(Power):
-    def __init__(self, owner: "Player"):
+    def __init__(self, owner: "Player" = None):
         super().__init__("Horn Cleat", 30, owner, PowerType.PASSIVE)
         self.countdown = 600
 
@@ -549,7 +552,7 @@ class HornCleat(Power):
             self.owner.gain_shield(self, self.owner, 15)
 
 class CaptainsWheel(Power):
-    def __init__(self, owner: "Player"):
+    def __init__(self, owner: "Player" = None):
         super().__init__("Captain's Wheel", 30, owner, PowerType.PASSIVE)
         self.countdown = 1200
 
@@ -559,7 +562,7 @@ class CaptainsWheel(Power):
             self.owner.gain_shield(self, self.owner, 25)
 
 class Contract(Power):
-    def __init__(self, owner: "Player"):
+    def __init__(self, owner: "Player" = None):
         super().__init__("Contract", 30, owner, PowerType.PASSIVE)
         self.used = False
 
@@ -571,7 +574,7 @@ class Contract(Power):
             self.owner.deal_damage(self, self.owner.opponent, 10)
 
 class QuillPen(Power):
-    def __init__(self, owner: "Player"):
+    def __init__(self, owner: "Player" = None):
         super().__init__("Quill Pen", 30, owner, PowerType.PASSIVE)
         self.countdown = 600
 
@@ -581,7 +584,7 @@ class QuillPen(Power):
             self.owner.deal_damage(self, self.owner.opponent, 15)
 
 class Signature(Power):
-    def __init__(self, owner: "Player"):
+    def __init__(self, owner: "Player" = None):
         super().__init__("Signature", 30, owner, PowerType.PASSIVE)
         self.countdown = 1200
 

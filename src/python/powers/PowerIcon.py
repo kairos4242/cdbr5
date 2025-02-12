@@ -43,7 +43,7 @@ class PowerIcon():
         self.ARIAL_12PT = pygame.freetype.SysFont("Arial", 12)
 
     def on_possible_press(self, prototype: "PlayerPrototype", mouse_coords: tuple[int, int]) -> bool:
-        if self.overlay.hovered:
+        if self.overlay.hovered or self.icon.hovered:
             if prototype.money >= self.power.cost:
                 prototype.money -= self.power.cost
                 prototype.powers.append(copy.deepcopy(self.power))

@@ -60,14 +60,35 @@ class Shop(Room):
         self.hello_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((350, 275), (100, 50)), text='P1 Done', manager=self.ui_manager)
 
         #generate shop list
-        self.shop_commons = [Powers.Blink(None), Powers.CrossCannon(None), Powers.AtlasStone(None)]
+        self.shop_commons = [
+            Powers.Sprint(),
+            Powers.Blink(), 
+            Powers.Dash(),
+            Powers.ConveyorBelt(),
+            Powers.Swap(),
+            Powers.CrossCannon(),
+            Powers.FalconPunch(),
+            Powers.BodySlam(),
+            Powers.Bomb(),
+            Powers.Sword(),
+            Powers.Turret(),
+            Powers.Shotgun(),
+            Powers.SniperRifle(),
+            Powers.ChipDamage(),
+            Powers.AtlasStone(),
+            Powers.Storm(),
+            Powers.HealthInvestment()
+            ]
         self.shop_icons = [] #type: list[PowerIcon]
         self.player_icons = [] #type: list[PowerIcon]
         self.player_money = None
         anchors = {'centerx': 'centerx', 'centery': 'centery'}
+        num_columns = 8
         for index, power in enumerate(self.shop_commons):
-            pos = -152 + (index * 76)
-            icon_layout_rect = pygame.Rect(pos, -1, 55, 55)
+            row = index % num_columns
+            column = index // num_columns
+            pos = (-76 * (num_columns / 2)) + (row * 76)
+            icon_layout_rect = pygame.Rect(pos, 55 * column, 55, 55)
             power_name = power.name
             surface = pygame.image.load(os.path.join('assets', 'testing', 'Power Icons', f'{power_name}_55.png')).convert()
             icon = PowerIcon(icon_layout_rect, surface, self.ui_manager, anchors, power)

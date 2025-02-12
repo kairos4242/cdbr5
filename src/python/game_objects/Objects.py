@@ -128,7 +128,7 @@ class Turret(GameObject):
     def step(self):
         self.spawn_cooldown -= 1
         if self.spawn_cooldown <= 0:
-            Projectiles.Bullet(self.rect.centerx, self.rect.centery, self.x_dir * 8, self.y_dir * 8, self.owner, self.colour)
+            Projectiles.Bullet(self.rect.centerx, self.rect.centery, self.x_dir * 8, self.y_dir * 8, self.power, self.colour)
             self.spawn_cooldown = self.max_spawn_cooldown
         self.lifespan -= 1
         if self.lifespan <= 0:
