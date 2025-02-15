@@ -41,7 +41,7 @@ class Game():
             money=100,
             income=50,
             win_bonus=25,
-            powers=[Powers.ConveyorBelt(None)],
+            powers=[],
             colour=Colours.Red,
             name="Player 1"
         )
@@ -50,7 +50,7 @@ class Game():
             money=100,
             income=50,
             win_bonus=25,
-            powers=[Powers.AtlasStone(None)],
+            powers=[],
             colour=Colours.Blue,
             name="Player 2"
         )

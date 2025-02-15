@@ -55,7 +55,7 @@ class Bomb(Projectile):
         pygame.draw.rect(surface, Colours.AshGrey.value, self.rect)
 
     def step(self):
-        self.move(self.x_speed, self.y_speed, self.outside_force_x, self.outside_force_y)
+        self.move(self.x_speed, self.y_speed, 0, 0)#should this be this way? knocking bombs away and such would be fun
         self.fuse -= 1
         if self.fuse <= 0:
             collision_circle = pygame.geometry.Circle(self.rect.centerx, self.rect.centery, self.explosion_radius)

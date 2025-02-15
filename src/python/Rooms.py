@@ -77,7 +77,9 @@ class Shop(Room):
             Powers.ChipDamage(),
             Powers.AtlasStone(),
             Powers.Storm(),
-            Powers.HealthInvestment()
+            Powers.HealthInvestment(),
+            Powers.Normality(),
+            Powers.Commonality()
             ]
         self.shop_icons = [] #type: list[PowerIcon]
         self.player_icons = [] #type: list[PowerIcon]
